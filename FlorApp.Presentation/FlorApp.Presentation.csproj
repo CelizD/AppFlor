@@ -84,6 +84,13 @@
       <Project>{eed07602-7916-47d8-99f3-4ac19b4ef5bf}</Project>
       <Name>FlorApp.BusinessLogic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FlorApp.DataAccess\FlorApp.DataAccess.csproj">
+      <Project>{288e467d-a850-4f37-a9cf-fabb83fc1a38}</Project>
+      <Name>FlorApp.DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
