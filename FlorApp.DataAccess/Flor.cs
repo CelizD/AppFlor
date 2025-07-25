@@ -2,16 +2,16 @@
 
 namespace FlorApp.DataAccess
 {
-    // Esta clase representa el modelo de datos de una flor
+    // Representa una flor registrada en el sistema
     public class Flor
     {
-        // Propiedad que almacena el identificador único de la flor
+        // Identificador único de la flor
         public int Id { get; set; }
 
-        // Propiedad que almacena el nombre de la flor
+        // Nombre descriptivo de la flor
         public string Nombre { get; set; }
 
-        // Propiedad que almacena la fecha en que fue registrada la flor
+        // Fecha en la que se registró la flor en la base de datos
         public DateTime FechaRegistro { get; set; }
     }
 }

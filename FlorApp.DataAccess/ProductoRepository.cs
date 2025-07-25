@@ -6,58 +6,71 @@ using System.Threading.Tasks;
 
 namespace FlorApp.DataAccess
 {
+    // Repositorio para gestionar operaciones CRUD y consultas sobre productos
     public class ProductoRepository
     {
+        // Cadena de conexión extraída del archivo de configuración App.config
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
 
+        // Obtiene todos los productos registrados en la base de datos
         public async Task<List<Producto>> ObtenerTodosAsync()
         {
-            var productos = new List<Producto>();
+            var productos = new List<Producto>(); // Lista para almacenar productos recuperados
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
-                var query = "SELECT Id, Nombre, Descripcion, Categoria, Proveedor, PrecioCosto, PrecioVenta, Stock, StockMinimo, StockMaximo, FechaRegistro, CodigoBarras FROM Productos";
+                await connection.OpenAsync(); // Abre conexión con la base de datos
+
+                var query = @"SELECT Id, Nombre, Descripcion, Categoria, Proveedor, PrecioCosto, PrecioVenta, 
+                                     Stock, StockMinimo, StockMaximo, FechaRegistro, CodigoBarras 
+                              FROM Productos";
+
                 using (var command = new SqlCommand(query, connection))
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    using (var reader = await command.ExecuteReaderAsync())
+                    // Lee cada registro devuelto por la consulta
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        productos.Add(new Producto
                         {
-                            productos.Add(new Producto
-                            {
-                                Id = reader.GetInt32(0),
-                                Nombre = reader.GetString(1),
-                                Descripcion = reader.IsDBNull(2) ? null : reader.GetString(2),
-                                Categoria = reader.IsDBNull(3) ? null : reader.GetString(3),
-                                Proveedor = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                PrecioCosto = reader.GetDecimal(5),
-                                PrecioVenta = reader.GetDecimal(6),
-                                Stock = reader.GetInt32(7),
-                                StockMinimo = reader.GetInt32(8),
-                                StockMaximo = reader.GetInt32(9),
-                                FechaRegistro = reader.GetDateTime(10),
-                                CodigoBarras = reader.IsDBNull(11) ? null : reader.GetString(11)
-                            });
-                        }
+                            Id = reader.GetInt32(0),
+                            Nombre = reader.GetString(1),
+                            Descripcion = reader.IsDBNull(2) ? null : reader.GetString(2),
+                            Categoria = reader.IsDBNull(3) ? null : reader.GetString(3),
+                            Proveedor = reader.IsDBNull(4) ? null : reader.GetString(4),
+                            PrecioCosto = reader.GetDecimal(5),
+                            PrecioVenta = reader.GetDecimal(6),
+                            Stock = reader.GetInt32(7),
+                            StockMinimo = reader.GetInt32(8),
+                            StockMaximo = reader.GetInt32(9),
+                            FechaRegistro = reader.GetDateTime(10),
+                            CodigoBarras = reader.IsDBNull(11) ? null : reader.GetString(11)
+                        });
                     }
                 }
             }
-            return productos;
+            return productos; // Devuelve la lista de productos completa
         }
 
+        // Busca un producto por su código de barras o por nombre exacto
         public async Task<Producto> BuscarPorCodigoONombreAsync(string busqueda)
         {
-            Producto producto = null;
+            Producto producto = null; // Inicialmente sin producto encontrado
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
-                var query = "SELECT Id, Nombre, Descripcion, Categoria, Proveedor, PrecioCosto, PrecioVenta, Stock, StockMinimo, StockMaximo, FechaRegistro, CodigoBarras FROM Productos WHERE CodigoBarras = @busqueda OR Nombre = @busqueda";
+                await connection.OpenAsync(); // Abre la conexión
+
+                var query = @"SELECT Id, Nombre, Descripcion, Categoria, Proveedor, PrecioCosto, PrecioVenta, 
+                                     Stock, StockMinimo, StockMaximo, FechaRegistro, CodigoBarras 
+                              FROM Productos 
+                              WHERE CodigoBarras = @busqueda OR Nombre = @busqueda";
+
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@busqueda", busqueda);
+                    command.Parameters.AddWithValue("@busqueda", busqueda); // Parámetro para búsqueda
+
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        if (await reader.ReadAsync())
+                        if (await reader.ReadAsync()) // Si encuentra algún resultado
                         {
                             producto = new Producto
                             {
@@ -78,18 +91,22 @@ namespace FlorApp.DataAccess
                     }
                 }
             }
-            return producto;
+            return producto; // Devuelve el producto encontrado o null si no existe
         }
 
+        // Inserta un nuevo producto en la base de datos
         public async Task GuardarAsync(Producto producto)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync(); // Abre conexión
+
                 var query = @"INSERT INTO Productos (Nombre, Descripcion, Categoria, Proveedor, PrecioCosto, PrecioVenta, Stock, StockMinimo, StockMaximo, CodigoBarras)
                               VALUES (@Nombre, @Descripcion, @Categoria, @Proveedor, @PrecioCosto, @PrecioVenta, @Stock, @StockMinimo, @StockMaximo, @CodigoBarras)";
+
                 using (var command = new SqlCommand(query, connection))
                 {
+                    // Asignación de parámetros con valores del producto
                     command.Parameters.AddWithValue("@Nombre", producto.Nombre);
                     command.Parameters.AddWithValue("@Descripcion", (object)producto.Descripcion ?? DBNull.Value);
                     command.Parameters.AddWithValue("@Categoria", (object)producto.Categoria ?? DBNull.Value);
@@ -100,16 +117,19 @@ namespace FlorApp.DataAccess
                     command.Parameters.AddWithValue("@StockMinimo", producto.StockMinimo);
                     command.Parameters.AddWithValue("@StockMaximo", producto.StockMaximo);
                     command.Parameters.AddWithValue("@CodigoBarras", (object)producto.CodigoBarras ?? DBNull.Value);
-                    await command.ExecuteNonQueryAsync();
+
+                    await command.ExecuteNonQueryAsync(); // Ejecuta el INSERT
                 }
             }
         }
 
+        // Actualiza los datos de un producto existente (excepto stock)
         public async Task ActualizarAsync(Producto producto)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync(); // Abre la conexión
+
                 var query = @"UPDATE Productos SET 
                                 Nombre = @Nombre, 
                                 Descripcion = @Descripcion, 
@@ -121,8 +141,10 @@ namespace FlorApp.DataAccess
                                 StockMaximo = @StockMaximo,
                                 CodigoBarras = @CodigoBarras
                               WHERE Id = @Id";
+
                 using (var command = new SqlCommand(query, connection))
                 {
+                    // Parámetros para actualizar el producto
                     command.Parameters.AddWithValue("@Id", producto.Id);
                     command.Parameters.AddWithValue("@Nombre", producto.Nombre);
                     command.Parameters.AddWithValue("@Descripcion", (object)producto.Descripcion ?? DBNull.Value);
@@ -133,80 +155,92 @@ namespace FlorApp.DataAccess
                     command.Parameters.AddWithValue("@StockMinimo", producto.StockMinimo);
                     command.Parameters.AddWithValue("@StockMaximo", producto.StockMaximo);
                     command.Parameters.AddWithValue("@CodigoBarras", (object)producto.CodigoBarras ?? DBNull.Value);
-                    await command.ExecuteNonQueryAsync();
+
+                    await command.ExecuteNonQueryAsync(); // Ejecuta el UPDATE
                 }
             }
         }
 
+        // Elimina un producto por su Id
         public async Task EliminarAsync(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
+                await connection.OpenAsync(); // Abre la conexión
+
                 var query = "DELETE FROM Productos WHERE Id = @Id";
+
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Id", id);
-                    await command.ExecuteNonQueryAsync();
+                    await command.ExecuteNonQueryAsync(); // Ejecuta el DELETE
                 }
             }
         }
 
-        // --- MÉTODO AÑADIDO ---
+        // Actualiza el stock relativo de un producto (puede aumentar o disminuir)
         public async Task ActualizarStockAsync(int productoId, int cantidadCambio)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.OpenAsync();
-                // Usamos un UPDATE relativo para sumar o restar del stock actual
+                await connection.OpenAsync(); // Abre la conexión
+
                 var query = "UPDATE Productos SET Stock = Stock + @CantidadCambio WHERE Id = @Id";
+
                 using (var command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@CantidadCambio", cantidadCambio); // puede ser positivo (entrada) o negativo (salida)
+                    command.Parameters.AddWithValue("@CantidadCambio", cantidadCambio); // positivo o negativo
                     command.Parameters.AddWithValue("@Id", productoId);
-                    await command.ExecuteNonQueryAsync();
+
+                    await command.ExecuteNonQueryAsync(); // Ejecuta el UPDATE
                 }
             }
         }
+
+        // Cuenta la cantidad total de productos registrados
         public async Task<int> ContarTodosAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
+
                 var query = "SELECT COUNT(Id) FROM Productos";
+
                 using (var command = new SqlCommand(query, connection))
                 {
-                    return (int)await command.ExecuteScalarAsync();
+                    return (int)await command.ExecuteScalarAsync(); // Ejecuta el COUNT y devuelve resultado
                 }
             }
         }
 
-        // --- NUEVO MÉTODO ---
+        // Obtiene los productos cuyo stock es igual o menor al stock mínimo (alertas)
         public async Task<List<Producto>> ObtenerProductosBajoStockAsync()
         {
             var productos = new List<Producto>();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
+
                 var query = "SELECT Id, Nombre, Stock, StockMinimo FROM Productos WHERE Stock <= StockMinimo";
+
                 using (var command = new SqlCommand(query, connection))
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    using (var reader = await command.ExecuteReaderAsync())
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
+                        productos.Add(new Producto
                         {
-                            productos.Add(new Producto
-                            {
-                                Id = reader.GetInt32(0),
-                                Nombre = reader.GetString(1),
-                                Stock = reader.GetInt32(2),
-                                StockMinimo = reader.GetInt32(3)
-                            });
-                        }
+                            Id = reader.GetInt32(0),
+                            Nombre = reader.GetString(1),
+                            Stock = reader.GetInt32(2),
+                            StockMinimo = reader.GetInt32(3)
+                        });
                     }
                 }
             }
-            return productos;
+
+            return productos; // Devuelve la lista de productos con stock bajo
         }
     }
 }

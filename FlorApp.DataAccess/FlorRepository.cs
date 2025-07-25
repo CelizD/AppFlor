@@ -1,143 +1,151 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace FlorApp.DataAccess
 {
-    // Esta clase se encarga de gestionar el acceso a los datos relacionados con las flores
+    // Repositorio encargado de manejar todas las operaciones CRUD de las flores
     public class FlorRepository
     {
-        // Contiene la cadena de conexión extraída del archivo App.config
+        // Obtiene la cadena de conexión desde el archivo App.config
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
 
-        // Guarda una flor en la base de datos
+        // Método para guardar una nueva flor en la base de datos
         public string GuardarFlor(Flor flor)
         {
             try
             {
-                // Abre una conexión a la base de datos
+                // Se establece una conexión con la base de datos
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    connection.Open(); // Abre la conexión
 
-                    // Consulta SQL para insertar una nueva flor
+                    // Sentencia SQL para insertar una flor
                     string query = "INSERT INTO Flores (Nombre, FechaRegistro) VALUES (@Nombre, @FechaRegistro)";
 
+                    // Se crea el comando con la consulta y la conexión
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Asigna los valores a los parámetros para evitar inyección SQL
+                        // Se asignan los valores de los parámetros de forma segura
                         command.Parameters.AddWithValue("@Nombre", flor.Nombre);
-                        command.Parameters.AddWithValue("@FechaRegistro", DateTime.Now);
+                        command.Parameters.AddWithValue("@FechaRegistro", DateTime.Now); // Fecha actual
 
-                        // Ejecuta el comando de inserción
+                        // Ejecuta la consulta SQL y devuelve el número de filas afectadas
                         int result = command.ExecuteNonQuery();
 
-                        // Verifica si la operación fue exitosa
-                        if (result > 0)
-                        {
-                            return $"Flor '{flor.Nombre}' registrada exitosamente.";
-                        }
-                        else
-                        {
-                            return "Error: No se pudo registrar la flor.";
-                        }
+                        // Si se afectó al menos una fila, se considera exitoso
+                        return result > 0
+                            ? $"Flor '{flor.Nombre}' registrada exitosamente."
+                            : "Error: No se pudo registrar la flor.";
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Retorna el mensaje de error si ocurre una excepción
+                // Captura y devuelve cualquier error ocurrido
                 return $"Ocurrió un error: {ex.Message}";
             }
         }
 
-        // Obtiene la lista de todas las flores almacenadas en la base de datos
+        // Método para obtener todas las flores registradas
         public List<Flor> ObtenerTodasLasFlores()
         {
-            var flores = new List<Flor>();
+            var flores = new List<Flor>(); // Lista para almacenar los resultados
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    connection.Open(); // Abre la conexión
+
+                    // Consulta SQL para obtener todas las flores
                     string query = "SELECT Id, Nombre, FechaRegistro FROM Flores";
 
+                    // Se prepara el comando SQL
                     using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlDataReader reader = command.ExecuteReader()) // Ejecuta y obtiene un lector
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        while (reader.Read()) // Recorre cada fila del resultado
                         {
-                            while (reader.Read())
+                            // Crea una nueva instancia de Flor y la llena con los datos leídos
+                            var flor = new Flor
                             {
-                                var flor = new Flor
-                                {
-                                    Id = Convert.ToInt32(reader["Id"]),
-                                    Nombre = reader["Nombre"].ToString(),
-                                    FechaRegistro = Convert.ToDateTime(reader["FechaRegistro"])
-                                };
-                                flores.Add(flor);
-                            }
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Nombre = reader["Nombre"].ToString(),
+                                FechaRegistro = Convert.ToDateTime(reader["FechaRegistro"])
+                            };
+
+                            // Agrega la flor a la lista
+                            flores.Add(flor);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Muestra el error en la consola si ocurre una excepción
+                // Muestra el error en la consola si ocurre
                 Console.WriteLine("Error al obtener flores: " + ex.Message);
             }
-            return flores;
+
+            return flores; // Devuelve la lista de flores
         }
 
-        // Actualiza los datos de una flor existente en la base de datos
+        // Método para actualizar el nombre de una flor existente
         public void ActualizarFlor(Flor flor)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    connection.Open(); // Abre la conexión
 
-                    // Consulta SQL para actualizar el nombre de una flor
+                    // Consulta SQL para actualizar una flor según su Id
                     string query = "UPDATE Flores SET Nombre = @Nombre WHERE Id = @Id";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        // Asigna los parámetros al comando
                         command.Parameters.AddWithValue("@Nombre", flor.Nombre);
                         command.Parameters.AddWithValue("@Id", flor.Id);
 
+                        // Ejecuta la instrucción de actualización
                         command.ExecuteNonQuery();
                     }
                 }
             }
             catch (Exception ex)
             {
+                // Muestra el error en la consola
                 Console.WriteLine("Error al actualizar la flor: " + ex.Message);
             }
         }
 
-        // Elimina una flor de la base de datos utilizando su identificador
+        // Método para eliminar una flor usando su Id
         public void EliminarFlor(int idFlor)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    connection.Open(); // Abre la conexión
 
-                    // Consulta SQL para eliminar una flor por su Id
+                    // Consulta SQL para eliminar una flor por Id
                     string query = "DELETE FROM Flores WHERE Id = @Id";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        // Asigna el Id como parámetro
                         command.Parameters.AddWithValue("@Id", idFlor);
+
+                        // Ejecuta la instrucción de eliminación
                         command.ExecuteNonQuery();
                     }
                 }
             }
             catch (Exception ex)
             {
+                // Muestra el error en la consola
                 Console.WriteLine("Error al eliminar la flor: " + ex.Message);
             }
         }

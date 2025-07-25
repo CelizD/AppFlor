@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace FlorApp.DataAccess
 {
+    /// Proporciona métodos para interactuar con la base de datos para la entidad Cliente.
+    /// Esta clase maneja las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) y actualizaciones específicas.
     public class ClienteRepository
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
 
+        /// Obtiene asincrónicamente una lista de todos los clientes de la base de datos.
+        /// <returns>Una tarea que representa la operación asíncrona. El resultado de la tarea es una lista de objetos Cliente.</returns>
         public async Task<List<Cliente>> ObtenerTodosAsync()
         {
             var clientes = new List<Cliente>();
@@ -42,6 +46,9 @@ namespace FlorApp.DataAccess
             return clientes;
         }
 
+        /// Guarda asincrónicamente un nuevo cliente en la base de datos.
+        /// <param name="cliente">El objeto Cliente a guardar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
         public async Task GuardarAsync(Cliente cliente)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -64,6 +71,9 @@ namespace FlorApp.DataAccess
             }
         }
 
+        /// Actualiza asincrónicamente un cliente existente en la base de datos.
+        /// <param name="cliente">El objeto Cliente con los datos actualizados.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
         public async Task ActualizarAsync(Cliente cliente)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -95,6 +105,9 @@ namespace FlorApp.DataAccess
             }
         }
 
+        /// Elimina asincrónicamente un cliente de la base de datos por su ID.
+        /// <param name="id">El ID del cliente a eliminar.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
         public async Task EliminarAsync(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -109,13 +122,17 @@ namespace FlorApp.DataAccess
             }
         }
 
-        // --- NUEVO MÉTODO AÑADIDO ---
+        /// Actualiza asincrónicamente los puntos de lealtad y el total gastado de un cliente específico.
+        /// Suma el 'totalCompra' al 'TotalGastado' existente del cliente.
+        /// <param name="clienteId">El ID del cliente a actualizar.</param>
+        /// <param name="puntos">Los nuevos puntos de lealtad del cliente.</param>
+        /// <param name="totalCompra">El monto de la compra actual para agregar al total gastado.</param>
+        /// <returns>Una tarea que representa la operación asíncrona.</returns>
         public async Task ActualizarPuntosYTotalGastadoAsync(int clienteId, int puntos, decimal totalCompra)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                // Este comando actualiza los puntos y suma el nuevo total gastado al acumulado
                 var query = @"UPDATE Clientes 
                               SET Puntos = @Puntos, 
                                   TotalGastado = TotalGastado + @TotalCompra

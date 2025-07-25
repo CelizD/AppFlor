@@ -16,8 +16,12 @@ namespace FlorApp.Presentation
         public ConfiguracionForm()
         {
             InitializeComponent();
+
+            // Inicializar repositorios
             _usuarioRepository = new UsuarioRepository();
             _empresaRepository = new EmpresaRepository();
+
+            // Suscribirse a eventos
             this.Load += new EventHandler(ConfiguracionForm_Load);
             dgvUsuarios.CellClick += new DataGridViewCellEventHandler(dgvUsuarios_CellClick);
             btnGuardarUsuario.Click += new EventHandler(btnGuardarUsuario_Click);
@@ -35,6 +39,7 @@ namespace FlorApp.Presentation
 
         #region Pestaña Usuarios
 
+        // Carga usuarios desde la base y los muestra en el DataGridView
         private async Task CargarUsuariosAsync()
         {
             try
@@ -47,6 +52,7 @@ namespace FlorApp.Presentation
             }
         }
 
+        // Configura los items del ComboBox de roles
         private void CargarComboBoxes()
         {
             cmbRol.Items.Clear();
@@ -54,6 +60,7 @@ namespace FlorApp.Presentation
             cmbRol.Items.Add("Vendedor");
         }
 
+        // Al seleccionar un usuario en la tabla, carga sus datos en los controles para editar
         private void dgvUsuarios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -64,14 +71,18 @@ namespace FlorApp.Presentation
                     _idUsuarioSeleccionado = usuario.Id;
                     txtNombreUsuario.Text = usuario.NombreUsuario;
                     cmbRol.SelectedItem = usuario.Rol;
-                    txtContrasena.Clear(); // No mostramos la contraseña
+                    txtContrasena.Clear(); // Por seguridad, no mostrar la contraseña
                 }
             }
         }
 
+        // Guarda un usuario nuevo o actualiza uno existente
         private async void btnGuardarUsuario_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNombreUsuario.Text) || string.IsNullOrWhiteSpace(txtContrasena.Text) || cmbRol.SelectedItem == null)
+            // Validar campos obligatorios
+            if (string.IsNullOrWhiteSpace(txtNombreUsuario.Text) ||
+                string.IsNullOrWhiteSpace(txtContrasena.Text) ||
+                cmbRol.SelectedItem == null)
             {
                 CustomMessageBoxForm.Show("Todos los campos son obligatorios para crear un usuario.", "Datos Incompletos", MessageBoxIcon.Warning);
                 return;
@@ -80,7 +91,7 @@ namespace FlorApp.Presentation
             var usuario = new Usuario
             {
                 NombreUsuario = txtNombreUsuario.Text,
-                Contrasena = txtContrasena.Text, // En un proyecto real, encriptar aquí
+                Contrasena = txtContrasena.Text, // En producción, encriptar aquí
                 Rol = cmbRol.SelectedItem.ToString()
             };
 
@@ -97,6 +108,7 @@ namespace FlorApp.Presentation
             }
         }
 
+        // Elimina el usuario seleccionado
         private async void btnEliminarUsuario_Click(object sender, EventArgs e)
         {
             if (_idUsuarioSeleccionado == null)
@@ -121,6 +133,7 @@ namespace FlorApp.Presentation
             }
         }
 
+        // Limpia los campos de usuario para ingresar uno nuevo
         private void LimpiarCamposUsuario()
         {
             _idUsuarioSeleccionado = null;
@@ -134,6 +147,7 @@ namespace FlorApp.Presentation
 
         #region Pestaña Empresa
 
+        // Carga datos de la empresa y los muestra en los controles
         private async Task CargarDatosEmpresaAsync()
         {
             try
@@ -159,6 +173,7 @@ namespace FlorApp.Presentation
             }
         }
 
+        // Evento para cargar imagen de logo desde archivo
         private void btnCargarLogo_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
@@ -171,6 +186,7 @@ namespace FlorApp.Presentation
             }
         }
 
+        // Guarda datos actualizados de la empresa, incluido el logo
         private async void btnGuardarEmpresa_Click(object sender, EventArgs e)
         {
             var empresa = new Empresa
@@ -192,7 +208,7 @@ namespace FlorApp.Presentation
             }
         }
 
-        // Helper para convertir Image a byte[] para guardar en la BD
+        // Convierte una imagen a arreglo de bytes para almacenarla en base de datos
         private byte[] ImageToByteArray(Image imageIn)
         {
             if (imageIn == null) return null;

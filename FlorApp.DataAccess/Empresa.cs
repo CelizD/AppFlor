@@ -2,10 +2,19 @@
 {
     public class Empresa
     {
+        // Identificador único de la empresa
         public int Id { get; set; }
+
+        // Nombre de la empresa
         public string Nombre { get; set; }
+
+        // Dirección física de la empresa
         public string Direccion { get; set; }
+
+        // Número telefónico de contacto
         public string Telefono { get; set; }
-        public byte[] Logo { get; set; } // Cambiado de Image a byte[]
+
+        // Logo de la empresa almacenado como arreglo de bytes (ideal para bases de datos)
+        public byte[] Logo { get; set; }
     }
 }

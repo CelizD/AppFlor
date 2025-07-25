@@ -13,94 +13,99 @@ namespace FlorApp.Presentation
 {
     public partial class Form1 : Form
     {
-        // Se declara una variable para el repositorio a nivel de clase
+        // Repositorio para gestionar datos de flores
         private readonly FlorRepository _florRepository;
 
         public Form1()
         {
             InitializeComponent();
-            // Se instancia el repositorio al cargar el formulario
+
+            // Instanciar repositorio al iniciar el formulario
             _florRepository = new FlorRepository();
 
+            // Cargar flores en el DataGridView al abrir la ventana
             CargarFlores();
         }
 
+        // Evento para registrar una nueva flor
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
-            // Se valida que el campo de texto no esté vacío
+            // Validar que el nombre no esté vacío
             if (string.IsNullOrWhiteSpace(txtNombreFlor.Text))
             {
                 MessageBox.Show("Por favor, ingrese el nombre de la flor.", "Campo Vacío", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return; // Se detiene la ejecución si no hay texto
+                return; // Salir si no hay texto
             }
 
-            // Se crea un nuevo objeto Flor con los datos del TextBox
+            // Crear objeto Flor con el nombre capturado
             Flor nuevaFlor = new Flor
             {
                 Nombre = txtNombreFlor.Text
             };
 
-            // Se intenta guardar la flor usando el repositorio
             try
             {
+                // Guardar la flor usando el repositorio
                 string resultado = _florRepository.GuardarFlor(nuevaFlor);
 
-                // Se muestra el resultado al usuario
+                // Mostrar resultado al usuario
                 MessageBox.Show(resultado, "Registro de Flor", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Se limpia el campo de texto y se actualiza la tabla
+                // Limpiar el campo de texto y refrescar el DataGridView
                 txtNombreFlor.Clear();
                 CargarFlores();
             }
             catch (Exception ex)
             {
-                // En caso de error, se muestra el mensaje
+                // Mostrar error si ocurre una excepción
                 MessageBox.Show($"Ocurrió un error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
+        // Método para cargar la lista de flores y mostrarlas en el DataGridView
         private void CargarFlores()
         {
-            // Se obtiene la lista de flores desde el repositorio
+            // Obtener lista de flores desde el repositorio
             List<Flor> listaDeFlores = _florRepository.ObtenerTodasLasFlores();
 
-            // Se asigna la lista al DataGridView para mostrar los datos
+            // Asignar la lista como fuente de datos del DataGridView
             dgvFlores.DataSource = listaDeFlores;
         }
 
+        // Evento al hacer clic en una celda del DataGridView
         private void dgvFlores_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Se verifica que la celda clickeada sea válida
+            // Verificar que la fila clickeada sea válida
             if (e.RowIndex >= 0)
             {
-                // Se obtiene la fila correspondiente
+                // Obtener la fila seleccionada
                 DataGridViewRow row = dgvFlores.Rows[e.RowIndex];
 
-                // Se muestra el nombre de la flor en el TextBox
+                // Mostrar el nombre de la flor en el TextBox para edición
                 txtNombreFlor.Text = row.Cells["Nombre"].Value.ToString();
             }
         }
 
+        // Evento para editar la flor seleccionada
         private void btnEditar_Click(object sender, EventArgs e)
         {
-            // Se verifica que haya una fila seleccionada
+            // Validar que se haya seleccionado una fila
             if (dgvFlores.SelectedRows.Count > 0)
             {
-                // Se obtiene el Id de la flor seleccionada
+                // Obtener el Id de la flor seleccionada
                 int idSeleccionado = Convert.ToInt32(dgvFlores.SelectedRows[0].Cells["Id"].Value);
 
-                // Se crea un objeto Flor con los nuevos datos
+                // Crear objeto Flor con el Id y nuevo nombre
                 Flor florEditada = new Flor
                 {
                     Id = idSeleccionado,
-                    Nombre = txtNombreFlor.Text // Se toma el nuevo nombre del TextBox
+                    Nombre = txtNombreFlor.Text
                 };
 
-                // Se actualiza la flor en el repositorio
+                // Actualizar la flor en el repositorio
                 _florRepository.ActualizarFlor(florEditada);
 
-                // Se actualiza la tabla y se limpia el TextBox
+                // Refrescar tabla y limpiar campo
                 CargarFlores();
                 txtNombreFlor.Clear();
             }
@@ -110,23 +115,24 @@ namespace FlorApp.Presentation
             }
         }
 
+        // Evento para eliminar la flor seleccionada
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            // Se verifica que haya una fila seleccionada
+            // Validar que se haya seleccionado una fila
             if (dgvFlores.SelectedRows.Count > 0)
             {
-                // Se solicita confirmación al usuario
+                // Preguntar confirmación antes de eliminar
                 var confirmacion = MessageBox.Show("¿Está seguro de que desea eliminar esta flor?", "Confirmar Eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (confirmacion == DialogResult.Yes)
                 {
-                    // Se obtiene el Id de la flor seleccionada
+                    // Obtener Id de la flor seleccionada
                     int idSeleccionado = Convert.ToInt32(dgvFlores.SelectedRows[0].Cells["Id"].Value);
 
-                    // Se elimina la flor desde el repositorio
+                    // Eliminar la flor del repositorio
                     _florRepository.EliminarFlor(idSeleccionado);
 
-                    // Se actualiza la tabla y se limpia el TextBox
+                    // Actualizar tabla y limpiar TextBox
                     CargarFlores();
                     txtNombreFlor.Clear();
                 }
@@ -136,6 +142,5 @@ namespace FlorApp.Presentation
                 MessageBox.Show("Por favor, seleccione una fila para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
-
     }
 }

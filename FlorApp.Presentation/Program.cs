@@ -9,21 +9,28 @@ namespace FlorApp.Presentation
         [STAThread]
         static void Main()
         {
+            // Habilitar estilos visuales modernos para la aplicación
             Application.EnableVisualStyles();
+
+            // Establecer compatibilidad en la forma en que se renderizan los controles
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // 1. Crear y mostrar el formulario de login
+            // Crear el formulario de login
             LoginForm loginForm = new LoginForm();
+
+            // Mostrar el formulario de login de forma modal (bloquea ejecución hasta cerrarse)
             DialogResult result = loginForm.ShowDialog();
 
-            // 2. Verificar si el inicio de sesión fue exitoso
+            // Verificar si el usuario ingresó correctamente (DialogResult.OK)
             if (result == DialogResult.OK)
             {
-                // 3. Si fue exitoso, obtener el usuario y abrir el Dashboard
+                // Obtener el usuario autenticado desde el formulario de login
                 Usuario usuario = loginForm.UsuarioAutenticado;
-                Application.Run(new DashboardForm(usuario)); // Pasamos el usuario al Dashboard
+
+                // Abrir el formulario principal (Dashboard) pasando el usuario autenticado
+                Application.Run(new DashboardForm(usuario));
             }
-            // Si el resultado no es OK (el usuario cerró la ventana o canceló), la aplicación simplemente terminará.
+            // Si el usuario cierra o cancela el login, la aplicación termina automáticamente
         }
     }
 }

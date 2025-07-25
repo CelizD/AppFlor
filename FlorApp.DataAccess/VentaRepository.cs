@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -11,6 +10,7 @@ namespace FlorApp.DataAccess
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
 
+        // Guarda una venta con sus detalles y actualiza el stock de productos en una transacción
         public async Task<int> GuardarVentaAsync(Venta venta)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -20,6 +20,7 @@ namespace FlorApp.DataAccess
                 {
                     try
                     {
+                        // Inserta la venta principal y obtiene su Id generado
                         var queryVenta = @"INSERT INTO Ventas (Fecha, Cliente, Subtotal, Impuestos, Total, MetodoPago)
                                            OUTPUT INSERTED.Id
                                            VALUES (@Fecha, @Cliente, @Subtotal, @Impuestos, @Total, @MetodoPago)";
@@ -35,6 +36,7 @@ namespace FlorApp.DataAccess
                             ventaId = (int)await command.ExecuteScalarAsync();
                         }
 
+                        // Inserta cada detalle de la venta y actualiza el stock del producto correspondiente
                         foreach (var detalle in venta.Detalles)
                         {
                             var queryDetalle = @"INSERT INTO VentaDetalles (VentaId, ProductoId, NombreProducto, Cantidad, PrecioUnitario, TotalLinea)
@@ -50,6 +52,7 @@ namespace FlorApp.DataAccess
                                 await command.ExecuteNonQueryAsync();
                             }
 
+                            // Actualiza el stock restando la cantidad vendida
                             var queryStock = "UPDATE Productos SET Stock = Stock - @Cantidad WHERE Id = @ProductoId";
                             using (var command = new SqlCommand(queryStock, connection, transaction))
                             {
@@ -59,11 +62,13 @@ namespace FlorApp.DataAccess
                             }
                         }
 
+                        // Confirma la transacción
                         transaction.Commit();
                         return ventaId;
                     }
                     catch
                     {
+                        // Revierte la transacción si ocurre un error
                         transaction.Rollback();
                         throw;
                     }
@@ -71,6 +76,7 @@ namespace FlorApp.DataAccess
             }
         }
 
+        // Obtiene un reporte detallado de ventas entre dos fechas
         public async Task<List<ReporteVenta>> ObtenerReporteVentasAsync(DateTime fechaInicio, DateTime fechaFin)
         {
             var reporte = new List<ReporteVenta>();
@@ -86,7 +92,7 @@ namespace FlorApp.DataAccess
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
-                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1));
+                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1)); // Fin del día final
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
@@ -108,6 +114,7 @@ namespace FlorApp.DataAccess
             return reporte;
         }
 
+        // Obtiene la suma total de ventas realizadas hoy
         public async Task<decimal> ObtenerTotalVentasHoyAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -122,6 +129,7 @@ namespace FlorApp.DataAccess
             }
         }
 
+        // Obtiene el total de ventas por día en los últimos 7 días
         public async Task<Dictionary<string, double>> ObtenerVentasUltimos7DiasAsync()
         {
             var ventasDiarias = new Dictionary<string, double>();
