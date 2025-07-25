@@ -108,5 +108,26 @@ namespace FlorApp.DataAccess
                 }
             }
         }
+
+        // --- NUEVO MÉTODO AÑADIDO ---
+        public async Task ActualizarPuntosYTotalGastadoAsync(int clienteId, int puntos, decimal totalCompra)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                // Este comando actualiza los puntos y suma el nuevo total gastado al acumulado
+                var query = @"UPDATE Clientes 
+                              SET Puntos = @Puntos, 
+                                  TotalGastado = TotalGastado + @TotalCompra
+                              WHERE Id = @Id";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Puntos", puntos);
+                    command.Parameters.AddWithValue("@TotalCompra", totalCompra);
+                    command.Parameters.AddWithValue("@Id", clienteId);
+                    await command.ExecuteNonQueryAsync();
+                }
+            }
+        }
     }
 }

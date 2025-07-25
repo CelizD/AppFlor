@@ -20,17 +20,11 @@ namespace FlorApp.Presentation
             _usuarioActual = usuario;
             _productoRepository = new ProductoRepository();
             _ventaRepository = new VentaRepository();
-
-            // --- CORRECCIÓN ---
-            // Se elimina el evento Activated para evitar redundancia y posibles conflictos.
-            // La carga de datos se manejará de forma explícita.
         }
 
         private async void DashboardForm_Load(object sender, EventArgs e)
         {
             AplicarSeguridadPorRol();
-            // --- CORRECCIÓN ---
-            // Se añade la carga de datos inicial aquí para asegurar que siempre se muestre la información la primera vez.
             await CargarDatosDelDashboardAsync();
         }
 
@@ -77,7 +71,6 @@ namespace FlorApp.Presentation
         private async Task CargarGraficoDeVentasAsync()
         {
             var ventasSemanales = await _ventaRepository.ObtenerVentasUltimos7DiasAsync();
-
             chartVentas.Series["Ventas"].Points.Clear();
 
             for (int i = 6; i >= 0; i--)
@@ -109,11 +102,11 @@ namespace FlorApp.Presentation
 
         private async void btnNuevaVenta_Click(object sender, EventArgs e)
         {
-            using (VentasForm ventasForm = new VentasForm())
+            using (VentasForm ventasForm = new VentasForm(_usuarioActual))
             {
-                ventasForm.ShowDialog(); // Espera a que se cierre la ventana de ventas
+                ventasForm.ShowDialog();
             }
-            await CargarDatosDelDashboardAsync(); // Recarga los datos inmediatamente después
+            await CargarDatosDelDashboardAsync();
         }
 
         private async void btnPedidos_Click(object sender, EventArgs e)

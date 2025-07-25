@@ -133,6 +133,13 @@
     <Compile Include="ReportesForm.Designer.cs">
       <DependentUpon>ReportesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="VentaEnEspera.cs" />
+    <Compile Include="VentasEsperaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VentasEsperaForm.Designer.cs">
+      <DependentUpon>VentasEsperaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="VentasForm.cs">
       <SubType>Form</SubType>
     </Compile>
