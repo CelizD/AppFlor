@@ -52,7 +52,6 @@
             this.btnClientes = new System.Windows.Forms.Button();
             this.btnPedidos = new System.Windows.Forms.Button();
             this.btnNuevaVenta = new System.Windows.Forms.Button();
-            this.lblAccesosDirectos = new System.Windows.Forms.Label();
             this.pnlAlertasInventario = new System.Windows.Forms.Panel();
             this.lstAlertas = new System.Windows.Forms.ListBox();
             this.lblAlertasInventario = new System.Windows.Forms.Label();
@@ -73,9 +72,8 @@
             this.pnlHeader.Controls.Add(this.lblHeader);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
-            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(1579, 74);
+            this.pnlHeader.Size = new System.Drawing.Size(1184, 60);
             this.pnlHeader.TabIndex = 1;
             // 
             // lblHeader
@@ -83,10 +81,9 @@
             this.lblHeader.AutoSize = true;
             this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHeader.ForeColor = System.Drawing.Color.White;
-            this.lblHeader.Location = new System.Drawing.Point(16, 18);
-            this.lblHeader.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblHeader.Location = new System.Drawing.Point(12, 15);
             this.lblHeader.Name = "lblHeader";
-            this.lblHeader.Size = new System.Drawing.Size(335, 37);
+            this.lblHeader.Size = new System.Drawing.Size(264, 30);
             this.lblHeader.TabIndex = 0;
             this.lblHeader.Text = "Dashboard de Operación";
             // 
@@ -96,11 +93,10 @@
             this.pnlCards.Controls.Add(this.pnlCardProductos);
             this.pnlCards.Controls.Add(this.pnlCardAlertas);
             this.pnlCards.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlCards.Location = new System.Drawing.Point(0, 74);
-            this.pnlCards.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlCards.Location = new System.Drawing.Point(0, 60);
             this.pnlCards.Name = "pnlCards";
-            this.pnlCards.Padding = new System.Windows.Forms.Padding(27, 25, 27, 12);
-            this.pnlCards.Size = new System.Drawing.Size(1579, 160);
+            this.pnlCards.Padding = new System.Windows.Forms.Padding(20, 20, 20, 10);
+            this.pnlCards.Size = new System.Drawing.Size(1184, 130);
             this.pnlCards.TabIndex = 2;
             // 
             // pnlCardVentas
@@ -108,10 +104,9 @@
             this.pnlCardVentas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(204)))), ((int)(((byte)(113)))));
             this.pnlCardVentas.Controls.Add(this.lblVentasValor);
             this.pnlCardVentas.Controls.Add(this.lblVentasTitulo);
-            this.pnlCardVentas.Location = new System.Drawing.Point(31, 28);
-            this.pnlCardVentas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlCardVentas.Location = new System.Drawing.Point(23, 23);
             this.pnlCardVentas.Name = "pnlCardVentas";
-            this.pnlCardVentas.Size = new System.Drawing.Size(333, 111);
+            this.pnlCardVentas.Size = new System.Drawing.Size(250, 90);
             this.pnlCardVentas.TabIndex = 0;
             // 
             // lblVentasValor
@@ -119,22 +114,20 @@
             this.lblVentasValor.AutoSize = true;
             this.lblVentasValor.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVentasValor.ForeColor = System.Drawing.Color.White;
-            this.lblVentasValor.Location = new System.Drawing.Point(20, 46);
-            this.lblVentasValor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVentasValor.Location = new System.Drawing.Point(15, 37);
             this.lblVentasValor.Name = "lblVentasValor";
-            this.lblVentasValor.Size = new System.Drawing.Size(129, 46);
+            this.lblVentasValor.Size = new System.Drawing.Size(89, 37);
             this.lblVentasValor.TabIndex = 1;
-            this.lblVentasValor.Text = "$1,250";
+            this.lblVentasValor.Text = "$0.00";
             // 
             // lblVentasTitulo
             // 
             this.lblVentasTitulo.AutoSize = true;
             this.lblVentasTitulo.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVentasTitulo.ForeColor = System.Drawing.Color.White;
-            this.lblVentasTitulo.Location = new System.Drawing.Point(24, 12);
-            this.lblVentasTitulo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVentasTitulo.Location = new System.Drawing.Point(18, 10);
             this.lblVentasTitulo.Name = "lblVentasTitulo";
-            this.lblVentasTitulo.Size = new System.Drawing.Size(134, 25);
+            this.lblVentasTitulo.Size = new System.Drawing.Size(107, 20);
             this.lblVentasTitulo.TabIndex = 0;
             this.lblVentasTitulo.Text = "Ventas del Día";
             // 
@@ -143,10 +136,9 @@
             this.pnlCardProductos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
             this.pnlCardProductos.Controls.Add(this.lblProductosValor);
             this.pnlCardProductos.Controls.Add(this.lblProductosTitulo);
-            this.pnlCardProductos.Location = new System.Drawing.Point(400, 28);
-            this.pnlCardProductos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlCardProductos.Location = new System.Drawing.Point(300, 23);
             this.pnlCardProductos.Name = "pnlCardProductos";
-            this.pnlCardProductos.Size = new System.Drawing.Size(333, 111);
+            this.pnlCardProductos.Size = new System.Drawing.Size(250, 90);
             this.pnlCardProductos.TabIndex = 1;
             // 
             // lblProductosValor
@@ -154,22 +146,20 @@
             this.lblProductosValor.AutoSize = true;
             this.lblProductosValor.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProductosValor.ForeColor = System.Drawing.Color.White;
-            this.lblProductosValor.Location = new System.Drawing.Point(20, 46);
-            this.lblProductosValor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblProductosValor.Location = new System.Drawing.Point(15, 37);
             this.lblProductosValor.Name = "lblProductosValor";
-            this.lblProductosValor.Size = new System.Drawing.Size(80, 46);
+            this.lblProductosValor.Size = new System.Drawing.Size(33, 37);
             this.lblProductosValor.TabIndex = 1;
-            this.lblProductosValor.Text = "128";
+            this.lblProductosValor.Text = "0";
             // 
             // lblProductosTitulo
             // 
             this.lblProductosTitulo.AutoSize = true;
             this.lblProductosTitulo.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblProductosTitulo.ForeColor = System.Drawing.Color.White;
-            this.lblProductosTitulo.Location = new System.Drawing.Point(24, 12);
-            this.lblProductosTitulo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblProductosTitulo.Location = new System.Drawing.Point(18, 10);
             this.lblProductosTitulo.Name = "lblProductosTitulo";
-            this.lblProductosTitulo.Size = new System.Drawing.Size(166, 25);
+            this.lblProductosTitulo.Size = new System.Drawing.Size(129, 20);
             this.lblProductosTitulo.TabIndex = 0;
             this.lblProductosTitulo.Text = "Productos Activos";
             // 
@@ -178,10 +168,9 @@
             this.pnlCardAlertas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.pnlCardAlertas.Controls.Add(this.lblAlertasValor);
             this.pnlCardAlertas.Controls.Add(this.lblAlertasTitulo);
-            this.pnlCardAlertas.Location = new System.Drawing.Point(769, 28);
-            this.pnlCardAlertas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlCardAlertas.Location = new System.Drawing.Point(577, 23);
             this.pnlCardAlertas.Name = "pnlCardAlertas";
-            this.pnlCardAlertas.Size = new System.Drawing.Size(333, 111);
+            this.pnlCardAlertas.Size = new System.Drawing.Size(250, 90);
             this.pnlCardAlertas.TabIndex = 2;
             // 
             // lblAlertasValor
@@ -189,28 +178,26 @@
             this.lblAlertasValor.AutoSize = true;
             this.lblAlertasValor.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAlertasValor.ForeColor = System.Drawing.Color.White;
-            this.lblAlertasValor.Location = new System.Drawing.Point(20, 46);
-            this.lblAlertasValor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAlertasValor.Location = new System.Drawing.Point(15, 37);
             this.lblAlertasValor.Name = "lblAlertasValor";
-            this.lblAlertasValor.Size = new System.Drawing.Size(40, 46);
+            this.lblAlertasValor.Size = new System.Drawing.Size(33, 37);
             this.lblAlertasValor.TabIndex = 1;
-            this.lblAlertasValor.Text = "5";
+            this.lblAlertasValor.Text = "0";
             // 
             // lblAlertasTitulo
             // 
             this.lblAlertasTitulo.AutoSize = true;
             this.lblAlertasTitulo.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAlertasTitulo.ForeColor = System.Drawing.Color.White;
-            this.lblAlertasTitulo.Location = new System.Drawing.Point(24, 12);
-            this.lblAlertasTitulo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAlertasTitulo.Location = new System.Drawing.Point(18, 10);
             this.lblAlertasTitulo.Name = "lblAlertasTitulo";
-            this.lblAlertasTitulo.Size = new System.Drawing.Size(191, 25);
+            this.lblAlertasTitulo.Size = new System.Drawing.Size(149, 20);
             this.lblAlertasTitulo.TabIndex = 0;
             this.lblAlertasTitulo.Text = "Productos Bajo Stock";
             // 
             // pnlAccesosDirectos
             // 
-            this.pnlAccesosDirectos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.pnlAccesosDirectos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pnlAccesosDirectos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
             this.pnlAccesosDirectos.Controls.Add(this.btnConfiguracion);
@@ -221,11 +208,9 @@
             this.pnlAccesosDirectos.Controls.Add(this.btnClientes);
             this.pnlAccesosDirectos.Controls.Add(this.btnPedidos);
             this.pnlAccesosDirectos.Controls.Add(this.btnNuevaVenta);
-            this.pnlAccesosDirectos.Controls.Add(this.lblAccesosDirectos);
-            this.pnlAccesosDirectos.Location = new System.Drawing.Point(31, 255);
-            this.pnlAccesosDirectos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlAccesosDirectos.Location = new System.Drawing.Point(23, 207);
             this.pnlAccesosDirectos.Name = "pnlAccesosDirectos";
-            this.pnlAccesosDirectos.Size = new System.Drawing.Size(333, 667);
+            this.pnlAccesosDirectos.Size = new System.Drawing.Size(250, 542);
             this.pnlAccesosDirectos.TabIndex = 3;
             // 
             // btnConfiguracion
@@ -235,10 +220,9 @@
             this.btnConfiguracion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConfiguracion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnConfiguracion.ForeColor = System.Drawing.Color.White;
-            this.btnConfiguracion.Location = new System.Drawing.Point(29, 591);
-            this.btnConfiguracion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnConfiguracion.Location = new System.Drawing.Point(22, 440);
             this.btnConfiguracion.Name = "btnConfiguracion";
-            this.btnConfiguracion.Size = new System.Drawing.Size(275, 62);
+            this.btnConfiguracion.Size = new System.Drawing.Size(206, 50);
             this.btnConfiguracion.TabIndex = 8;
             this.btnConfiguracion.Text = "Configuración";
             this.btnConfiguracion.UseVisualStyleBackColor = false;
@@ -251,10 +235,9 @@
             this.btnReportes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReportes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnReportes.ForeColor = System.Drawing.Color.White;
-            this.btnReportes.Location = new System.Drawing.Point(29, 517);
-            this.btnReportes.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnReportes.Location = new System.Drawing.Point(22, 380);
             this.btnReportes.Name = "btnReportes";
-            this.btnReportes.Size = new System.Drawing.Size(275, 62);
+            this.btnReportes.Size = new System.Drawing.Size(206, 50);
             this.btnReportes.TabIndex = 7;
             this.btnReportes.Text = "Reportes";
             this.btnReportes.UseVisualStyleBackColor = false;
@@ -267,10 +250,9 @@
             this.btnInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnInventario.ForeColor = System.Drawing.Color.White;
-            this.btnInventario.Location = new System.Drawing.Point(29, 443);
-            this.btnInventario.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnInventario.Location = new System.Drawing.Point(22, 320);
             this.btnInventario.Name = "btnInventario";
-            this.btnInventario.Size = new System.Drawing.Size(275, 62);
+            this.btnInventario.Size = new System.Drawing.Size(206, 50);
             this.btnInventario.TabIndex = 6;
             this.btnInventario.Text = "Inventario";
             this.btnInventario.UseVisualStyleBackColor = false;
@@ -283,10 +265,9 @@
             this.btnProveedores.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProveedores.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnProveedores.ForeColor = System.Drawing.Color.White;
-            this.btnProveedores.Location = new System.Drawing.Point(29, 369);
-            this.btnProveedores.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnProveedores.Location = new System.Drawing.Point(22, 260);
             this.btnProveedores.Name = "btnProveedores";
-            this.btnProveedores.Size = new System.Drawing.Size(275, 62);
+            this.btnProveedores.Size = new System.Drawing.Size(206, 50);
             this.btnProveedores.TabIndex = 5;
             this.btnProveedores.Text = "Proveedores";
             this.btnProveedores.UseVisualStyleBackColor = false;
@@ -299,10 +280,9 @@
             this.btnProductos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProductos.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnProductos.ForeColor = System.Drawing.Color.White;
-            this.btnProductos.Location = new System.Drawing.Point(29, 295);
-            this.btnProductos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnProductos.Location = new System.Drawing.Point(22, 200);
             this.btnProductos.Name = "btnProductos";
-            this.btnProductos.Size = new System.Drawing.Size(275, 62);
+            this.btnProductos.Size = new System.Drawing.Size(206, 50);
             this.btnProductos.TabIndex = 4;
             this.btnProductos.Text = "Productos";
             this.btnProductos.UseVisualStyleBackColor = false;
@@ -315,10 +295,9 @@
             this.btnClientes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClientes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnClientes.ForeColor = System.Drawing.Color.White;
-            this.btnClientes.Location = new System.Drawing.Point(29, 222);
-            this.btnClientes.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnClientes.Location = new System.Drawing.Point(22, 140);
             this.btnClientes.Name = "btnClientes";
-            this.btnClientes.Size = new System.Drawing.Size(275, 62);
+            this.btnClientes.Size = new System.Drawing.Size(206, 50);
             this.btnClientes.TabIndex = 3;
             this.btnClientes.Text = "Clientes";
             this.btnClientes.UseVisualStyleBackColor = false;
@@ -331,10 +310,9 @@
             this.btnPedidos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPedidos.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnPedidos.ForeColor = System.Drawing.Color.White;
-            this.btnPedidos.Location = new System.Drawing.Point(29, 148);
-            this.btnPedidos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPedidos.Location = new System.Drawing.Point(22, 80);
             this.btnPedidos.Name = "btnPedidos";
-            this.btnPedidos.Size = new System.Drawing.Size(275, 62);
+            this.btnPedidos.Size = new System.Drawing.Size(206, 50);
             this.btnPedidos.TabIndex = 2;
             this.btnPedidos.Text = "Pedidos";
             this.btnPedidos.UseVisualStyleBackColor = false;
@@ -345,57 +323,42 @@
             this.btnNuevaVenta.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(156)))), ((int)(((byte)(18)))));
             this.btnNuevaVenta.FlatAppearance.BorderSize = 0;
             this.btnNuevaVenta.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNuevaVenta.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNuevaVenta.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnNuevaVenta.ForeColor = System.Drawing.Color.White;
-            this.btnNuevaVenta.Location = new System.Drawing.Point(29, 74);
-            this.btnNuevaVenta.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnNuevaVenta.Location = new System.Drawing.Point(22, 20);
             this.btnNuevaVenta.Name = "btnNuevaVenta";
-            this.btnNuevaVenta.Size = new System.Drawing.Size(275, 62);
+            this.btnNuevaVenta.Size = new System.Drawing.Size(206, 50);
             this.btnNuevaVenta.TabIndex = 1;
             this.btnNuevaVenta.Text = "Nueva Venta";
             this.btnNuevaVenta.UseVisualStyleBackColor = false;
             this.btnNuevaVenta.Click += new System.EventHandler(this.btnNuevaVenta_Click);
             // 
-            // lblAccesosDirectos
-            // 
-            this.lblAccesosDirectos.AutoSize = true;
-            this.lblAccesosDirectos.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAccesosDirectos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.lblAccesosDirectos.Location = new System.Drawing.Point(24, 25);
-            this.lblAccesosDirectos.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblAccesosDirectos.Name = "lblAccesosDirectos";
-            this.lblAccesosDirectos.Size = new System.Drawing.Size(172, 28);
-            this.lblAccesosDirectos.TabIndex = 0;
-            this.lblAccesosDirectos.Text = "Accesos Directos";
-            // 
             // pnlAlertasInventario
             // 
-            this.pnlAlertasInventario.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.pnlAlertasInventario.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
             this.pnlAlertasInventario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
             this.pnlAlertasInventario.Controls.Add(this.lstAlertas);
             this.pnlAlertasInventario.Controls.Add(this.lblAlertasInventario);
-            this.pnlAlertasInventario.Location = new System.Drawing.Point(400, 601);
-            this.pnlAlertasInventario.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlAlertasInventario.Location = new System.Drawing.Point(300, 488);
             this.pnlAlertasInventario.Name = "pnlAlertasInventario";
-            this.pnlAlertasInventario.Size = new System.Drawing.Size(1144, 321);
+            this.pnlAlertasInventario.Size = new System.Drawing.Size(858, 261);
             this.pnlAlertasInventario.TabIndex = 4;
             // 
             // lstAlertas
             // 
-            this.lstAlertas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lstAlertas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstAlertas.BackColor = System.Drawing.Color.White;
             this.lstAlertas.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstAlertas.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstAlertas.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.lstAlertas.FormattingEnabled = true;
-            this.lstAlertas.ItemHeight = 21;
-            this.lstAlertas.Location = new System.Drawing.Point(29, 63);
-            this.lstAlertas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lstAlertas.ItemHeight = 17;
+            this.lstAlertas.Location = new System.Drawing.Point(22, 51);
             this.lstAlertas.Name = "lstAlertas";
-            this.lstAlertas.Size = new System.Drawing.Size(1085, 210);
+            this.lstAlertas.Size = new System.Drawing.Size(814, 187);
             this.lstAlertas.TabIndex = 1;
             // 
             // lblAlertasInventario
@@ -403,17 +366,16 @@
             this.lblAlertasInventario.AutoSize = true;
             this.lblAlertasInventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAlertasInventario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.lblAlertasInventario.Location = new System.Drawing.Point(24, 25);
-            this.lblAlertasInventario.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAlertasInventario.Location = new System.Drawing.Point(18, 20);
             this.lblAlertasInventario.Name = "lblAlertasInventario";
-            this.lblAlertasInventario.Size = new System.Drawing.Size(212, 28);
+            this.lblAlertasInventario.Size = new System.Drawing.Size(170, 21);
             this.lblAlertasInventario.TabIndex = 0;
             this.lblAlertasInventario.Text = "Alertas de Inventario";
             // 
             // chartVentas
             // 
-            this.chartVentas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.chartVentas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartVentas.BorderlineColor = System.Drawing.Color.Gainsboro;
             this.chartVentas.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
@@ -421,30 +383,28 @@
             this.chartVentas.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chartVentas.Legends.Add(legend1);
-            this.chartVentas.Location = new System.Drawing.Point(400, 255);
-            this.chartVentas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chartVentas.Location = new System.Drawing.Point(300, 207);
             this.chartVentas.Name = "chartVentas";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Ventas";
             this.chartVentas.Series.Add(series1);
-            this.chartVentas.Size = new System.Drawing.Size(1144, 325);
+            this.chartVentas.Size = new System.Drawing.Size(858, 264);
             this.chartVentas.TabIndex = 5;
             this.chartVentas.Text = "chart1";
             // 
             // DashboardForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1579, 937);
+            this.ClientSize = new System.Drawing.Size(1184, 761);
             this.Controls.Add(this.chartVentas);
             this.Controls.Add(this.pnlAlertasInventario);
             this.Controls.Add(this.pnlAccesosDirectos);
             this.Controls.Add(this.pnlCards);
             this.Controls.Add(this.pnlHeader);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.MinimumSize = new System.Drawing.Size(1594, 974);
+            this.MinimumSize = new System.Drawing.Size(1200, 800);
             this.Name = "DashboardForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FlorApp - Dashboard";
@@ -459,7 +419,6 @@
             this.pnlCardAlertas.ResumeLayout(false);
             this.pnlCardAlertas.PerformLayout();
             this.pnlAccesosDirectos.ResumeLayout(false);
-            this.pnlAccesosDirectos.PerformLayout();
             this.pnlAlertasInventario.ResumeLayout(false);
             this.pnlAlertasInventario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartVentas)).EndInit();
@@ -482,7 +441,6 @@
         private System.Windows.Forms.Label lblAlertasValor;
         private System.Windows.Forms.Label lblAlertasTitulo;
         private System.Windows.Forms.Panel pnlAccesosDirectos;
-        private System.Windows.Forms.Label lblAccesosDirectos;
         private System.Windows.Forms.Button btnNuevaVenta;
         private System.Windows.Forms.Button btnProveedores;
         private System.Windows.Forms.Button btnProductos;
@@ -495,5 +453,6 @@
         private System.Windows.Forms.Button btnConfiguracion;
         private System.Windows.Forms.Button btnClientes;
         private System.Windows.Forms.Button btnPedidos;
+        private System.Windows.Forms.PictureBox picLogo;
     }
 }

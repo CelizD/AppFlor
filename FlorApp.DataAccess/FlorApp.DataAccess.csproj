@@ -50,6 +50,8 @@
     <Compile Include="EmpresaRepository.cs" />
     <Compile Include="Flor.cs" />
     <Compile Include="FlorRepository.cs" />
+    <Compile Include="KitComponente.cs" />
+    <Compile Include="KitRepository.cs" />
     <Compile Include="MovimientoInventario.cs" />
     <Compile Include="MovimientoInventarioRepository.cs" />
     <Compile Include="Pedido.cs" />

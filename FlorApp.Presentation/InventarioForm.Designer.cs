@@ -2,8 +2,15 @@
 {
     partial class InventarioForm
     {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -15,6 +22,10 @@
 
         #region Windows Form Designer generated code
 
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
         private void InitializeComponent()
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
@@ -34,6 +45,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.cmbProductoSalida = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.tabAjusteFisico = new System.Windows.Forms.TabPage();
+            this.btnAplicarAjuste = new System.Windows.Forms.Button();
+            this.dgvAjusteStock = new System.Windows.Forms.DataGridView();
             this.tabHistorial = new System.Windows.Forms.TabPage();
             this.dgvHistorial = new System.Windows.Forms.DataGridView();
             this.pnlHeader.SuspendLayout();
@@ -42,13 +56,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.numCantidadEntrada)).BeginInit();
             this.tabSalidas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numCantidadSalida)).BeginInit();
+            this.tabAjusteFisico.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAjusteStock)).BeginInit();
             this.tabHistorial.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorial)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlHeader
             // 
-            this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(68)))), ((int)(((byte)(173)))));
+            this.pnlHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(160)))), ((int)(((byte)(133)))));
             this.pnlHeader.Controls.Add(this.lblHeader);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
@@ -71,6 +87,7 @@
             // 
             this.tabControlInventario.Controls.Add(this.tabEntradas);
             this.tabControlInventario.Controls.Add(this.tabSalidas);
+            this.tabControlInventario.Controls.Add(this.tabAjusteFisico);
             this.tabControlInventario.Controls.Add(this.tabHistorial);
             this.tabControlInventario.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlInventario.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -234,6 +251,47 @@
             this.label4.TabIndex = 5;
             this.label4.Text = "Producto:";
             // 
+            // tabAjusteFisico
+            // 
+            this.tabAjusteFisico.Controls.Add(this.btnAplicarAjuste);
+            this.tabAjusteFisico.Controls.Add(this.dgvAjusteStock);
+            this.tabAjusteFisico.Location = new System.Drawing.Point(4, 26);
+            this.tabAjusteFisico.Name = "tabAjusteFisico";
+            this.tabAjusteFisico.Size = new System.Drawing.Size(776, 471);
+            this.tabAjusteFisico.TabIndex = 3;
+            this.tabAjusteFisico.Text = "Ajuste por Conteo Físico";
+            this.tabAjusteFisico.UseVisualStyleBackColor = true;
+            // 
+            // btnAplicarAjuste
+            // 
+            this.btnAplicarAjuste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAplicarAjuste.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.btnAplicarAjuste.FlatAppearance.BorderSize = 0;
+            this.btnAplicarAjuste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAplicarAjuste.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnAplicarAjuste.ForeColor = System.Drawing.Color.White;
+            this.btnAplicarAjuste.Location = new System.Drawing.Point(568, 418);
+            this.btnAplicarAjuste.Name = "btnAplicarAjuste";
+            this.btnAplicarAjuste.Size = new System.Drawing.Size(200, 45);
+            this.btnAplicarAjuste.TabIndex = 1;
+            this.btnAplicarAjuste.Text = "Aplicar Ajustes";
+            this.btnAplicarAjuste.UseVisualStyleBackColor = false;
+            // 
+            // dgvAjusteStock
+            // 
+            this.dgvAjusteStock.AllowUserToAddRows = false;
+            this.dgvAjusteStock.AllowUserToDeleteRows = false;
+            this.dgvAjusteStock.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvAjusteStock.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvAjusteStock.BackgroundColor = System.Drawing.Color.White;
+            this.dgvAjusteStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAjusteStock.Location = new System.Drawing.Point(8, 8);
+            this.dgvAjusteStock.Name = "dgvAjusteStock";
+            this.dgvAjusteStock.Size = new System.Drawing.Size(760, 400);
+            this.dgvAjusteStock.TabIndex = 0;
+            // 
             // tabHistorial
             // 
             this.tabHistorial.Controls.Add(this.dgvHistorial);
@@ -278,10 +336,11 @@
             this.tabSalidas.ResumeLayout(false);
             this.tabSalidas.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numCantidadSalida)).EndInit();
+            this.tabAjusteFisico.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAjusteStock)).EndInit();
             this.tabHistorial.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvHistorial)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion
@@ -305,5 +364,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox cmbProductoSalida;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TabPage tabAjusteFisico;
+        private System.Windows.Forms.DataGridView dgvAjusteStock;
+        private System.Windows.Forms.Button btnAplicarAjuste;
     }
 }

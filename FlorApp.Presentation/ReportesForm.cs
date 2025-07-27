@@ -7,75 +7,79 @@ namespace FlorApp.Presentation
 {
     public partial class ReportesForm : Form
     {
-        // Repositorio para acceder a los datos de ventas
         private readonly VentaRepository _ventaRepository;
 
         public ReportesForm()
         {
             InitializeComponent();
-
-            // Inicializar el repositorio de ventas
             _ventaRepository = new VentaRepository();
-
-            // Registrar eventos para la carga del formulario y el botón de generar reporte
             this.Load += new EventHandler(ReportesForm_Load);
-            btnGenerarReporteVentas.Click += new EventHandler(btnGenerarReporteVentas_Click);
+            // --- CORRECCIÓN APLICADA AQUÍ ---
+            // El nombre del botón se ha corregido para que coincida con el del archivo de diseño.
+            btnGenerarReporteVentas.Click += new EventHandler(btnGenerarReporte_Click);
         }
 
-        // Evento que se ejecuta al cargar el formulario
         private void ReportesForm_Load(object sender, EventArgs e)
         {
-            // Establecer fechas predeterminadas para el reporte (último mes)
+            // Establecer fechas predeterminadas (ej. el último mes)
             dtpFechaInicio.Value = DateTime.Now.AddMonths(-1);
             dtpFechaFin.Value = DateTime.Now;
-
-            // Generar el reporte inicial automáticamente al cargar el formulario
-            btnGenerarReporteVentas_Click(sender, e);
+            // Generar el reporte inicial al cargar el formulario
+            btnGenerarReporte_Click(sender, e);
         }
 
-        // Evento que se ejecuta al hacer clic en el botón para generar el reporte de ventas
-        private async void btnGenerarReporteVentas_Click(object sender, EventArgs e)
+        private async void btnGenerarReporte_Click(object sender, EventArgs e)
         {
             try
             {
-                // Obtener las fechas seleccionadas por el usuario
                 DateTime fechaInicio = dtpFechaInicio.Value.Date;
                 DateTime fechaFin = dtpFechaFin.Value.Date;
 
-                // Consultar el repositorio para obtener los datos de ventas entre las fechas seleccionadas (async)
-                var reporteVentas = await _ventaRepository.ObtenerReporteVentasAsync(fechaInicio, fechaFin);
+                // Validar que la fecha de inicio no sea mayor que la fecha de fin
+                if (fechaInicio > fechaFin)
+                {
+                    CustomMessageBoxForm.Show("La fecha de inicio no puede ser posterior a la fecha de fin.", "Rango de Fechas Inválido", MessageBoxIcon.Warning);
+                    return;
+                }
 
-                // Asignar los datos de ventas al DataGridView correspondiente
+                // Cargar el reporte de ventas desde la base de datos con el rango de fechas
+                var reporteVentas = await _ventaRepository.ObtenerReporteVentasAsync(fechaInicio, fechaFin);
                 dgvReporteVentas.DataSource = reporteVentas;
 
-                // Agrupar las ventas por producto para calcular los más vendidos
-                var masVendidos = reporteVentas
-                    .GroupBy(r => r.Producto)
-                    .Select(g => new ProductoMasVendido
-                    {
-                        NombreProducto = g.Key,
-                        UnidadesVendidas = g.Sum(i => i.Cantidad),
-                        IngresosGenerados = g.Sum(i => i.Total)
-                    })
-                    .OrderByDescending(p => p.IngresosGenerados) // Ordenar por ingresos descendentes
-                    .ToList();
+                // Calcular y mostrar los productos más vendidos basados en el reporte filtrado
+                if (reporteVentas.Any())
+                {
+                    var masVendidos = reporteVentas
+                        .GroupBy(r => r.Producto)
+                        .Select(g => new ProductoMasVendido
+                        {
+                            NombreProducto = g.Key,
+                            UnidadesVendidas = g.Sum(i => i.Cantidad),
+                            IngresosGenerados = g.Sum(i => i.Total)
+                        })
+                        .OrderByDescending(p => p.IngresosGenerados)
+                        .ToList();
+                    dgvMasVendidos.DataSource = masVendidos;
 
-                // Asignar la lista de productos más vendidos a su DataGridView
-                dgvMasVendidos.DataSource = masVendidos;
+                    // Calcular y mostrar las ganancias basadas en el reporte filtrado
+                    decimal totalVendido = reporteVentas.Sum(v => v.Total);
+                    // En un caso real, necesitaríamos el PrecioCosto de cada producto para un cálculo exacto.
+                    // Por ahora, simulamos un margen de ganancia del 40%.
+                    decimal gananciaEstimada = totalVendido * 0.40m;
 
-                // Calcular el total vendido sumando los totales de todas las ventas del reporte
-                decimal totalVendido = reporteVentas.Sum(v => v.Total);
-
-                // Calcular la ganancia estimada (aquí se usa una simulación del 40% del total vendido)
-                decimal gananciaEstimada = totalVendido * 0.40m;
-
-                // Mostrar el total vendido y la ganancia estimada en las etiquetas correspondientes, con formato de moneda
-                lblTotalVendido.Text = totalVendido.ToString("C");
-                lblGananciaNeta.Text = gananciaEstimada.ToString("C");
+                    lblTotalVendido.Text = totalVendido.ToString("C");
+                    lblGananciaNeta.Text = gananciaEstimada.ToString("C");
+                }
+                else
+                {
+                    // Si no hay ventas, limpiar las tablas y los totales
+                    dgvMasVendidos.DataSource = null;
+                    lblTotalVendido.Text = "$0.00";
+                    lblGananciaNeta.Text = "$0.00";
+                }
             }
             catch (Exception ex)
             {
-                // Mostrar un mensaje de error en caso de falla al generar el reporte
                 CustomMessageBoxForm.Show($"Error al generar los reportes: {ex.Message}", "Error", MessageBoxIcon.Error);
             }
         }

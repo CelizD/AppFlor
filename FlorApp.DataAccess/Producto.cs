@@ -3,46 +3,48 @@ using System.Drawing;
 
 namespace FlorApp.DataAccess
 {
-    // Representa un producto registrado en el sistema de inventario
     public class Producto
     {
-        // Identificador único del producto
+        // ID único del producto
         public int Id { get; set; }
 
-        // Código de barras asociado al producto
+        // Código de barras (para escáner)
         public string CodigoBarras { get; set; }
 
         // Nombre del producto
         public string Nombre { get; set; }
 
-        // Descripción detallada del producto (contenido, presentación, etc.)
+        // Descripción del producto
         public string Descripcion { get; set; }
 
-        // Categoría a la que pertenece el producto (ej. "Flores", "Accesorios", etc.)
+        // Categoría (ej. Flores, Peluches, etc.)
         public string Categoria { get; set; }
 
-        // Nombre del proveedor que suministra este producto
+        // Nombre del proveedor
         public string Proveedor { get; set; }
 
-        // Precio al que se compró el producto (precio de costo)
+        // Precio de compra para la florería
         public decimal PrecioCosto { get; set; }
 
-        // Precio al que se venderá el producto (precio final)
+        // Precio de venta al público
         public decimal PrecioVenta { get; set; }
 
-        // Existencias actuales del producto en inventario
+        // Cantidad disponible en inventario
         public int Stock { get; set; }
 
-        // Cantidad mínima de stock permitida antes de generar alertas o reabastecimiento
+        // Stock mínimo antes de generar alerta
         public int StockMinimo { get; set; }
 
-        // Límite máximo de unidades permitidas en inventario
+        // Stock máximo recomendado
         public int StockMaximo { get; set; }
 
-        // Imagen del producto (usada para visualización en el sistema)
+        // Indica si es un kit (conjunto de productos)
+        public bool EsKit { get; set; }
+
+        // Imagen del producto
         public Image Foto { get; set; }
 
-        // Fecha en la que se registró el producto en el sistema
+        // Fecha de registro del producto
         public DateTime FechaRegistro { get; set; }
     }
 }

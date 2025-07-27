@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -10,7 +11,6 @@ namespace FlorApp.DataAccess
     {
         private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
 
-        // Guarda una venta con sus detalles y actualiza el stock de productos en una transacción
         public async Task<int> GuardarVentaAsync(Venta venta)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -20,7 +20,7 @@ namespace FlorApp.DataAccess
                 {
                     try
                     {
-                        // Inserta la venta principal y obtiene su Id generado
+                        // 1. Insertar en la tabla Ventas y obtener el ID
                         var queryVenta = @"INSERT INTO Ventas (Fecha, Cliente, Subtotal, Impuestos, Total, MetodoPago)
                                            OUTPUT INSERTED.Id
                                            VALUES (@Fecha, @Cliente, @Subtotal, @Impuestos, @Total, @MetodoPago)";
@@ -36,9 +36,10 @@ namespace FlorApp.DataAccess
                             ventaId = (int)await command.ExecuteScalarAsync();
                         }
 
-                        // Inserta cada detalle de la venta y actualiza el stock del producto correspondiente
+                        // 2. Insertar cada detalle y actualizar stock
                         foreach (var detalle in venta.Detalles)
                         {
+                            // 2.1 Insertar en VentaDetalles
                             var queryDetalle = @"INSERT INTO VentaDetalles (VentaId, ProductoId, NombreProducto, Cantidad, PrecioUnitario, TotalLinea)
                                                  VALUES (@VentaId, @ProductoId, @NombreProducto, @Cantidad, @PrecioUnitario, @TotalLinea)";
                             using (var command = new SqlCommand(queryDetalle, connection, transaction))
@@ -52,23 +53,67 @@ namespace FlorApp.DataAccess
                                 await command.ExecuteNonQueryAsync();
                             }
 
-                            // Actualiza el stock restando la cantidad vendida
-                            var queryStock = "UPDATE Productos SET Stock = Stock - @Cantidad WHERE Id = @ProductoId";
-                            using (var command = new SqlCommand(queryStock, connection, transaction))
+                            // 2.2 Verificar si el producto es un Kit
+                            bool esKit = false;
+                            var checkKitQuery = "SELECT EsKit FROM Productos WHERE Id = @ProductoId";
+                            using (var cmdCheck = new SqlCommand(checkKitQuery, connection, transaction))
                             {
-                                command.Parameters.AddWithValue("@Cantidad", detalle.Cantidad);
-                                command.Parameters.AddWithValue("@ProductoId", detalle.ProductoId);
-                                await command.ExecuteNonQueryAsync();
+                                cmdCheck.Parameters.AddWithValue("@ProductoId", detalle.ProductoId);
+                                var result = await cmdCheck.ExecuteScalarAsync();
+                                if (result != null) esKit = (bool)result;
+                            }
+
+                            if (esKit)
+                            {
+                                // 2.3 Si es un Kit, descontar el stock de sus componentes
+                                var getComponentsQuery = "SELECT ComponenteProductoId, Cantidad FROM KitComponentes WHERE KitProductoId = @KitProductoId";
+                                using (var cmdComp = new SqlCommand(getComponentsQuery, connection, transaction))
+                                {
+                                    cmdComp.Parameters.AddWithValue("@KitProductoId", detalle.ProductoId);
+                                    using (var reader = await cmdComp.ExecuteReaderAsync())
+                                    {
+                                        var componentes = new List<Tuple<int, int>>();
+                                        while (await reader.ReadAsync())
+                                        {
+                                            componentes.Add(new Tuple<int, int>(reader.GetInt32(0), reader.GetInt32(1)));
+                                        }
+                                        reader.Close(); // Cerrar el reader antes de ejecutar más comandos
+
+                                        foreach (var componente in componentes)
+                                        {
+                                            int componenteId = componente.Item1;
+                                            int cantidadNecesaria = componente.Item2;
+                                            int cantidadTotalADescontar = cantidadNecesaria * detalle.Cantidad;
+
+                                            var updateStockQuery = "UPDATE Productos SET Stock = Stock - @Cantidad WHERE Id = @ComponenteId";
+                                            using (var cmdUpdate = new SqlCommand(updateStockQuery, connection, transaction))
+                                            {
+                                                cmdUpdate.Parameters.AddWithValue("@Cantidad", cantidadTotalADescontar);
+                                                cmdUpdate.Parameters.AddWithValue("@ComponenteId", componenteId);
+                                                await cmdUpdate.ExecuteNonQueryAsync();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // 2.4 Si no es un Kit, descontar el stock del producto normal
+                                var queryStock = "UPDATE Productos SET Stock = Stock - @Cantidad WHERE Id = @ProductoId";
+                                using (var command = new SqlCommand(queryStock, connection, transaction))
+                                {
+                                    command.Parameters.AddWithValue("@Cantidad", detalle.Cantidad);
+                                    command.Parameters.AddWithValue("@ProductoId", detalle.ProductoId);
+                                    await command.ExecuteNonQueryAsync();
+                                }
                             }
                         }
 
-                        // Confirma la transacción
                         transaction.Commit();
                         return ventaId;
                     }
                     catch
                     {
-                        // Revierte la transacción si ocurre un error
                         transaction.Rollback();
                         throw;
                     }
@@ -76,7 +121,6 @@ namespace FlorApp.DataAccess
             }
         }
 
-        // Obtiene un reporte detallado de ventas entre dos fechas
         public async Task<List<ReporteVenta>> ObtenerReporteVentasAsync(DateTime fechaInicio, DateTime fechaFin)
         {
             var reporte = new List<ReporteVenta>();
@@ -92,7 +136,7 @@ namespace FlorApp.DataAccess
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
-                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1)); // Fin del día final
+                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1));
                     using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
@@ -114,7 +158,6 @@ namespace FlorApp.DataAccess
             return reporte;
         }
 
-        // Obtiene la suma total de ventas realizadas hoy
         public async Task<decimal> ObtenerTotalVentasHoyAsync()
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -129,7 +172,6 @@ namespace FlorApp.DataAccess
             }
         }
 
-        // Obtiene el total de ventas por día en los últimos 7 días
         public async Task<Dictionary<string, double>> ObtenerVentasUltimos7DiasAsync()
         {
             var ventasDiarias = new Dictionary<string, double>();
@@ -139,7 +181,7 @@ namespace FlorApp.DataAccess
                 var query = @"
                     SELECT 
                         CONVERT(date, Fecha) AS Dia, 
-                        SUM(Total) AS TotalVentas
+                        SUM(Total) AS TotalVentas 
                     FROM Ventas
                     WHERE Fecha >= DATEADD(day, -7, GETDATE())
                     GROUP BY CONVERT(date, Fecha)
