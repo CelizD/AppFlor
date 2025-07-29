@@ -65,6 +65,12 @@
     <Compile Include="CobrarForm.Designer.cs">
       <DependentUpon>CobrarForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ComprasForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComprasForm.Designer.cs">
+      <DependentUpon>ComprasForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConfiguracionForm.cs">
       <SubType>Form</SubType>
     </Compile>

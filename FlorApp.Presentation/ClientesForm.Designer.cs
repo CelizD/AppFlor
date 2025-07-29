@@ -33,13 +33,16 @@
             this.lblHeader = new System.Windows.Forms.Label();
             this.pnlGrid = new System.Windows.Forms.Panel();
             this.dgvClientes = new System.Windows.Forms.DataGridView();
+            this.pnlFiltros = new System.Windows.Forms.Panel();
+            this.btnExportar = new System.Windows.Forms.Button();
+            this.cmbFiltroMembresia = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.pnlDetalles = new System.Windows.Forms.Panel();
             this.numPuntos = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.numTotalGastado = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cmbTipoMembresia = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.cmbTipoMembresia = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.dtpFechaEspecial = new System.Windows.Forms.DateTimePicker();
             this.txtDireccion = new System.Windows.Forms.TextBox();
@@ -57,6 +60,7 @@
             this.pnlHeader.SuspendLayout();
             this.pnlGrid.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).BeginInit();
+            this.pnlFiltros.SuspendLayout();
             this.pnlDetalles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPuntos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numTotalGastado)).BeginInit();
@@ -87,6 +91,7 @@
             // pnlGrid
             // 
             this.pnlGrid.Controls.Add(this.dgvClientes);
+            this.pnlGrid.Controls.Add(this.pnlFiltros);
             this.pnlGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlGrid.Location = new System.Drawing.Point(350, 60);
             this.pnlGrid.Name = "pnlGrid";
@@ -112,13 +117,59 @@
             this.dgvClientes.ColumnHeadersHeight = 30;
             this.dgvClientes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvClientes.EnableHeadersVisualStyles = false;
-            this.dgvClientes.Location = new System.Drawing.Point(10, 10);
+            this.dgvClientes.Location = new System.Drawing.Point(10, 60);
             this.dgvClientes.Name = "dgvClientes";
             this.dgvClientes.ReadOnly = true;
             this.dgvClientes.RowTemplate.Height = 28;
             this.dgvClientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvClientes.Size = new System.Drawing.Size(814, 481);
+            this.dgvClientes.Size = new System.Drawing.Size(814, 431);
             this.dgvClientes.TabIndex = 1;
+            // 
+            // pnlFiltros
+            // 
+            this.pnlFiltros.Controls.Add(this.btnExportar);
+            this.pnlFiltros.Controls.Add(this.cmbFiltroMembresia);
+            this.pnlFiltros.Controls.Add(this.label7);
+            this.pnlFiltros.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlFiltros.Location = new System.Drawing.Point(10, 10);
+            this.pnlFiltros.Name = "pnlFiltros";
+            this.pnlFiltros.Size = new System.Drawing.Size(814, 50);
+            this.pnlFiltros.TabIndex = 2;
+            // 
+            // btnExportar
+            // 
+            this.btnExportar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExportar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(160)))), ((int)(((byte)(133)))));
+            this.btnExportar.FlatAppearance.BorderSize = 0;
+            this.btnExportar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExportar.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.btnExportar.ForeColor = System.Drawing.Color.White;
+            this.btnExportar.Location = new System.Drawing.Point(650, 10);
+            this.btnExportar.Name = "btnExportar";
+            this.btnExportar.Size = new System.Drawing.Size(150, 30);
+            this.btnExportar.TabIndex = 2;
+            this.btnExportar.Text = "Exportar a Excel";
+            this.btnExportar.UseVisualStyleBackColor = false;
+            // 
+            // cmbFiltroMembresia
+            // 
+            this.cmbFiltroMembresia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFiltroMembresia.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cmbFiltroMembresia.FormattingEnabled = true;
+            this.cmbFiltroMembresia.Location = new System.Drawing.Point(150, 10);
+            this.cmbFiltroMembresia.Name = "cmbFiltroMembresia";
+            this.cmbFiltroMembresia.Size = new System.Drawing.Size(250, 29);
+            this.cmbFiltroMembresia.TabIndex = 1;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold);
+            this.label7.Location = new System.Drawing.Point(10, 14);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(134, 21);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Filtrar por Nivel:";
             // 
             // pnlDetalles
             // 
@@ -126,9 +177,8 @@
             this.pnlDetalles.Controls.Add(this.numPuntos);
             this.pnlDetalles.Controls.Add(this.label8);
             this.pnlDetalles.Controls.Add(this.numTotalGastado);
-            this.pnlDetalles.Controls.Add(this.label7);
-            this.pnlDetalles.Controls.Add(this.cmbTipoMembresia);
             this.pnlDetalles.Controls.Add(this.label6);
+            this.pnlDetalles.Controls.Add(this.cmbTipoMembresia);
             this.pnlDetalles.Controls.Add(this.label5);
             this.pnlDetalles.Controls.Add(this.dtpFechaEspecial);
             this.pnlDetalles.Controls.Add(this.txtDireccion);
@@ -150,11 +200,7 @@
             // 
             this.numPuntos.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.numPuntos.Location = new System.Drawing.Point(183, 470);
-            this.numPuntos.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
+            this.numPuntos.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             this.numPuntos.Name = "numPuntos";
             this.numPuntos.Size = new System.Drawing.Size(140, 25);
             this.numPuntos.TabIndex = 18;
@@ -174,24 +220,20 @@
             this.numTotalGastado.DecimalPlaces = 2;
             this.numTotalGastado.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.numTotalGastado.Location = new System.Drawing.Point(17, 470);
-            this.numTotalGastado.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
+            this.numTotalGastado.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             this.numTotalGastado.Name = "numTotalGastado";
             this.numTotalGastado.Size = new System.Drawing.Size(140, 25);
             this.numTotalGastado.TabIndex = 16;
             // 
-            // label7
+            // label6
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label7.Location = new System.Drawing.Point(14, 450);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(95, 17);
-            this.label7.TabIndex = 15;
-            this.label7.Text = "Total Gastado:";
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label6.Location = new System.Drawing.Point(14, 450);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(95, 17);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Total Gastado:";
             // 
             // cmbTipoMembresia
             // 
@@ -203,25 +245,15 @@
             this.cmbTipoMembresia.Size = new System.Drawing.Size(306, 25);
             this.cmbTipoMembresia.TabIndex = 14;
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(14, 390);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(128, 17);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "Tipo de Membresía:";
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label5.Location = new System.Drawing.Point(14, 330);
+            this.label5.Location = new System.Drawing.Point(14, 390);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(188, 17);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "Fecha Especial (Cumpleaños):";
+            this.label5.Size = new System.Drawing.Size(128, 17);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Tipo de Membresía:";
             // 
             // dtpFechaEspecial
             // 
@@ -373,6 +405,8 @@
             this.pnlHeader.PerformLayout();
             this.pnlGrid.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientes)).EndInit();
+            this.pnlFiltros.ResumeLayout(false);
+            this.pnlFiltros.PerformLayout();
             this.pnlDetalles.ResumeLayout(false);
             this.pnlDetalles.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPuntos)).EndInit();
@@ -409,5 +443,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown numPuntos;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Panel pnlFiltros;
+        private System.Windows.Forms.Button btnExportar;
+        private System.Windows.Forms.ComboBox cmbFiltroMembresia;
     }
 }

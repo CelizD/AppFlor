@@ -1,20 +1,33 @@
 ﻿namespace FlorApp.DataAccess
 {
+    /// <summary>
+    /// Representa la relación entre un producto "Kit" y uno de sus productos "Componente".
+    /// </summary>
     public class KitComponente
     {
-        // ID único del componente en la tabla
+        /// <summary>
+        /// Identificador único de la relación en la base de datos.
+        /// </summary>
         public int Id { get; set; }
 
-        // ID del producto que representa el kit principal
+        /// <summary>
+        /// El ID del producto que actúa como el Kit o paquete.
+        /// </summary>
         public int KitProductoId { get; set; }
 
-        // ID del producto que actúa como componente del kit
+        /// <summary>
+        /// El ID del producto que forma parte del kit.
+        /// </summary>
         public int ComponenteProductoId { get; set; }
 
-        // Nombre del componente (para mostrar en la interfaz)
+        /// <summary>
+        /// El nombre del producto componente (usado para mostrar en tablas).
+        /// </summary>
         public string NombreComponente { get; set; }
 
-        // Cantidad de este componente dentro del kit
+        /// <summary>
+        /// La cantidad de unidades de este componente que se necesitan para armar un kit.
+        /// </summary>
         public int Cantidad { get; set; }
     }
 }

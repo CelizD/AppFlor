@@ -13,6 +13,18 @@ namespace FlorApp.Presentation
         private readonly Usuario _usuarioActual;
         private readonly ProductoRepository _productoRepository;
         private readonly VentaRepository _ventaRepository;
+        private readonly ClienteRepository _clienteRepository;
+
+        // Instancias privadas para cada formulario para evitar abrir múltiples veces
+        private VentasForm _ventasForm;
+        private PedidosForm _pedidosForm;
+        private ClientesForm _clientesForm;
+        private ProductosForm _productosForm;
+        private ProveedoresForm _proveedoresForm;
+        private InventarioForm _inventarioForm;
+        private ComprasForm _comprasForm;
+        private ReportesForm _reportesForm;
+        private ConfiguracionForm _configuracionForm;
 
         public DashboardForm(Usuario usuario)
         {
@@ -20,12 +32,28 @@ namespace FlorApp.Presentation
             _usuarioActual = usuario;
             _productoRepository = new ProductoRepository();
             _ventaRepository = new VentaRepository();
+            _clienteRepository = new ClienteRepository();
+            this.Activated += new EventHandler(DashboardForm_Activated);
+
+            // Asignar manejadores de eventos para los botones
+            btnNuevaVenta.Click += new EventHandler(btnNuevaVenta_Click);
+            btnPedidos.Click += new EventHandler(btnPedidos_Click);
+            btnClientes.Click += new EventHandler(btnClientes_Click);
+            btnProductos.Click += new EventHandler(btnProductos_Click);
+            btnProveedores.Click += new EventHandler(btnProveedores_Click);
+            btnInventario.Click += new EventHandler(btnInventario_Click);
+            btnReportes.Click += new EventHandler(btnReportes_Click);
+            btnConfiguracion.Click += new EventHandler(btnConfiguracion_Click);
+            btnCompras.Click += new EventHandler(btnCompras_Click);
         }
 
-        private async void DashboardForm_Load(object sender, EventArgs e)
+        private void DashboardForm_Load(object sender, EventArgs e)
         {
             AplicarSeguridadPorRol();
-            // Cargar los datos iniciales cuando el formulario se muestra por primera vez
+        }
+
+        private async void DashboardForm_Activated(object sender, EventArgs e)
+        {
             await CargarDatosDelDashboardAsync();
         }
 
@@ -33,11 +61,11 @@ namespace FlorApp.Presentation
         {
             try
             {
-                // Ejecutar todas las tareas de carga de datos en paralelo para mayor eficiencia
                 await Task.WhenAll(
                     CargarDatosDeTarjetasAsync(),
                     CargarAlertasDeInventarioAsync(),
-                    CargarGraficoDeVentasAsync()
+                    CargarGraficoDeVentasAsync(),
+                    CargarEventosClientesAsync()
                 );
             }
             catch (Exception ex)
@@ -48,15 +76,12 @@ namespace FlorApp.Presentation
 
         private async Task CargarDatosDeTarjetasAsync()
         {
-            // Obtener los datos desde la base de datos usando los repositorios
             var totalVentasHoy = _ventaRepository.ObtenerTotalVentasHoyAsync();
             var totalProductos = _productoRepository.ContarTodosAsync();
             var productosBajoStock = _productoRepository.ObtenerProductosBajoStockAsync();
 
-            // Esperar a que todas las tareas terminen
             await Task.WhenAll(totalVentasHoy, totalProductos, productosBajoStock);
 
-            // Actualizar las tarjetas con los resultados
             lblVentasValor.Text = totalVentasHoy.Result.ToString("C");
             lblProductosValor.Text = totalProductos.Result.ToString();
             lblAlertasValor.Text = productosBajoStock.Result.Count.ToString();
@@ -65,8 +90,7 @@ namespace FlorApp.Presentation
         private async Task CargarAlertasDeInventarioAsync()
         {
             var alertas = await _productoRepository.ObtenerProductosBajoStockAsync();
-            
-            // Formatear la lista de alertas para mostrarla de forma amigable
+
             var alertasFormateadas = alertas
                 .Select(p => $"{p.Nombre} (Quedan: {p.Stock} / Mínimo: {p.StockMinimo})")
                 .ToList();
@@ -79,7 +103,6 @@ namespace FlorApp.Presentation
             var ventasSemanales = await _ventaRepository.ObtenerVentasUltimos7DiasAsync();
             chartVentas.Series["Ventas"].Points.Clear();
 
-            // Llenar el gráfico con los datos de los últimos 7 días
             for (int i = 6; i >= 0; i--)
             {
                 DateTime dia = DateTime.Now.Date.AddDays(-i);
@@ -89,79 +112,114 @@ namespace FlorApp.Presentation
             }
         }
 
+        private async Task CargarEventosClientesAsync()
+        {
+            try
+            {
+                var eventos = await _clienteRepository.ObtenerConFechasEspecialesProximasAsync(7);
+
+                List<string> eventosFormateadas = eventos
+                    .Select(c => $"{c.Nombre} - {c.FechaEspecial.Value:dd 'de' MMMM}")
+                    .ToList();
+
+                lstEventosClientes.DataSource = eventosFormateadas;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar eventos de clientes: {ex.Message}");
+            }
+        }
+
         private void AplicarSeguridadPorRol()
         {
             this.Text = $"FlorApp - Dashboard (Usuario: {_usuarioActual.NombreUsuario} - Rol: {_usuarioActual.Rol})";
 
-            // Si el usuario NO es Administrador, desactivamos los botones sensibles
             if (_usuarioActual.Rol != "Administrador")
             {
                 btnProveedores.Enabled = false;
                 btnReportes.Enabled = false;
                 btnConfiguracion.Enabled = false;
-                
+                btnCompras.Enabled = false;
+
                 btnProveedores.BackColor = Color.Gray;
                 btnReportes.BackColor = Color.Gray;
                 btnConfiguracion.BackColor = Color.Gray;
+                btnCompras.BackColor = Color.Gray;
             }
         }
 
         #region Manejadores de Eventos para Navegación
 
-        private async void btnNuevaVenta_Click(object sender, EventArgs e)
+        // Método auxiliar para gestionar la apertura de formularios como instancia única
+        // Ahora devuelve la instancia del formulario en lugar de usar 'ref'
+        private Form AbrirOReutilizarFormulario(Form formInstance, Type formType, params object[] constructorArgs)
         {
-            VentasForm ventasForm = new VentasForm(_usuarioActual);
-            ventasForm.ShowDialog(); // Espera a que se cierre la ventana
-            await CargarDatosDelDashboardAsync(); // Recarga los datos inmediatamente después
+            if (formInstance == null || formInstance.IsDisposed)
+            {
+                // Crear una nueva instancia del formulario usando Activator para pasar argumentos
+                formInstance = (Form)Activator.CreateInstance(formType, constructorArgs);
+                formInstance.Show(); // Mostrar de forma no modal
+            }
+            else
+            {
+                formInstance.BringToFront(); // Traer al frente si ya está abierto
+            }
+            return formInstance; // Devolver la instancia
         }
 
-        private async void btnPedidos_Click(object sender, EventArgs e)
+        private void btnNuevaVenta_Click(object sender, EventArgs e)
         {
-            PedidosForm pedidosForm = new PedidosForm();
-            pedidosForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _ventasForm = (VentasForm)AbrirOReutilizarFormulario(_ventasForm, typeof(VentasForm), _usuarioActual);
+            // Suscribirse al evento FormClosed para limpiar la referencia cuando se cierre
+            _ventasForm.FormClosed += (s, args) => _ventasForm = null;
         }
 
-        private async void btnClientes_Click(object sender, EventArgs e)
+        private void btnPedidos_Click(object sender, EventArgs e)
         {
-            ClientesForm clientesForm = new ClientesForm();
-            clientesForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _pedidosForm = (PedidosForm)AbrirOReutilizarFormulario(_pedidosForm, typeof(PedidosForm));
+            _pedidosForm.FormClosed += (s, args) => _pedidosForm = null;
         }
 
-        private async void btnProductos_Click(object sender, EventArgs e)
+        private void btnClientes_Click(object sender, EventArgs e)
         {
-            ProductosForm productosForm = new ProductosForm();
-            productosForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _clientesForm = (ClientesForm)AbrirOReutilizarFormulario(_clientesForm, typeof(ClientesForm));
+            _clientesForm.FormClosed += (s, args) => _clientesForm = null;
         }
 
-        private async void btnProveedores_Click(object sender, EventArgs e)
+        private void btnProductos_Click(object sender, EventArgs e)
         {
-            ProveedoresForm proveedoresForm = new ProveedoresForm();
-            proveedoresForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _productosForm = (ProductosForm)AbrirOReutilizarFormulario(_productosForm, typeof(ProductosForm));
+            _productosForm.FormClosed += (s, args) => _productosForm = null;
         }
 
-        private async void btnInventario_Click(object sender, EventArgs e)
+        private void btnProveedores_Click(object sender, EventArgs e)
         {
-            InventarioForm inventarioForm = new InventarioForm();
-            inventarioForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _proveedoresForm = (ProveedoresForm)AbrirOReutilizarFormulario(_proveedoresForm, typeof(ProveedoresForm));
+            _proveedoresForm.FormClosed += (s, args) => _proveedoresForm = null;
         }
 
-        private async void btnReportes_Click(object sender, EventArgs e)
+        private void btnInventario_Click(object sender, EventArgs e)
         {
-            ReportesForm reportesForm = new ReportesForm();
-            reportesForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _inventarioForm = (InventarioForm)AbrirOReutilizarFormulario(_inventarioForm, typeof(InventarioForm));
+            _inventarioForm.FormClosed += (s, args) => _inventarioForm = null;
         }
 
-        private async void btnConfiguracion_Click(object sender, EventArgs e)
+        private void btnCompras_Click(object sender, EventArgs e)
         {
-            ConfiguracionForm configForm = new ConfiguracionForm();
-            configForm.ShowDialog();
-            await CargarDatosDelDashboardAsync();
+            _comprasForm = (ComprasForm)AbrirOReutilizarFormulario(_comprasForm, typeof(ComprasForm));
+            _comprasForm.FormClosed += (s, args) => _comprasForm = null;
+        }
+
+        private void btnReportes_Click(object sender, EventArgs e)
+        {
+            _reportesForm = (ReportesForm)AbrirOReutilizarFormulario(_reportesForm, typeof(ReportesForm));
+            _reportesForm.FormClosed += (s, args) => _reportesForm = null;
+        }
+
+        private void btnConfiguracion_Click(object sender, EventArgs e)
+        {
+            _configuracionForm = (ConfiguracionForm)AbrirOReutilizarFormulario(_configuracionForm, typeof(ConfiguracionForm));
+            _configuracionForm.FormClosed += (s, args) => _configuracionForm = null;
         }
         #endregion
     }

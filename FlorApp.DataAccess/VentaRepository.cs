@@ -20,10 +20,9 @@ namespace FlorApp.DataAccess
                 {
                     try
                     {
-                        // 1. Insertar en la tabla Ventas y obtener el ID
-                        var queryVenta = @"INSERT INTO Ventas (Fecha, Cliente, Subtotal, Impuestos, Total, MetodoPago)
+                        var queryVenta = @"INSERT INTO Ventas (Fecha, Cliente, Subtotal, Impuestos, Total, MetodoPago, Vendedor)
                                            OUTPUT INSERTED.Id
-                                           VALUES (@Fecha, @Cliente, @Subtotal, @Impuestos, @Total, @MetodoPago)";
+                                           VALUES (@Fecha, @Cliente, @Subtotal, @Impuestos, @Total, @MetodoPago, @Vendedor)";
                         int ventaId;
                         using (var command = new SqlCommand(queryVenta, connection, transaction))
                         {
@@ -33,13 +32,12 @@ namespace FlorApp.DataAccess
                             command.Parameters.AddWithValue("@Impuestos", venta.Impuestos);
                             command.Parameters.AddWithValue("@Total", venta.Total);
                             command.Parameters.AddWithValue("@MetodoPago", (object)venta.MetodoPago ?? DBNull.Value);
+                            command.Parameters.AddWithValue("@Vendedor", (object)venta.Vendedor ?? DBNull.Value);
                             ventaId = (int)await command.ExecuteScalarAsync();
                         }
 
-                        // 2. Insertar cada detalle y actualizar stock
                         foreach (var detalle in venta.Detalles)
                         {
-                            // 2.1 Insertar en VentaDetalles
                             var queryDetalle = @"INSERT INTO VentaDetalles (VentaId, ProductoId, NombreProducto, Cantidad, PrecioUnitario, TotalLinea)
                                                  VALUES (@VentaId, @ProductoId, @NombreProducto, @Cantidad, @PrecioUnitario, @TotalLinea)";
                             using (var command = new SqlCommand(queryDetalle, connection, transaction))
@@ -53,7 +51,6 @@ namespace FlorApp.DataAccess
                                 await command.ExecuteNonQueryAsync();
                             }
 
-                            // 2.2 Verificar si el producto es un Kit
                             bool esKit = false;
                             var checkKitQuery = "SELECT EsKit FROM Productos WHERE Id = @ProductoId";
                             using (var cmdCheck = new SqlCommand(checkKitQuery, connection, transaction))
@@ -65,7 +62,6 @@ namespace FlorApp.DataAccess
 
                             if (esKit)
                             {
-                                // 2.3 Si es un Kit, descontar el stock de sus componentes
                                 var getComponentsQuery = "SELECT ComponenteProductoId, Cantidad FROM KitComponentes WHERE KitProductoId = @KitProductoId";
                                 using (var cmdComp = new SqlCommand(getComponentsQuery, connection, transaction))
                                 {
@@ -77,7 +73,7 @@ namespace FlorApp.DataAccess
                                         {
                                             componentes.Add(new Tuple<int, int>(reader.GetInt32(0), reader.GetInt32(1)));
                                         }
-                                        reader.Close(); // Cerrar el reader antes de ejecutar más comandos
+                                        reader.Close();
 
                                         foreach (var componente in componentes)
                                         {
@@ -98,7 +94,6 @@ namespace FlorApp.DataAccess
                             }
                             else
                             {
-                                // 2.4 Si no es un Kit, descontar el stock del producto normal
                                 var queryStock = "UPDATE Productos SET Stock = Stock - @Cantidad WHERE Id = @ProductoId";
                                 using (var command = new SqlCommand(queryStock, connection, transaction))
                                 {
@@ -181,7 +176,7 @@ namespace FlorApp.DataAccess
                 var query = @"
                     SELECT 
                         CONVERT(date, Fecha) AS Dia, 
-                        SUM(Total) AS TotalVentas 
+                        SUM(Total) AS TotalVentas
                     FROM Ventas
                     WHERE Fecha >= DATEADD(day, -7, GETDATE())
                     GROUP BY CONVERT(date, Fecha)
@@ -200,6 +195,157 @@ namespace FlorApp.DataAccess
                 }
             }
             return ventasDiarias;
+        }
+
+        public async Task<List<ReporteRentabilidad>> ObtenerReporteRentabilidadAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var reporte = new List<ReporteRentabilidad>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+                    SELECT 
+                        vd.NombreProducto,
+                        SUM(vd.Cantidad) AS UnidadesVendidas,
+                        SUM(vd.TotalLinea) AS IngresosTotales,
+                        SUM(vd.Cantidad * p.PrecioCosto) AS CostoTotal
+                    FROM Ventas v
+                    JOIN VentaDetalles vd ON v.Id = vd.VentaId
+                    JOIN Productos p ON vd.ProductoId = p.Id
+                    WHERE v.Fecha BETWEEN @FechaInicio AND @FechaFin
+                    GROUP BY vd.NombreProducto
+                    ORDER BY IngresosTotales DESC";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1));
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var item = new ReporteRentabilidad
+                            {
+                                NombreProducto = reader.GetString(0),
+                                UnidadesVendidas = reader.GetInt32(1),
+                                IngresosTotales = reader.GetDecimal(2),
+                                CostoTotal = reader.GetDecimal(3)
+                            };
+                            item.GananciaNeta = item.IngresosTotales - item.CostoTotal;
+                            reporte.Add(item);
+                        }
+                    }
+                }
+            }
+            return reporte;
+        }
+
+        public async Task<List<ReporteVentasPorEmpleado>> ObtenerReporteVentasPorEmpleadoAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var reporte = new List<ReporteVentasPorEmpleado>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+                    SELECT 
+                        Vendedor,
+                        COUNT(Id) AS CantidadVentas,
+                        SUM(Total) AS TotalVendido
+                    FROM Ventas
+                    WHERE Fecha BETWEEN @FechaInicio AND @FechaFin AND Vendedor IS NOT NULL
+                    GROUP BY Vendedor
+                    ORDER BY TotalVendido DESC";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1));
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            reporte.Add(new ReporteVentasPorEmpleado
+                            {
+                                Vendedor = reader.GetString(0),
+                                CantidadVentas = reader.GetInt32(1),
+                                TotalVendido = reader.GetDecimal(2)
+                            });
+                        }
+                    }
+                }
+            }
+            return reporte;
+        }
+
+        public async Task<List<VentasPorDia>> ObtenerVentasPorDiaSemanaAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var reporte = new List<VentasPorDia>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+                    SET LANGUAGE Spanish;
+                    SELECT 
+                        DATENAME(weekday, Fecha) AS DiaDeLaSemana,
+                        SUM(Total) AS TotalVendido
+                    FROM Ventas
+                    WHERE Fecha BETWEEN @FechaInicio AND @FechaFin
+                    GROUP BY DATENAME(weekday, Fecha), DATEPART(weekday, Fecha)
+                    ORDER BY DATEPART(weekday, Fecha)";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1));
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            reporte.Add(new VentasPorDia
+                            {
+                                DiaDeLaSemana = reader.GetString(0),
+                                TotalVendido = reader.GetDecimal(1)
+                            });
+                        }
+                    }
+                }
+            }
+            return reporte;
+        }
+
+        public async Task<List<VentasPorHora>> ObtenerVentasPorHoraAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var reporte = new List<VentasPorHora>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = @"
+                    SELECT 
+                        DATEPART(hour, Fecha) AS Hora,
+                        SUM(Total) AS TotalVendido
+                    FROM Ventas
+                    WHERE Fecha BETWEEN @FechaInicio AND @FechaFin
+                    GROUP BY DATEPART(hour, Fecha)
+                    ORDER BY Hora";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                    command.Parameters.AddWithValue("@FechaFin", fechaFin.AddDays(1).AddTicks(-1));
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            reporte.Add(new VentasPorHora
+                            {
+                                Hora = reader.GetInt32(0),
+                                TotalVendido = reader.GetDecimal(1)
+                            });
+                        }
+                    }
+                }
+            }
+            return reporte;
         }
     }
 }

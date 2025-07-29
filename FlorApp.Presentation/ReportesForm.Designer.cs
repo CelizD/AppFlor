@@ -28,19 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblHeader = new System.Windows.Forms.Label();
             this.tabControlReportes = new System.Windows.Forms.TabControl();
             this.tabVentas = new System.Windows.Forms.TabPage();
             this.dgvReporteVentas = new System.Windows.Forms.DataGridView();
             this.pnlFiltrosVentas = new System.Windows.Forms.Panel();
-            this.btnGenerarReporteVentas = new System.Windows.Forms.Button();
+            this.btnGenerarReporte = new System.Windows.Forms.Button();
             this.dtpFechaFin = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
             this.dtpFechaInicio = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
             this.tabMasVendidos = new System.Windows.Forms.TabPage();
             this.dgvMasVendidos = new System.Windows.Forms.DataGridView();
+            this.tabRentabilidad = new System.Windows.Forms.TabPage();
+            this.dgvRentabilidad = new System.Windows.Forms.DataGridView();
+            this.tabVentasPorEmpleado = new System.Windows.Forms.TabPage();
+            this.dgvVentasPorEmpleado = new System.Windows.Forms.DataGridView();
+            this.tabAnalisisTiempo = new System.Windows.Forms.TabPage();
+            this.chartVentasPorHora = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartVentasPorDia = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabGanancias = new System.Windows.Forms.TabPage();
             this.lblGananciaNeta = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -53,6 +68,13 @@
             this.pnlFiltrosVentas.SuspendLayout();
             this.tabMasVendidos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMasVendidos)).BeginInit();
+            this.tabRentabilidad.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRentabilidad)).BeginInit();
+            this.tabVentasPorEmpleado.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVentasPorEmpleado)).BeginInit();
+            this.tabAnalisisTiempo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartVentasPorHora)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartVentasPorDia)).BeginInit();
             this.tabGanancias.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,6 +103,9 @@
             // 
             this.tabControlReportes.Controls.Add(this.tabVentas);
             this.tabControlReportes.Controls.Add(this.tabMasVendidos);
+            this.tabControlReportes.Controls.Add(this.tabRentabilidad);
+            this.tabControlReportes.Controls.Add(this.tabVentasPorEmpleado);
+            this.tabControlReportes.Controls.Add(this.tabAnalisisTiempo);
             this.tabControlReportes.Controls.Add(this.tabGanancias);
             this.tabControlReportes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlReportes.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
@@ -118,7 +143,7 @@
             // 
             // pnlFiltrosVentas
             // 
-            this.pnlFiltrosVentas.Controls.Add(this.btnGenerarReporteVentas);
+            this.pnlFiltrosVentas.Controls.Add(this.btnGenerarReporte);
             this.pnlFiltrosVentas.Controls.Add(this.dtpFechaFin);
             this.pnlFiltrosVentas.Controls.Add(this.label2);
             this.pnlFiltrosVentas.Controls.Add(this.dtpFechaInicio);
@@ -129,18 +154,18 @@
             this.pnlFiltrosVentas.Size = new System.Drawing.Size(970, 60);
             this.pnlFiltrosVentas.TabIndex = 0;
             // 
-            // btnGenerarReporteVentas
+            // btnGenerarReporte
             // 
-            this.btnGenerarReporteVentas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
-            this.btnGenerarReporteVentas.FlatAppearance.BorderSize = 0;
-            this.btnGenerarReporteVentas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnGenerarReporteVentas.ForeColor = System.Drawing.Color.White;
-            this.btnGenerarReporteVentas.Location = new System.Drawing.Point(470, 15);
-            this.btnGenerarReporteVentas.Name = "btnGenerarReporteVentas";
-            this.btnGenerarReporteVentas.Size = new System.Drawing.Size(150, 30);
-            this.btnGenerarReporteVentas.TabIndex = 4;
-            this.btnGenerarReporteVentas.Text = "Generar Reporte";
-            this.btnGenerarReporteVentas.UseVisualStyleBackColor = false;
+            this.btnGenerarReporte.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.btnGenerarReporte.FlatAppearance.BorderSize = 0;
+            this.btnGenerarReporte.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGenerarReporte.ForeColor = System.Drawing.Color.White;
+            this.btnGenerarReporte.Location = new System.Drawing.Point(470, 15);
+            this.btnGenerarReporte.Name = "btnGenerarReporte";
+            this.btnGenerarReporte.Size = new System.Drawing.Size(150, 30);
+            this.btnGenerarReporte.TabIndex = 4;
+            this.btnGenerarReporte.Text = "Generar Reporte";
+            this.btnGenerarReporte.UseVisualStyleBackColor = false;
             // 
             // dtpFechaFin
             // 
@@ -201,6 +226,105 @@
             this.dgvMasVendidos.Size = new System.Drawing.Size(970, 465);
             this.dgvMasVendidos.TabIndex = 0;
             // 
+            // tabRentabilidad
+            // 
+            this.tabRentabilidad.Controls.Add(this.dgvRentabilidad);
+            this.tabRentabilidad.Location = new System.Drawing.Point(4, 26);
+            this.tabRentabilidad.Name = "tabRentabilidad";
+            this.tabRentabilidad.Size = new System.Drawing.Size(976, 471);
+            this.tabRentabilidad.TabIndex = 3;
+            this.tabRentabilidad.Text = "Reporte de Rentabilidad";
+            this.tabRentabilidad.UseVisualStyleBackColor = true;
+            // 
+            // dgvRentabilidad
+            // 
+            this.dgvRentabilidad.AllowUserToAddRows = false;
+            this.dgvRentabilidad.AllowUserToDeleteRows = false;
+            this.dgvRentabilidad.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvRentabilidad.BackgroundColor = System.Drawing.Color.White;
+            this.dgvRentabilidad.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRentabilidad.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvRentabilidad.Location = new System.Drawing.Point(0, 0);
+            this.dgvRentabilidad.Name = "dgvRentabilidad";
+            this.dgvRentabilidad.ReadOnly = true;
+            this.dgvRentabilidad.Size = new System.Drawing.Size(976, 471);
+            this.dgvRentabilidad.TabIndex = 0;
+            // 
+            // tabVentasPorEmpleado
+            // 
+            this.tabVentasPorEmpleado.Controls.Add(this.dgvVentasPorEmpleado);
+            this.tabVentasPorEmpleado.Location = new System.Drawing.Point(4, 26);
+            this.tabVentasPorEmpleado.Name = "tabVentasPorEmpleado";
+            this.tabVentasPorEmpleado.Size = new System.Drawing.Size(976, 471);
+            this.tabVentasPorEmpleado.TabIndex = 4;
+            this.tabVentasPorEmpleado.Text = "Ventas por Empleado";
+            this.tabVentasPorEmpleado.UseVisualStyleBackColor = true;
+            // 
+            // dgvVentasPorEmpleado
+            // 
+            this.dgvVentasPorEmpleado.AllowUserToAddRows = false;
+            this.dgvVentasPorEmpleado.AllowUserToDeleteRows = false;
+            this.dgvVentasPorEmpleado.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvVentasPorEmpleado.BackgroundColor = System.Drawing.Color.White;
+            this.dgvVentasPorEmpleado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVentasPorEmpleado.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvVentasPorEmpleado.Location = new System.Drawing.Point(0, 0);
+            this.dgvVentasPorEmpleado.Name = "dgvVentasPorEmpleado";
+            this.dgvVentasPorEmpleado.ReadOnly = true;
+            this.dgvVentasPorEmpleado.Size = new System.Drawing.Size(976, 471);
+            this.dgvVentasPorEmpleado.TabIndex = 0;
+            // 
+            // tabAnalisisTiempo
+            // 
+            this.tabAnalisisTiempo.Controls.Add(this.chartVentasPorHora);
+            this.tabAnalisisTiempo.Controls.Add(this.chartVentasPorDia);
+            this.tabAnalisisTiempo.Location = new System.Drawing.Point(4, 26);
+            this.tabAnalisisTiempo.Name = "tabAnalisisTiempo";
+            this.tabAnalisisTiempo.Size = new System.Drawing.Size(976, 471);
+            this.tabAnalisisTiempo.TabIndex = 5;
+            this.tabAnalisisTiempo.Text = "Análisis de Horas Pico";
+            this.tabAnalisisTiempo.UseVisualStyleBackColor = true;
+            // 
+            // chartVentasPorHora
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chartVentasPorHora.ChartAreas.Add(chartArea1);
+            this.chartVentasPorHora.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend1.Name = "Legend1";
+            this.chartVentasPorHora.Legends.Add(legend1);
+            this.chartVentasPorHora.Location = new System.Drawing.Point(488, 0);
+            this.chartVentasPorHora.Name = "chartVentasPorHora";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chartVentasPorHora.Series.Add(series1);
+            this.chartVentasPorHora.Size = new System.Drawing.Size(488, 471);
+            this.chartVentasPorHora.TabIndex = 1;
+            title1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            title1.Name = "Title1";
+            title1.Text = "Ventas por Hora del Día";
+            this.chartVentasPorHora.Titles.Add(title1);
+            // 
+            // chartVentasPorDia
+            // 
+            chartArea2.Name = "ChartArea1";
+            this.chartVentasPorDia.ChartAreas.Add(chartArea2);
+            this.chartVentasPorDia.Dock = System.Windows.Forms.DockStyle.Left;
+            legend2.Name = "Legend1";
+            this.chartVentasPorDia.Legends.Add(legend2);
+            this.chartVentasPorDia.Location = new System.Drawing.Point(0, 0);
+            this.chartVentasPorDia.Name = "chartVentasPorDia";
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chartVentasPorDia.Series.Add(series2);
+            this.chartVentasPorDia.Size = new System.Drawing.Size(488, 471);
+            this.chartVentasPorDia.TabIndex = 0;
+            title2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            title2.Name = "Title1";
+            title2.Text = "Ventas por Día de la Semana";
+            this.chartVentasPorDia.Titles.Add(title2);
+            // 
             // tabGanancias
             // 
             this.tabGanancias.Controls.Add(this.lblGananciaNeta);
@@ -212,7 +336,7 @@
             this.tabGanancias.Name = "tabGanancias";
             this.tabGanancias.Size = new System.Drawing.Size(976, 471);
             this.tabGanancias.TabIndex = 2;
-            this.tabGanancias.Text = "Reporte de Ganancias";
+            this.tabGanancias.Text = "Resumen de Ganancias";
             this.tabGanancias.UseVisualStyleBackColor = true;
             // 
             // lblGananciaNeta
@@ -274,6 +398,13 @@
             this.pnlFiltrosVentas.PerformLayout();
             this.tabMasVendidos.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvMasVendidos)).EndInit();
+            this.tabRentabilidad.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRentabilidad)).EndInit();
+            this.tabVentasPorEmpleado.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvVentasPorEmpleado)).EndInit();
+            this.tabAnalisisTiempo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartVentasPorHora)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartVentasPorDia)).EndInit();
             this.tabGanancias.ResumeLayout(false);
             this.tabGanancias.PerformLayout();
             this.ResumeLayout(false);
@@ -289,7 +420,7 @@
         private System.Windows.Forms.TabPage tabMasVendidos;
         private System.Windows.Forms.TabPage tabGanancias;
         private System.Windows.Forms.Panel pnlFiltrosVentas;
-        private System.Windows.Forms.Button btnGenerarReporteVentas;
+        private System.Windows.Forms.Button btnGenerarReporte;
         private System.Windows.Forms.DateTimePicker dtpFechaFin;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DateTimePicker dtpFechaInicio;
@@ -300,5 +431,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblTotalVendido;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TabPage tabRentabilidad;
+        private System.Windows.Forms.DataGridView dgvRentabilidad;
+        private System.Windows.Forms.TabPage tabVentasPorEmpleado;
+        private System.Windows.Forms.DataGridView dgvVentasPorEmpleado;
+        private System.Windows.Forms.TabPage tabAnalisisTiempo;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartVentasPorHora;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartVentasPorDia;
     }
 }

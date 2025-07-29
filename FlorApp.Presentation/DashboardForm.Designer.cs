@@ -46,6 +46,7 @@
             this.pnlAccesosDirectos = new System.Windows.Forms.Panel();
             this.btnConfiguracion = new System.Windows.Forms.Button();
             this.btnReportes = new System.Windows.Forms.Button();
+            this.btnCompras = new System.Windows.Forms.Button(); // Nuevo botón de Compras
             this.btnInventario = new System.Windows.Forms.Button();
             this.btnProveedores = new System.Windows.Forms.Button();
             this.btnProductos = new System.Windows.Forms.Button();
@@ -56,6 +57,9 @@
             this.lstAlertas = new System.Windows.Forms.ListBox();
             this.lblAlertasInventario = new System.Windows.Forms.Label();
             this.chartVentas = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.pnlEventosClientes = new System.Windows.Forms.Panel();
+            this.lstEventosClientes = new System.Windows.Forms.ListBox();
+            this.lblEventosClientes = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
             this.pnlCards.SuspendLayout();
             this.pnlCardVentas.SuspendLayout();
@@ -64,6 +68,7 @@
             this.pnlAccesosDirectos.SuspendLayout();
             this.pnlAlertasInventario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartVentas)).BeginInit();
+            this.pnlEventosClientes.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlHeader
@@ -202,6 +207,7 @@
             this.pnlAccesosDirectos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
             this.pnlAccesosDirectos.Controls.Add(this.btnConfiguracion);
             this.pnlAccesosDirectos.Controls.Add(this.btnReportes);
+            this.pnlAccesosDirectos.Controls.Add(this.btnCompras); // Añadido el nuevo botón de Compras
             this.pnlAccesosDirectos.Controls.Add(this.btnInventario);
             this.pnlAccesosDirectos.Controls.Add(this.btnProveedores);
             this.pnlAccesosDirectos.Controls.Add(this.btnProductos);
@@ -220,7 +226,7 @@
             this.btnConfiguracion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConfiguracion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnConfiguracion.ForeColor = System.Drawing.Color.White;
-            this.btnConfiguracion.Location = new System.Drawing.Point(22, 440);
+            this.btnConfiguracion.Location = new System.Drawing.Point(22, 500); // Ajustado
             this.btnConfiguracion.Name = "btnConfiguracion";
             this.btnConfiguracion.Size = new System.Drawing.Size(206, 50);
             this.btnConfiguracion.TabIndex = 8;
@@ -235,7 +241,7 @@
             this.btnReportes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnReportes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnReportes.ForeColor = System.Drawing.Color.White;
-            this.btnReportes.Location = new System.Drawing.Point(22, 380);
+            this.btnReportes.Location = new System.Drawing.Point(22, 440); // Ajustado
             this.btnReportes.Name = "btnReportes";
             this.btnReportes.Size = new System.Drawing.Size(206, 50);
             this.btnReportes.TabIndex = 7;
@@ -243,6 +249,21 @@
             this.btnReportes.UseVisualStyleBackColor = false;
             this.btnReportes.Click += new System.EventHandler(this.btnReportes_Click);
             // 
+            // btnCompras
+            //
+            this.btnCompras.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(68)))), ((int)(((byte)(173))))); // Color similar a Proveedores
+            this.btnCompras.FlatAppearance.BorderSize = 0;
+            this.btnCompras.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCompras.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.btnCompras.ForeColor = System.Drawing.Color.White;
+            this.btnCompras.Location = new System.Drawing.Point(22, 380); // Ajustado
+            this.btnCompras.Name = "btnCompras";
+            this.btnCompras.Size = new System.Drawing.Size(206, 50);
+            this.btnCompras.TabIndex = 6; // Ajusta el TabIndex si es necesario
+            this.btnCompras.Text = "Compras";
+            this.btnCompras.UseVisualStyleBackColor = false;
+            this.btnCompras.Click += new System.EventHandler(this.btnCompras_Click);
+            //
             // btnInventario
             // 
             this.btnInventario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(160)))), ((int)(((byte)(133)))));
@@ -250,7 +271,7 @@
             this.btnInventario.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnInventario.ForeColor = System.Drawing.Color.White;
-            this.btnInventario.Location = new System.Drawing.Point(22, 320);
+            this.btnInventario.Location = new System.Drawing.Point(22, 320); // Ajustado
             this.btnInventario.Name = "btnInventario";
             this.btnInventario.Size = new System.Drawing.Size(206, 50);
             this.btnInventario.TabIndex = 6;
@@ -265,7 +286,7 @@
             this.btnProveedores.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProveedores.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnProveedores.ForeColor = System.Drawing.Color.White;
-            this.btnProveedores.Location = new System.Drawing.Point(22, 260);
+            this.btnProveedores.Location = new System.Drawing.Point(22, 260); // Ajustado
             this.btnProveedores.Name = "btnProveedores";
             this.btnProveedores.Size = new System.Drawing.Size(206, 50);
             this.btnProveedores.TabIndex = 5;
@@ -280,7 +301,7 @@
             this.btnProductos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProductos.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnProductos.ForeColor = System.Drawing.Color.White;
-            this.btnProductos.Location = new System.Drawing.Point(22, 200);
+            this.btnProductos.Location = new System.Drawing.Point(22, 200); // Ajustado
             this.btnProductos.Name = "btnProductos";
             this.btnProductos.Size = new System.Drawing.Size(206, 50);
             this.btnProductos.TabIndex = 4;
@@ -295,7 +316,7 @@
             this.btnClientes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClientes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnClientes.ForeColor = System.Drawing.Color.White;
-            this.btnClientes.Location = new System.Drawing.Point(22, 140);
+            this.btnClientes.Location = new System.Drawing.Point(22, 140); // Ajustado
             this.btnClientes.Name = "btnClientes";
             this.btnClientes.Size = new System.Drawing.Size(206, 50);
             this.btnClientes.TabIndex = 3;
@@ -310,7 +331,7 @@
             this.btnPedidos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPedidos.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnPedidos.ForeColor = System.Drawing.Color.White;
-            this.btnPedidos.Location = new System.Drawing.Point(22, 80);
+            this.btnPedidos.Location = new System.Drawing.Point(22, 80); // Ajustado
             this.btnPedidos.Name = "btnPedidos";
             this.btnPedidos.Size = new System.Drawing.Size(206, 50);
             this.btnPedidos.TabIndex = 2;
@@ -325,7 +346,7 @@
             this.btnNuevaVenta.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNuevaVenta.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnNuevaVenta.ForeColor = System.Drawing.Color.White;
-            this.btnNuevaVenta.Location = new System.Drawing.Point(22, 20);
+            this.btnNuevaVenta.Location = new System.Drawing.Point(22, 20); // Ajustado para que sea visible
             this.btnNuevaVenta.Name = "btnNuevaVenta";
             this.btnNuevaVenta.Size = new System.Drawing.Size(206, 50);
             this.btnNuevaVenta.TabIndex = 1;
@@ -337,12 +358,12 @@
             // 
             this.pnlAlertasInventario.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.pnlAlertasInventario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
+            this.pnlAlertasInventario.BackColor = System.Drawing.Color.White;
             this.pnlAlertasInventario.Controls.Add(this.lstAlertas);
             this.pnlAlertasInventario.Controls.Add(this.lblAlertasInventario);
             this.pnlAlertasInventario.Location = new System.Drawing.Point(300, 488);
             this.pnlAlertasInventario.Name = "pnlAlertasInventario";
-            this.pnlAlertasInventario.Size = new System.Drawing.Size(858, 261);
+            this.pnlAlertasInventario.Size = new System.Drawing.Size(420, 261);
             this.pnlAlertasInventario.TabIndex = 4;
             // 
             // lstAlertas
@@ -350,23 +371,21 @@
             this.lstAlertas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstAlertas.BackColor = System.Drawing.Color.White;
             this.lstAlertas.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstAlertas.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstAlertas.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.lstAlertas.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(76)))), ((int)(((byte)(60)))));
             this.lstAlertas.FormattingEnabled = true;
             this.lstAlertas.ItemHeight = 17;
-            this.lstAlertas.Location = new System.Drawing.Point(22, 51);
+            this.lstAlertas.Location = new System.Drawing.Point(20, 50);
             this.lstAlertas.Name = "lstAlertas";
-            this.lstAlertas.Size = new System.Drawing.Size(814, 187);
+            this.lstAlertas.Size = new System.Drawing.Size(380, 187);
             this.lstAlertas.TabIndex = 1;
             // 
             // lblAlertasInventario
             // 
             this.lblAlertasInventario.AutoSize = true;
-            this.lblAlertasInventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAlertasInventario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            this.lblAlertasInventario.Location = new System.Drawing.Point(18, 20);
+            this.lblAlertasInventario.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblAlertasInventario.Location = new System.Drawing.Point(15, 15);
             this.lblAlertasInventario.Name = "lblAlertasInventario";
             this.lblAlertasInventario.Size = new System.Drawing.Size(170, 21);
             this.lblAlertasInventario.TabIndex = 0;
@@ -393,12 +412,49 @@
             this.chartVentas.TabIndex = 5;
             this.chartVentas.Text = "chart1";
             // 
+            // pnlEventosClientes
+            // 
+            this.pnlEventosClientes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlEventosClientes.BackColor = System.Drawing.Color.White;
+            this.pnlEventosClientes.Controls.Add(this.lstEventosClientes);
+            this.pnlEventosClientes.Controls.Add(this.lblEventosClientes);
+            this.pnlEventosClientes.Location = new System.Drawing.Point(738, 488);
+            this.pnlEventosClientes.Name = "pnlEventosClientes";
+            this.pnlEventosClientes.Size = new System.Drawing.Size(420, 261);
+            this.pnlEventosClientes.TabIndex = 6;
+            // 
+            // lstEventosClientes
+            // 
+            this.lstEventosClientes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstEventosClientes.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstEventosClientes.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.lstEventosClientes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(142)))), ((int)(((byte)(68)))), ((int)(((byte)(173)))));
+            this.lstEventosClientes.FormattingEnabled = true;
+            this.lstEventosClientes.ItemHeight = 17;
+            this.lstEventosClientes.Location = new System.Drawing.Point(20, 51);
+            this.lstEventosClientes.Name = "lstEventosClientes";
+            this.lstEventosClientes.Size = new System.Drawing.Size(380, 187);
+            this.lstEventosClientes.TabIndex = 1;
+            // 
+            // lblEventosClientes
+            // 
+            this.lblEventosClientes.AutoSize = true;
+            this.lblEventosClientes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblEventosClientes.Location = new System.Drawing.Point(15, 15);
+            this.lblEventosClientes.Name = "lblEventosClientes";
+            this.lblEventosClientes.Size = new System.Drawing.Size(243, 21);
+            this.lblEventosClientes.TabIndex = 0;
+            this.lblEventosClientes.Text = "Próximos Eventos de Clientes";
+            // 
             // DashboardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1184, 761);
+            this.Controls.Add(this.pnlEventosClientes);
             this.Controls.Add(this.chartVentas);
             this.Controls.Add(this.pnlAlertasInventario);
             this.Controls.Add(this.pnlAccesosDirectos);
@@ -412,6 +468,7 @@
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.pnlCards.ResumeLayout(false);
+            this.pnlCards.PerformLayout();
             this.pnlCardVentas.ResumeLayout(false);
             this.pnlCardVentas.PerformLayout();
             this.pnlCardProductos.ResumeLayout(false);
@@ -422,6 +479,8 @@
             this.pnlAlertasInventario.ResumeLayout(false);
             this.pnlAlertasInventario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartVentas)).EndInit();
+            this.pnlEventosClientes.ResumeLayout(false);
+            this.pnlEventosClientes.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -453,6 +512,9 @@
         private System.Windows.Forms.Button btnConfiguracion;
         private System.Windows.Forms.Button btnClientes;
         private System.Windows.Forms.Button btnPedidos;
-        private System.Windows.Forms.PictureBox picLogo;
+        private System.Windows.Forms.Panel pnlEventosClientes;
+        private System.Windows.Forms.ListBox lstEventosClientes;
+        private System.Windows.Forms.Label lblEventosClientes;
+        private System.Windows.Forms.Button btnCompras; // Declaración del nuevo botón
     }
 }

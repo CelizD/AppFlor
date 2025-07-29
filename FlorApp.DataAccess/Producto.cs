@@ -3,48 +3,80 @@ using System.Drawing;
 
 namespace FlorApp.DataAccess
 {
+    /// <summary>
+    /// Representa un producto en el inventario de la florería.
+    /// Puede ser un producto individual o un "Kit" compuesto por otros productos.
+    /// </summary>
     public class Producto
     {
-        // ID único del producto
+        /// <summary>
+        /// Identificador único del producto en la base de datos.
+        /// </summary>
         public int Id { get; set; }
 
-        // Código de barras (para escáner)
+        /// <summary>
+        /// Código de barras del producto, para ser usado con un escáner.
+        /// </summary>
         public string CodigoBarras { get; set; }
 
-        // Nombre del producto
+        /// <summary>
+        /// Nombre del producto (ej. "Rosa Roja", "Arreglo Primaveral").
+        /// </summary>
         public string Nombre { get; set; }
 
-        // Descripción del producto
+        /// <summary>
+        /// Descripción detallada del producto.
+        /// </summary>
         public string Descripcion { get; set; }
 
-        // Categoría (ej. Flores, Peluches, etc.)
+        /// <summary>
+        /// Categoría a la que pertenece el producto (ej. "Flores Individuales", "Peluches").
+        /// </summary>
         public string Categoria { get; set; }
 
-        // Nombre del proveedor
+        /// <summary>
+        /// Nombre del proveedor que surte este producto.
+        /// </summary>
         public string Proveedor { get; set; }
 
-        // Precio de compra para la florería
+        /// <summary>
+        /// El precio que le cuesta el producto a la tienda.
+        /// </summary>
         public decimal PrecioCosto { get; set; }
 
-        // Precio de venta al público
+        /// <summary>
+        /// El precio al que se vende el producto al público.
+        /// </summary>
         public decimal PrecioVenta { get; set; }
 
-        // Cantidad disponible en inventario
+        /// <summary>
+        /// La cantidad actual de este producto en el inventario.
+        /// </summary>
         public int Stock { get; set; }
 
-        // Stock mínimo antes de generar alerta
+        /// <summary>
+        /// La cantidad mínima de stock antes de que se genere una alerta.
+        /// </summary>
         public int StockMinimo { get; set; }
 
-        // Stock máximo recomendado
+        /// <summary>
+        /// La cantidad máxima de stock recomendada para este producto.
+        /// </summary>
         public int StockMaximo { get; set; }
 
-        // Indica si es un kit (conjunto de productos)
+        /// <summary>
+        /// Indica si este producto es un "Kit" o paquete compuesto por otros productos.
+        /// </summary>
         public bool EsKit { get; set; }
 
-        // Imagen del producto
+        /// <summary>
+        /// La imagen del producto. Se guarda como un objeto Image en la aplicación.
+        /// </summary>
         public Image Foto { get; set; }
 
-        // Fecha de registro del producto
+        /// <summary>
+        /// La fecha y hora en que el producto fue registrado por primera vez en el sistema.
+        /// </summary>
         public DateTime FechaRegistro { get; set; }
     }
 }
