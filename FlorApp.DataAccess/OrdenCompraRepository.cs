@@ -8,7 +8,13 @@ namespace FlorApp.DataAccess
 {
     public class OrdenCompraRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+        private readonly string _connectionString;
+
+        // --- CORRECCIÓN APLICADA AQUÍ ---
+        public OrdenCompraRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
 
         public async Task<List<OrdenCompra>> ObtenerTodasAsync()
         {
@@ -125,7 +131,6 @@ namespace FlorApp.DataAccess
                 {
                     try
                     {
-                        // 1. Actualizar el estado y la fecha de recepción de la orden
                         var queryUpdateOrden = "UPDATE OrdenesCompra SET Estado = 'Recibida', FechaRecepcion = GETDATE() WHERE Id = @Id";
                         using (var command = new SqlCommand(queryUpdateOrden, connection, transaction))
                         {
@@ -133,10 +138,8 @@ namespace FlorApp.DataAccess
                             await command.ExecuteNonQueryAsync();
                         }
 
-                        // 2. Obtener todos los detalles de la orden para saber qué productos y cantidades actualizar
                         var detalles = await ObtenerDetallesAsync(ordenCompraId);
 
-                        // 3. Actualizar el stock de cada producto en la tabla de Productos
                         foreach (var detalle in detalles)
                         {
                             var queryUpdateStock = "UPDATE Productos SET Stock = Stock + @Cantidad WHERE Id = @ProductoId";

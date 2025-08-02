@@ -1,10 +1,14 @@
 ﻿using FlorApp.DataAccess;
+using FlorApp.Presentation;
 using System;
-using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FlorApp.Presentation
 {
@@ -15,7 +19,6 @@ namespace FlorApp.Presentation
         private readonly VentaRepository _ventaRepository;
         private readonly ClienteRepository _clienteRepository;
 
-        // Instancias privadas para cada formulario para evitar abrir múltiples veces
         private VentasForm _ventasForm;
         private PedidosForm _pedidosForm;
         private ClientesForm _clientesForm;
@@ -25,26 +28,29 @@ namespace FlorApp.Presentation
         private ComprasForm _comprasForm;
         private ReportesForm _reportesForm;
         private ConfiguracionForm _configuracionForm;
+        private KioscoForm _kioscoForm;
 
         public DashboardForm(Usuario usuario)
         {
             InitializeComponent();
             _usuarioActual = usuario;
-            _productoRepository = new ProductoRepository();
-            _ventaRepository = new VentaRepository();
-            _clienteRepository = new ClienteRepository();
-            this.Activated += new EventHandler(DashboardForm_Activated);
 
-            // Asignar manejadores de eventos para los botones
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _productoRepository = new ProductoRepository(connectionString);
+            _ventaRepository = new VentaRepository(connectionString);
+            _clienteRepository = new ClienteRepository(connectionString);
+
+            this.Activated += new EventHandler(DashboardForm_Activated);
             btnNuevaVenta.Click += new EventHandler(btnNuevaVenta_Click);
             btnPedidos.Click += new EventHandler(btnPedidos_Click);
             btnClientes.Click += new EventHandler(btnClientes_Click);
             btnProductos.Click += new EventHandler(btnProductos_Click);
             btnProveedores.Click += new EventHandler(btnProveedores_Click);
             btnInventario.Click += new EventHandler(btnInventario_Click);
-            btnReportes.Click += new EventHandler(btnReportes_Click);
-            btnConfiguracion.Click += new EventHandler(btnConfiguracion_Click);
-            btnCompras.Click += new EventHandler(btnCompras_Click);
+            btnReportes.Click += new EventHandler(this.btnReportes_Click);
+            btnConfiguracion.Click += new System.EventHandler(this.btnConfiguracion_Click);
+            btnCompras.Click += new System.EventHandler(this.btnCompras_Click);
+            btnKiosco.Click += new System.EventHandler(this.btnKiosco_Click);
         }
 
         private void DashboardForm_Load(object sender, EventArgs e)
@@ -90,44 +96,51 @@ namespace FlorApp.Presentation
         private async Task CargarAlertasDeInventarioAsync()
         {
             var alertas = await _productoRepository.ObtenerProductosBajoStockAsync();
-
             var alertasFormateadas = alertas
                 .Select(p => $"{p.Nombre} (Quedan: {p.Stock} / Mínimo: {p.StockMinimo})")
                 .ToList();
-
             lstAlertas.DataSource = alertasFormateadas;
         }
 
         private async Task CargarGraficoDeVentasAsync()
         {
             var ventasSemanales = await _ventaRepository.ObtenerVentasUltimos7DiasAsync();
-            chartVentas.Series["Ventas"].Points.Clear();
+
+            chartVentas.Series.Clear();
+
+            var seriesVentas = new Series("Ventas")
+            {
+                ChartType = SeriesChartType.Column,
+                Color = Color.FromArgb(46, 139, 87)
+            };
 
             for (int i = 6; i >= 0; i--)
             {
                 DateTime dia = DateTime.Now.Date.AddDays(-i);
                 string clave = dia.ToString("dd/MM");
                 double total = ventasSemanales.ContainsKey(clave) ? ventasSemanales[clave] : 0;
-                chartVentas.Series["Ventas"].Points.AddXY(clave, total);
+                seriesVentas.Points.AddXY(clave, total);
             }
+
+            chartVentas.Series.Add(seriesVentas);
+            chartVentas.Legends[0].Enabled = false;
         }
 
         private async Task CargarEventosClientesAsync()
         {
+            var eventosFormateados = new List<string>();
             try
             {
                 var eventos = await _clienteRepository.ObtenerConFechasEspecialesProximasAsync(7);
-
-                List<string> eventosFormateadas = eventos
+                eventosFormateados = eventos
                     .Select(c => $"{c.Nombre} - {c.FechaEspecial.Value:dd 'de' MMMM}")
                     .ToList();
-
-                lstEventosClientes.DataSource = eventosFormateadas;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al cargar eventos de clientes: {ex.Message}");
             }
+            lstEventosClientes.DataSource = eventosFormateados;
         }
 
         private void AplicarSeguridadPorRol()
@@ -149,28 +162,23 @@ namespace FlorApp.Presentation
         }
 
         #region Manejadores de Eventos para Navegación
-
-        // Método auxiliar para gestionar la apertura de formularios como instancia única
-        // Ahora devuelve la instancia del formulario en lugar de usar 'ref'
         private Form AbrirOReutilizarFormulario(Form formInstance, Type formType, params object[] constructorArgs)
         {
             if (formInstance == null || formInstance.IsDisposed)
             {
-                // Crear una nueva instancia del formulario usando Activator para pasar argumentos
                 formInstance = (Form)Activator.CreateInstance(formType, constructorArgs);
-                formInstance.Show(); // Mostrar de forma no modal
+                formInstance.Show();
             }
             else
             {
-                formInstance.BringToFront(); // Traer al frente si ya está abierto
+                formInstance.BringToFront();
             }
-            return formInstance; // Devolver la instancia
+            return formInstance;
         }
 
         private void btnNuevaVenta_Click(object sender, EventArgs e)
         {
             _ventasForm = (VentasForm)AbrirOReutilizarFormulario(_ventasForm, typeof(VentasForm), _usuarioActual);
-            // Suscribirse al evento FormClosed para limpiar la referencia cuando se cierre
             _ventasForm.FormClosed += (s, args) => _ventasForm = null;
         }
 
@@ -221,6 +229,17 @@ namespace FlorApp.Presentation
             _configuracionForm = (ConfiguracionForm)AbrirOReutilizarFormulario(_configuracionForm, typeof(ConfiguracionForm));
             _configuracionForm.FormClosed += (s, args) => _configuracionForm = null;
         }
+
+        private void btnKiosco_Click(object sender, EventArgs e)
+        {
+            _kioscoForm = (KioscoForm)AbrirOReutilizarFormulario(_kioscoForm, typeof(KioscoForm));
+            _kioscoForm.FormClosed += (s, args) => _kioscoForm = null;
+        }
         #endregion
+
+        private void btnTestConexion_Click(object sender, EventArgs e)
+        {
+            ///
+        }
     }
 }

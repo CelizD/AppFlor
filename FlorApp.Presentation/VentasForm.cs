@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,7 +13,6 @@ namespace FlorApp.Presentation
 {
     public partial class VentasForm : Form
     {
-        // Lista estática para que las ventas en espera persistan mientras la app esté abierta
         private static List<VentaEnEspera> _ventasEnEspera = new List<VentaEnEspera>();
 
         private readonly Usuario _usuarioActual;
@@ -23,15 +24,20 @@ namespace FlorApp.Presentation
         private Cliente _clienteSeleccionado = null;
         private decimal _montoInicial = -1;
         private decimal _ventasTotalesDelTurno = 0;
+        private ClienteDisplayForm _displayCliente;
 
         public VentasForm(Usuario usuario)
         {
             InitializeComponent();
             _usuarioActual = usuario;
-            _productoRepository = new ProductoRepository();
-            _ventaRepository = new VentaRepository();
-            _clienteRepository = new ClienteRepository();
+
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _productoRepository = new ProductoRepository(connectionString);
+            _ventaRepository = new VentaRepository(connectionString);
+            _clienteRepository = new ClienteRepository(connectionString);
+
             this.Load += new EventHandler(VentasForm_Load);
+            this.FormClosing += new FormClosingEventHandler(VentasForm_FormClosing);
         }
 
         private async void VentasForm_Load(object sender, EventArgs e)
@@ -39,6 +45,7 @@ namespace FlorApp.Presentation
             InicializarControles();
             await CargarClientesAsync();
             ActualizarEstadoCaja();
+            AbrirPantallaCliente();
         }
 
         private void InicializarControles()
@@ -46,7 +53,6 @@ namespace FlorApp.Presentation
             _carrito = new BindingList<VentaDetalle>();
             dgvCarrito.DataSource = _carrito;
 
-            // Conectar todos los eventos
             btnAbrirCaja.Click += new EventHandler(btnAbrirCaja_Click);
             btnCerrarCaja.Click += new EventHandler(btnCerrarCaja_Click);
             btnAgregar.Click += (s, e) => AgregarProductoAlCarrito();
@@ -78,7 +84,6 @@ namespace FlorApp.Presentation
         {
             _carrito.Clear();
             _descuentoGeneral = 0;
-            //numDescuento.Value = 0; // Descomentar si tienes este control
             if (cmbCliente.Items.Count > 0) cmbCliente.SelectedIndex = 0;
             _clienteSeleccionado = null;
             lblPuntosCliente.Text = "Puntos: N/A";
@@ -137,7 +142,181 @@ namespace FlorApp.Presentation
         }
         #endregion
 
-        #region Lógica de Ventas en Espera
+        #region Pantalla de Cliente
+        private void AbrirPantallaCliente()
+        {
+            _displayCliente?.Close();
+
+            _displayCliente = new ClienteDisplayForm();
+
+            if (Screen.AllScreens.Length > 1)
+            {
+                Screen secondaryScreen = Screen.AllScreens.FirstOrDefault(s => !s.Primary) ?? Screen.AllScreens[0];
+                _displayCliente.Left = secondaryScreen.Bounds.Left;
+                _displayCliente.Top = secondaryScreen.Bounds.Top;
+                _displayCliente.WindowState = FormWindowState.Maximized;
+            }
+
+            _displayCliente.Show();
+            ActualizarDisplayCliente();
+        }
+
+        private void VentasForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _displayCliente?.Close();
+        }
+
+        private void ActualizarDisplayCliente()
+        {
+            if (_displayCliente != null && !_displayCliente.IsDisposed)
+            {
+                decimal total = _carrito.Sum(item => item.TotalLinea) - _descuentoGeneral;
+                _displayCliente.ActualizarVista(_carrito, total);
+            }
+        }
+        #endregion
+
+        #region Lógica de Venta
+        private async void AgregarProductoAlCarrito()
+        {
+            string busqueda = txtCodigoProducto.Text;
+            if (string.IsNullOrWhiteSpace(busqueda)) return;
+
+            var productoEncontrado = await _productoRepository.BuscarPorCodigoONombreAsync(busqueda);
+
+            if (productoEncontrado == null)
+            {
+                CustomMessageBoxForm.Show("Producto no encontrado.", "Error", MessageBoxIcon.Error);
+                return;
+            }
+
+            int cantidad = (int)numCantidad.Value;
+            var itemExistente = _carrito.FirstOrDefault(item => item.ProductoId == productoEncontrado.Id);
+
+            if (itemExistente != null)
+            {
+                itemExistente.Cantidad += cantidad;
+                itemExistente.TotalLinea = itemExistente.Cantidad * itemExistente.PrecioUnitario;
+            }
+            else
+            {
+                _carrito.Add(new VentaDetalle
+                {
+                    ProductoId = productoEncontrado.Id,
+                    NombreProducto = productoEncontrado.Nombre,
+                    Cantidad = cantidad,
+                    PrecioUnitario = productoEncontrado.PrecioVenta,
+                    TotalLinea = cantidad * productoEncontrado.PrecioVenta
+                });
+            }
+
+            txtCodigoProducto.Clear();
+            numCantidad.Value = 1;
+            txtCodigoProducto.Focus();
+            dgvCarrito.Refresh();
+            CalcularTotales();
+        }
+
+        private void CalcularTotales()
+        {
+            decimal subtotal = _carrito.Sum(item => item.TotalLinea);
+            decimal total = subtotal - _descuentoGeneral;
+
+            lblSubtotalValor.Text = subtotal.ToString("C");
+            lblTotalValor.Text = total.ToString("C");
+            ActualizarDisplayCliente();
+        }
+
+        private async void btnFinalizarVenta_Click(object sender, EventArgs e)
+        {
+            if (_carrito.Count == 0)
+            {
+                CustomMessageBoxForm.Show("El carrito está vacío.", "Venta Vacía", MessageBoxIcon.Warning);
+                return;
+            }
+
+            decimal totalVenta = _carrito.Sum(item => item.TotalLinea) - _descuentoGeneral;
+            string metodoPago = "Efectivo";
+
+            using (var formCobro = new CobrarForm(totalVenta))
+            {
+                if (formCobro.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                metodoPago = formCobro.MetodoPagoSeleccionado;
+            }
+
+            var venta = new Venta
+            {
+                Fecha = DateTime.Now,
+                Subtotal = _carrito.Sum(item => item.TotalLinea),
+                Impuestos = 0,
+                Total = totalVenta,
+                MetodoPago = metodoPago,
+                Cliente = _clienteSeleccionado?.Nombre ?? "Cliente General",
+                Vendedor = _usuarioActual.NombreUsuario,
+                Detalles = _carrito.ToList()
+            };
+
+            try
+            {
+                await _ventaRepository.GuardarVentaAsync(venta);
+
+                if (_clienteSeleccionado != null)
+                {
+                    int puntosGanados = (int)(venta.Total / 10);
+                    int puntosFinales = _clienteSeleccionado.Puntos + puntosGanados;
+                    await _clienteRepository.ActualizarPuntosYTotalGastadoAsync(_clienteSeleccionado.Id, puntosFinales, venta.Total);
+                }
+
+                _ventasTotalesDelTurno += venta.Total;
+                CustomMessageBoxForm.Show($"Venta por {venta.Total:C} finalizada.", "Éxito", MessageBoxIcon.Information);
+                LimpiarVentaCompleta();
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBoxForm.Show($"Error al guardar la venta: {ex.Message}", "Error", MessageBoxIcon.Error);
+            }
+        }
+        #endregion
+
+        #region Lógica de Lealtad y Espera
+        private void cmbCliente_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbCliente.SelectedItem is Cliente cliente && cliente.Id != 0)
+            {
+                _clienteSeleccionado = cliente;
+                lblPuntosCliente.Text = $"Puntos: {_clienteSeleccionado.Puntos}";
+                btnCanjearPuntos.Enabled = true;
+            }
+            else
+            {
+                _clienteSeleccionado = null;
+                lblPuntosCliente.Text = "Puntos: N/A";
+                btnCanjearPuntos.Enabled = false;
+            }
+        }
+
+        private void btnCanjearPuntos_Click(object sender, EventArgs e)
+        {
+            if (_clienteSeleccionado == null || _clienteSeleccionado.Puntos <= 0)
+            {
+                CustomMessageBoxForm.Show("Este cliente no tiene puntos para canjear.", "Sin Puntos", MessageBoxIcon.Information);
+                return;
+            }
+
+            decimal descuentoPorPuntos = _clienteSeleccionado.Puntos * 0.50m;
+            _descuentoGeneral += descuentoPorPuntos;
+
+            _clienteSeleccionado.Puntos = 0;
+            lblPuntosCliente.Text = "Puntos: 0 (Canjeados)";
+            btnCanjearPuntos.Enabled = false;
+
+            CalcularTotales();
+            CustomMessageBoxForm.Show($"Se aplicó un descuento de {descuentoPorPuntos:C} por puntos.", "Puntos Canjeados", MessageBoxIcon.Information);
+        }
+
         private void btnPonerEnEspera_Click(object sender, EventArgs e)
         {
             if (_carrito.Count == 0)
@@ -196,150 +375,6 @@ namespace FlorApp.Presentation
                 }
             }
         }
-        #endregion
-
-        #region Lógica de Venta Principal
-        private void cmbCliente_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbCliente.SelectedItem is Cliente cliente && cliente.Id != 0)
-            {
-                _clienteSeleccionado = cliente;
-                lblPuntosCliente.Text = $"Puntos: {_clienteSeleccionado.Puntos}";
-                btnCanjearPuntos.Enabled = true;
-            }
-            else
-            {
-                _clienteSeleccionado = null;
-                lblPuntosCliente.Text = "Puntos: N/A";
-                btnCanjearPuntos.Enabled = false;
-            }
-        }
-
-        private async void AgregarProductoAlCarrito()
-        {
-            string busqueda = txtCodigoProducto.Text;
-            if (string.IsNullOrWhiteSpace(busqueda)) return;
-
-            var productoEncontrado = await _productoRepository.BuscarPorCodigoONombreAsync(busqueda);
-
-            if (productoEncontrado == null)
-            {
-                CustomMessageBoxForm.Show("Producto no encontrado.", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            int cantidad = (int)numCantidad.Value;
-            var itemExistente = _carrito.FirstOrDefault(item => item.ProductoId == productoEncontrado.Id);
-
-            if (itemExistente != null)
-            {
-                itemExistente.Cantidad += cantidad;
-                itemExistente.TotalLinea = itemExistente.Cantidad * itemExistente.PrecioUnitario;
-            }
-            else
-            {
-                _carrito.Add(new VentaDetalle
-                {
-                    ProductoId = productoEncontrado.Id,
-                    NombreProducto = productoEncontrado.Nombre,
-                    Cantidad = cantidad,
-                    PrecioUnitario = productoEncontrado.PrecioVenta,
-                    TotalLinea = cantidad * productoEncontrado.PrecioVenta
-                });
-            }
-
-            txtCodigoProducto.Clear();
-            numCantidad.Value = 1;
-            txtCodigoProducto.Focus();
-            dgvCarrito.Refresh();
-            CalcularTotales();
-        }
-
-        private void CalcularTotales()
-        {
-            decimal subtotal = _carrito.Sum(item => item.TotalLinea);
-            decimal total = subtotal - _descuentoGeneral;
-
-            lblSubtotalValor.Text = subtotal.ToString("C");
-            //lblDescuentoValor.Text = $"-{_descuentoGeneral:C}"; // Descomentar si tienes este control
-            lblTotalValor.Text = total.ToString("C");
-        }
-
-        private async void btnFinalizarVenta_Click(object sender, EventArgs e)
-        {
-            if (_carrito.Count == 0)
-            {
-                CustomMessageBoxForm.Show("El carrito está vacío.", "Venta Vacía", MessageBoxIcon.Warning);
-                return;
-            }
-
-            decimal totalVenta = _carrito.Sum(item => item.TotalLinea) - _descuentoGeneral;
-            string metodoPago = "Efectivo";
-
-            using (var formCobro = new CobrarForm(totalVenta))
-            {
-                if (formCobro.ShowDialog() == DialogResult.OK)
-                {
-                    metodoPago = formCobro.MetodoPagoSeleccionado;
-                }
-                else
-                {
-                    return;
-                }
-            }
-
-            var venta = new Venta
-            {
-                Fecha = DateTime.Now,
-                Subtotal = _carrito.Sum(item => item.TotalLinea),
-                Impuestos = 0,
-                Total = totalVenta,
-                MetodoPago = metodoPago,
-                Cliente = _clienteSeleccionado?.Nombre ?? "Cliente General",
-                Vendedor = _usuarioActual.NombreUsuario, // <-- LÍNEA AÑADIDA
-                Detalles = _carrito.ToList()
-            };
-
-            try
-            {
-                await _ventaRepository.GuardarVentaAsync(venta);
-
-                if (_clienteSeleccionado != null)
-                {
-                    int puntosGanados = (int)(venta.Total / 10);
-                    int puntosFinales = _clienteSeleccionado.Puntos + puntosGanados;
-                    await _clienteRepository.ActualizarPuntosYTotalGastadoAsync(_clienteSeleccionado.Id, puntosFinales, venta.Total);
-                }
-
-                _ventasTotalesDelTurno += venta.Total;
-                CustomMessageBoxForm.Show($"Venta por {venta.Total:C} finalizada.", "Éxito", MessageBoxIcon.Information);
-                LimpiarVentaCompleta();
-            }
-            catch (Exception ex)
-            {
-                CustomMessageBoxForm.Show($"Error al guardar la venta: {ex.Message}", "Error", MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnCanjearPuntos_Click(object sender, EventArgs e)
-        {
-            if (_clienteSeleccionado == null || _clienteSeleccionado.Puntos <= 0)
-            {
-                CustomMessageBoxForm.Show("Este cliente no tiene puntos para canjear.", "Sin Puntos", MessageBoxIcon.Information);
-                return;
-            }
-
-            decimal descuentoPorPuntos = _clienteSeleccionado.Puntos * 0.50m;
-            _descuentoGeneral += descuentoPorPuntos;
-
-            _clienteSeleccionado.Puntos = 0;
-            lblPuntosCliente.Text = "Puntos: 0 (Canjeados)";
-            btnCanjearPuntos.Enabled = false;
-
-            CalcularTotales();
-            CustomMessageBoxForm.Show($"Se aplicó un descuento de {descuentoPorPuntos:C} por puntos.", "Puntos Canjeados", MessageBoxIcon.Information);
-        }
-
         #endregion
     }
 }

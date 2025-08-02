@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace FlorApp.DataAccess
 {
@@ -148,6 +149,11 @@ namespace FlorApp.DataAccess
                 // Muestra el error en la consola
                 Console.WriteLine("Error al eliminar la flor: " + ex.Message);
             }
+        }
+
+        public Task<List<Flor>> ObtenerTodasAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

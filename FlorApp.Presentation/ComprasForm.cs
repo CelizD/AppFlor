@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration; // <-- AÑADIR ESTA LÍNEA
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,9 +20,13 @@ namespace FlorApp.Presentation
         public ComprasForm()
         {
             InitializeComponent();
-            _ordenCompraRepository = new OrdenCompraRepository();
-            _proveedorRepository = new ProveedorRepository();
-            _productoRepository = new ProductoRepository();
+
+            // --- CORRECCIÓN APLICADA AQUÍ ---
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _ordenCompraRepository = new OrdenCompraRepository(connectionString);
+            _proveedorRepository = new ProveedorRepository(connectionString);
+            _productoRepository = new ProductoRepository(connectionString);
+
             this.Load += new EventHandler(ComprasForm_Load);
             btnNuevaOrden.Click += new EventHandler(btnNuevaOrden_Click);
             btnAgregarProducto.Click += new EventHandler(btnAgregarProducto_Click);
@@ -88,7 +93,11 @@ namespace FlorApp.Presentation
 
         private void btnAgregarProducto_Click(object sender, EventArgs e)
         {
-            if (cmbProducto.SelectedItem == null || numCantidad.Value <= 0) return;
+            if (cmbProducto.SelectedItem == null || numCantidad.Value <= 0)
+            {
+                CustomMessageBoxForm.Show("Debe seleccionar un producto y una cantidad mayor a 0.", "Datos Incompletos", MessageBoxIcon.Warning);
+                return;
+            }
 
             var producto = (Producto)cmbProducto.SelectedItem;
             var detalle = new OrdenCompraDetalle
@@ -98,7 +107,9 @@ namespace FlorApp.Presentation
                 Cantidad = (int)numCantidad.Value,
                 CostoUnitario = producto.PrecioCosto
             };
+
             _carritoCompra.Add(detalle);
+            numCantidad.Value = 0; // Limpiar la cantidad después de agregar
         }
 
         private async void btnGuardarOrden_Click(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 ﻿using FlorApp.DataAccess;
 using System;
+using System.Configuration; // <-- Importante
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -8,14 +9,17 @@ namespace FlorApp.Presentation
     public partial class PedidosForm : Form
     {
         private readonly PedidoRepository _pedidoRepository;
-        private readonly ClienteRepository _clienteRepository; // Para cargar clientes dinámicamente
+        private readonly ClienteRepository _clienteRepository;
         private int? _idSeleccionado = null;
 
         public PedidosForm()
         {
             InitializeComponent();
-            _pedidoRepository = new PedidoRepository();
-            _clienteRepository = new ClienteRepository();
+
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _pedidoRepository = new PedidoRepository(connectionString);
+            _clienteRepository = new ClienteRepository(connectionString);
+
             this.Load += new EventHandler(PedidosForm_Load);
             dgvPedidos.CellClick += new DataGridViewCellEventHandler(dgvPedidos_CellClick);
             btnNuevo.Click += new EventHandler(btnNuevo_Click);
@@ -45,15 +49,11 @@ namespace FlorApp.Presentation
 
         private async Task CargarComboBoxesAsync()
         {
-            // Cargar clientes desde la base de datos
             try
             {
-                // --- CORRECCIÓN APLICADA AQUÍ ---
                 var clientes = await _clienteRepository.ObtenerTodosAsync();
-                // 1. Añadir el cliente ocasional a la lista de datos
                 clientes.Insert(0, new Cliente { Id = 0, Nombre = "Cliente Ocasional" });
 
-                // 2. Asignar la lista ya modificada como DataSource
                 cmbCliente.DataSource = clientes;
                 cmbCliente.DisplayMember = "Nombre";
                 cmbCliente.ValueMember = "Id";
@@ -63,7 +63,6 @@ namespace FlorApp.Presentation
                 CustomMessageBoxForm.Show($"Error al cargar la lista de clientes: {ex.Message}", "Error", MessageBoxIcon.Warning);
             }
 
-            // Cargar estados y repartidores (pueden ser estáticos)
             cmbEstado.Items.Clear();
             cmbEstado.Items.Add("Recibido");
             cmbEstado.Items.Add("En preparación");
@@ -117,7 +116,9 @@ namespace FlorApp.Presentation
 
         private async void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(cmbCliente.Text) || string.IsNullOrWhiteSpace(txtProductos.Text) || string.IsNullOrWhiteSpace(txtDireccion.Text))
+            if (string.IsNullOrWhiteSpace(cmbCliente.Text) ||
+                string.IsNullOrWhiteSpace(txtProductos.Text) ||
+                string.IsNullOrWhiteSpace(txtDireccion.Text))
             {
                 CustomMessageBoxForm.Show("Cliente, Productos y Dirección son campos obligatorios.", "Datos Incompletos", MessageBoxIcon.Warning);
                 return;
@@ -136,12 +137,12 @@ namespace FlorApp.Presentation
 
             try
             {
-                if (_idSeleccionado == null) // Es un nuevo pedido
+                if (_idSeleccionado == null)
                 {
                     await _pedidoRepository.GuardarAsync(pedido);
                     CustomMessageBoxForm.Show("Pedido guardado exitosamente.", "Éxito", MessageBoxIcon.Information);
                 }
-                else // Estamos actualizando un pedido existente
+                else
                 {
                     pedido.Id = _idSeleccionado.Value;
                     await _pedidoRepository.ActualizarAsync(pedido);
@@ -173,7 +174,6 @@ namespace FlorApp.Presentation
                 {
                     await _pedidoRepository.EliminarAsync(_idSeleccionado.Value);
                     CustomMessageBoxForm.Show("Pedido eliminado exitosamente.", "Éxito", MessageBoxIcon.Information);
-
                     await CargarPedidosAsync();
                     LimpiarCampos();
                 }

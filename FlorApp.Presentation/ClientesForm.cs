@@ -1,5 +1,6 @@
 ﻿using FlorApp.DataAccess;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,16 +14,19 @@ namespace FlorApp.Presentation
         private readonly ClienteRepository _clienteRepository;
         private int? _idSeleccionado = null;
 
+        // En el constructor de ClientesForm
         public ClientesForm()
         {
             InitializeComponent();
-            _clienteRepository = new ClienteRepository();
+
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _clienteRepository = new ClienteRepository(connectionString);
+
             this.Load += new EventHandler(ClientesForm_Load);
             dgvClientes.CellClick += new DataGridViewCellEventHandler(dgvClientes_CellClick);
             btnNuevo.Click += new EventHandler(btnNuevo_Click);
             btnGuardar.Click += new EventHandler(btnGuardar_Click);
             btnEliminar.Click += new EventHandler(btnEliminar_Click);
-            // --- NUEVOS EVENTOS ---
             cmbFiltroMembresia.SelectedIndexChanged += new EventHandler(cmbFiltroMembresia_SelectedIndexChanged);
             btnExportar.Click += new EventHandler(btnExportar_Click);
         }
@@ -50,19 +54,17 @@ namespace FlorApp.Presentation
 
         private void CargarComboBoxes()
         {
-            // Cargar ComboBox de tipo de membresía en el panel de detalles
             cmbTipoMembresia.Items.Clear();
             cmbTipoMembresia.Items.Add("Estándar");
             cmbTipoMembresia.Items.Add("Plata");
             cmbTipoMembresia.Items.Add("Oro");
 
-            // Cargar ComboBox de Filtro
             cmbFiltroMembresia.Items.Clear();
             cmbFiltroMembresia.Items.Add("Todos");
             cmbFiltroMembresia.Items.Add("Estándar");
             cmbFiltroMembresia.Items.Add("Plata");
             cmbFiltroMembresia.Items.Add("Oro");
-            cmbFiltroMembresia.SelectedIndex = 0; // Seleccionar "Todos" por defecto
+            cmbFiltroMembresia.SelectedIndex = 0;
         }
 
         private void dgvClientes_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -77,13 +79,37 @@ namespace FlorApp.Presentation
                     txtTelefono.Text = cliente.Telefono;
                     txtEmail.Text = cliente.Email;
                     txtDireccion.Text = cliente.Direccion;
+
                     if (cliente.FechaEspecial.HasValue)
                     {
                         dtpFechaEspecial.Value = cliente.FechaEspecial.Value;
                     }
+                    else
+                    {
+                        // Se puede asignar un valor por defecto si es nulo
+                        dtpFechaEspecial.Value = DateTime.Now;
+                    }
+
+                    // Validar y asignar valores a NumericUpDown para evitar errores
+                    if (cliente.TotalGastado >= numTotalGastado.Minimum && cliente.TotalGastado <= numTotalGastado.Maximum)
+                    {
+                        numTotalGastado.Value = cliente.TotalGastado;
+                    }
+                    else
+                    {
+                        numTotalGastado.Value = numTotalGastado.Minimum;
+                    }
+
+                    if (cliente.Puntos >= numPuntos.Minimum && cliente.Puntos <= numPuntos.Maximum)
+                    {
+                        numPuntos.Value = cliente.Puntos;
+                    }
+                    else
+                    {
+                        numPuntos.Value = numPuntos.Minimum;
+                    }
+
                     cmbTipoMembresia.SelectedItem = cliente.TipoMembresia;
-                    numTotalGastado.Value = cliente.TotalGastado;
-                    numPuntos.Value = cliente.Puntos;
                 }
             }
         }
@@ -130,12 +156,12 @@ namespace FlorApp.Presentation
 
             try
             {
-                if (_idSeleccionado == null) // Es un nuevo cliente
+                if (_idSeleccionado == null)
                 {
                     await _clienteRepository.GuardarAsync(cliente);
                     CustomMessageBoxForm.Show("Cliente guardado exitosamente.", "Éxito", MessageBoxIcon.Information);
                 }
-                else // Estamos actualizando un cliente existente
+                else
                 {
                     cliente.Id = _idSeleccionado.Value;
                     await _clienteRepository.ActualizarAsync(cliente);
@@ -178,13 +204,11 @@ namespace FlorApp.Presentation
             }
         }
 
-        // --- NUEVO MÉTODO PARA FILTRAR ---
         private async void cmbFiltroMembresia_SelectedIndexChanged(object sender, EventArgs e)
         {
             await CargarClientesAsync();
         }
 
-        // --- NUEVO MÉTODO PARA EXPORTAR ---
         private void btnExportar_Click(object sender, EventArgs e)
         {
             if (dgvClientes.Rows.Count == 0)
@@ -200,15 +224,13 @@ namespace FlorApp.Presentation
                     try
                     {
                         var sb = new StringBuilder();
-                        // Encabezados
                         var headers = dgvClientes.Columns.Cast<DataGridViewColumn>();
-                        sb.AppendLine(string.Join(",", headers.Select(column => $"\"{column.HeaderText}\"").ToArray()));
+                        sb.AppendLine(string.Join(",", headers.Select(column => $"\"{column.HeaderText}\"")));
 
-                        // Filas
                         foreach (DataGridViewRow row in dgvClientes.Rows)
                         {
                             var cells = row.Cells.Cast<DataGridViewCell>();
-                            sb.AppendLine(string.Join(",", cells.Select(cell => $"\"{cell.Value}\"").ToArray()));
+                            sb.AppendLine(string.Join(",", cells.Select(cell => $"\"{cell.Value}\"")));
                         }
 
                         File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);

@@ -8,9 +8,20 @@ namespace FlorApp.DataAccess
 {
     public class ClienteRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+        private readonly string _connectionString;
 
-        // --- Mapeador reutilizable para no repetir código ---
+        // Constructor desde App.config
+        public ClienteRepository()
+        {
+            _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+        }
+
+        // Constructor con inyección de cadena de conexión
+        public ClienteRepository(string connectionString)
+        {
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+        }
+
         private Cliente MapearCliente(SqlDataReader reader)
         {
             return new Cliente
@@ -35,28 +46,21 @@ namespace FlorApp.DataAccess
                 await connection.OpenAsync();
                 var query = "SELECT Id, Nombre, Telefono, Direccion, Email, FechaEspecial, Puntos, TipoMembresia, TotalGastado FROM Clientes";
                 using (var command = new SqlCommand(query, connection))
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    using (var reader = await command.ExecuteReaderAsync())
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            clientes.Add(MapearCliente(reader));
-                        }
+                        clientes.Add(MapearCliente(reader));
                     }
                 }
             }
             return clientes;
         }
 
-        /// <summary>
-        /// Obtiene una lista de clientes filtrada por su tipo de membresía.
-        /// </summary>
         public async Task<List<Cliente>> ObtenerPorFiltroAsync(string tipoMembresia)
         {
             if (string.IsNullOrEmpty(tipoMembresia) || tipoMembresia == "Todos")
-            {
                 return await ObtenerTodosAsync();
-            }
 
             var clientes = new List<Cliente>();
             using (var connection = new SqlConnection(_connectionString))

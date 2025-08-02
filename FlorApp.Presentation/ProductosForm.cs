@@ -1,6 +1,9 @@
 ﻿using FlorApp.DataAccess;
-using FlorApp.BusinessLogic; // Referencia a la lógica de negocio
 using System;
+using System.Configuration;
+using System.Drawing;
+using System.IO;
+using System.Linq; // Necesario para .ToList()
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -8,88 +11,188 @@ namespace FlorApp.Presentation
 {
     public partial class ProductosForm : Form
     {
-        // Se usa el servicio de productos en lugar del repositorio directamente
-        private readonly ProductoService _productoService;
+        // --- CÓDIGO NUEVO ---
+        // Añadimos el repositorio de proveedores
+        private readonly ProductoRepository _productoRepository;
+        private readonly ProveedorRepository _proveedorRepository; // <-- AÑADIDO
 
-        // Almacena el ID del producto seleccionado en el DataGridView
-        private int? _idSeleccionado = null;
+        private Producto _productoSeleccionado;
+        private byte[] _imagenProductoBytes;
 
         public ProductosForm()
         {
-            InitializeComponent(); // Inicializa el formulario
-            _productoService = new ProductoService(); // Instancia el servicio
+            InitializeComponent();
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _productoRepository = new ProductoRepository(connectionString);
+            _proveedorRepository = new ProveedorRepository(connectionString); // <-- AÑADIDO
 
-            // Asignación de eventos
             this.Load += new EventHandler(ProductosForm_Load);
-            dgvProductos.CellClick += new DataGridViewCellEventHandler(dgvProductos_CellClick);
-            btnNuevo.Click += new EventHandler(btnNuevo_Click);
+            dgvProductos.SelectionChanged += new EventHandler(dgvProductos_SelectionChanged);
+            btnCargarFoto.Click += new EventHandler(btnCargarFoto_Click);
             btnGuardar.Click += new EventHandler(btnGuardar_Click);
-            btnEliminar.Click += new EventHandler(btnEliminar_Click);
+            btnNuevo.Click += new EventHandler(btnNuevo_Click);
         }
 
-        // Evento al cargar el formulario
         private async void ProductosForm_Load(object sender, EventArgs e)
         {
-            await CargarProductosAsync(); // Cargar los productos en la tabla
-            CargarComboBoxes(); // Cargar categorías y proveedores
-            LimpiarCampos(); // Limpiar los campos del formulario
+            // --- CÓDIGO MODIFICADO ---
+            // Cargamos los proveedores PRIMERO, para que el ComboBox esté listo.
+            await CargarProveedores();
+            await CargarProductos();
         }
 
-        // Carga los productos desde el servicio
-        private async Task CargarProductosAsync()
+        // --- CÓDIGO NUEVO ---
+        // Este método carga los proveedores y los pone en el ComboBox.
+        private async Task CargarProveedores()
         {
             try
             {
-                var productos = await _productoService.ObtenerTodosLosProductosAsync();
-                dgvProductos.DataSource = productos; // Mostrar en la tabla
+                var proveedores = await _proveedorRepository.ObtenerTodosAsync();
+
+                cmbProveedor.DataSource = proveedores.ToList();
+                cmbProveedor.DisplayMember = "NombreEmpresa"; // La propiedad que se mostrará al usuario
+                cmbProveedor.ValueMember = "Id";               // El valor oculto que usaremos (el ID)
             }
             catch (Exception ex)
             {
-                CustomMessageBoxForm.Show($"Error al cargar los productos: {ex.Message}", "Error", MessageBoxIcon.Error);
+                MessageBox.Show($"Error fatal al cargar los proveedores: {ex.Message}", "Error de Conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Llena los comboBox de categoría y proveedor
-        private void CargarComboBoxes()
+        private async Task CargarProductos()
         {
-            cmbCategoria.Items.Clear();
-            cmbCategoria.Items.Add("Flores Individuales");
-            cmbCategoria.Items.Add("Arreglos Florales");
-            cmbCategoria.Items.Add("Peluches");
-            cmbCategoria.Items.Add("Chocolates");
+            // Para evitar que el evento SelectionChanged se dispare mientras se carga
+            dgvProductos.SelectionChanged -= dgvProductos_SelectionChanged;
 
-            cmbProveedor.Items.Clear();
-            cmbProveedor.Items.Add("Proveedor Flores de México");
-            cmbProveedor.Items.Add("Regalos Internacionales S.A.");
-            cmbProveedor.Items.Add("Chocolates del Sur");
+            // Aquí necesitarás un método en tu ProductoRepository que también traiga el nombre del proveedor
+            // o ajustar la carga. Por ahora, cargamos los productos.
+            dgvProductos.DataSource = await _productoRepository.ObtenerTodosAsync();
+
+            dgvProductos.SelectionChanged += dgvProductos_SelectionChanged;
+
+            LimpiarCampos();
         }
 
-        // Evento cuando se hace clic sobre una celda del DataGridView
-        private void dgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvProductos_SelectionChanged(object sender, EventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (dgvProductos.CurrentRow != null && dgvProductos.CurrentRow.DataBoundItem is Producto)
             {
-                var producto = (Producto)dgvProductos.Rows[e.RowIndex].DataBoundItem;
-                if (producto != null)
+                _productoSeleccionado = dgvProductos.CurrentRow.DataBoundItem as Producto;
+                MostrarDetallesProducto();
+            }
+        }
+
+        private void MostrarDetallesProducto()
+        {
+            if (_productoSeleccionado == null) return;
+
+            txtNombre.Text = _productoSeleccionado.Nombre;
+            txtDescripcion.Text = _productoSeleccionado.Descripcion;
+            cmbCategoria.Text = _productoSeleccionado.Categoria;
+
+            // --- CÓDIGO CORREGIDO ---
+            // Usamos SelectedValue para seleccionar el proveedor por su ID.
+            cmbProveedor.SelectedValue = _productoSeleccionado.ProveedorId;
+
+            numPrecioCosto.Value = _productoSeleccionado.PrecioCosto;
+            numPrecioVenta.Value = _productoSeleccionado.PrecioVenta;
+            numStockMinimo.Value = _productoSeleccionado.StockMinimo;
+            numStockMaximo.Value = _productoSeleccionado.StockMaximo;
+
+            _imagenProductoBytes = _productoSeleccionado.Foto;
+            if (_imagenProductoBytes != null && _imagenProductoBytes.Length > 0)
+            {
+                using (var ms = new MemoryStream(_imagenProductoBytes))
                 {
-                    // Cargar los datos del producto en los campos del formulario
-                    _idSeleccionado = producto.Id;
-                    txtNombre.Text = producto.Nombre;
-                    txtDescripcion.Text = producto.Descripcion;
-                    cmbCategoria.SelectedItem = producto.Categoria;
-                    cmbProveedor.SelectedItem = producto.Proveedor;
-                    numPrecioCosto.Value = producto.PrecioCosto;
-                    numPrecioVenta.Value = producto.PrecioVenta;
-                    numStockMinimo.Value = producto.StockMinimo;
-                    numStockMaximo.Value = producto.StockMaximo;
+                    picFoto.Image = Image.FromStream(ms);
+                }
+            }
+            else
+            {
+                picFoto.Image = null;
+            }
+        }
+
+        private void btnCargarFoto_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Archivos de Imagen|*.jpg;*.jpeg;*.png;*.gif";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    _imagenProductoBytes = File.ReadAllBytes(ofd.FileName);
+                    picFoto.Image = new Bitmap(ofd.FileName);
                 }
             }
         }
 
-        // Limpia los campos del formulario
+        private async void btnGuardar_Click(object sender, EventArgs e)
+        {
+            // --- CÓDIGO CORREGIDO Y MEJORADO ---
+            if (string.IsNullOrWhiteSpace(txtNombre.Text))
+            {
+                MessageBox.Show("El nombre del producto es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (cmbProveedor.SelectedValue == null)
+            {
+                MessageBox.Show("Debe seleccionar un proveedor.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                if (_productoSeleccionado != null) // Actualizando
+                {
+                    _productoSeleccionado.Nombre = txtNombre.Text;
+                    _productoSeleccionado.Descripcion = txtDescripcion.Text;
+                    _productoSeleccionado.Categoria = cmbCategoria.Text;
+                    _productoSeleccionado.ProveedorId = (int)cmbProveedor.SelectedValue; // <-- Guarda el ID
+                    _productoSeleccionado.PrecioCosto = numPrecioCosto.Value;
+                    _productoSeleccionado.PrecioVenta = numPrecioVenta.Value;
+                    _productoSeleccionado.StockMinimo = (int)numStockMinimo.Value;
+                    _productoSeleccionado.StockMaximo = (int)numStockMaximo.Value;
+                    _productoSeleccionado.Foto = _imagenProductoBytes;
+
+                    await _productoRepository.ActualizarAsync(_productoSeleccionado);
+                    MessageBox.Show("Producto actualizado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else // Creando uno nuevo
+                {
+                    var nuevoProducto = new Producto
+                    {
+                        Nombre = txtNombre.Text,
+                        Descripcion = txtDescripcion.Text,
+                        Categoria = cmbCategoria.Text,
+                        ProveedorId = (int)cmbProveedor.SelectedValue, // <-- Guarda el ID
+                        PrecioCosto = numPrecioCosto.Value,
+                        PrecioVenta = numPrecioVenta.Value,
+                        Stock = 0,
+                        StockMinimo = (int)numStockMinimo.Value,
+                        StockMaximo = (int)numStockMaximo.Value,
+                        FechaRegistro = DateTime.Now,
+                        Foto = _imagenProductoBytes
+                    };
+                    await _productoRepository.GuardarAsync(nuevoProducto);
+                    MessageBox.Show("Producto guardado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                await CargarProductos();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar el producto: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnNuevo_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+        }
+
         private void LimpiarCampos()
         {
-            _idSeleccionado = null;
+            _productoSeleccionado = null;
             txtNombre.Clear();
             txtDescripcion.Clear();
             cmbCategoria.SelectedIndex = -1;
@@ -98,78 +201,10 @@ namespace FlorApp.Presentation
             numPrecioVenta.Value = 0;
             numStockMinimo.Value = 0;
             numStockMaximo.Value = 0;
+            picFoto.Image = null;
+            _imagenProductoBytes = null;
             dgvProductos.ClearSelection();
             txtNombre.Focus();
-        }
-
-        // Evento del botón "Nuevo"
-        private void btnNuevo_Click(object sender, EventArgs e)
-        {
-            LimpiarCampos(); // Limpia todo para ingresar un nuevo producto
-        }
-
-        // Evento del botón "Guardar"
-        private async void btnGuardar_Click(object sender, EventArgs e)
-        {
-            // Crear objeto producto desde los campos del formulario
-            var producto = new Producto
-            {
-                Id = _idSeleccionado ?? 0,
-                Nombre = txtNombre.Text,
-                Descripcion = txtDescripcion.Text,
-                Categoria = cmbCategoria.Text,
-                Proveedor = cmbProveedor.Text,
-                PrecioCosto = numPrecioCosto.Value,
-                PrecioVenta = numPrecioVenta.Value,
-                StockMinimo = (int)numStockMinimo.Value,
-                StockMaximo = (int)numStockMaximo.Value
-            };
-
-            try
-            {
-                // Guardar o actualizar el producto usando la lógica de negocio
-                await _productoService.GuardarProductoAsync(producto);
-
-                // Mostrar mensaje de éxito
-                string mensaje = _idSeleccionado == null ? "Producto guardado exitosamente." : "Producto actualizado exitosamente.";
-                CustomMessageBoxForm.Show(mensaje, "Éxito", MessageBoxIcon.Information);
-
-                await CargarProductosAsync(); // Recargar la tabla
-                LimpiarCampos(); // Limpiar el formulario
-            }
-            catch (Exception ex)
-            {
-                // Mostrar errores si la validación falla (ej. precio, nombre duplicado)
-                CustomMessageBoxForm.Show($"Error: {ex.Message}", "Error de Validación", MessageBoxIcon.Warning);
-            }
-        }
-
-        // Evento del botón "Eliminar"
-        private async void btnEliminar_Click(object sender, EventArgs e)
-        {
-            if (_idSeleccionado == null)
-            {
-                CustomMessageBoxForm.Show("Por favor, seleccione un producto de la lista para eliminar.", "Selección Requerida", MessageBoxIcon.Warning);
-                return;
-            }
-
-            // Confirmar con el usuario si desea eliminar el producto
-            if (CustomConfirmBoxForm.Show("¿Está seguro de que desea eliminar este producto?", "Confirmar Eliminación") == DialogResult.Yes)
-            {
-                try
-                {
-                    await _productoService.EliminarProductoAsync(_idSeleccionado.Value); // Eliminar producto
-                    CustomMessageBoxForm.Show("Producto eliminado exitosamente.", "Éxito", MessageBoxIcon.Information);
-
-                    await CargarProductosAsync(); // Recargar tabla
-                    LimpiarCampos(); // Limpiar formulario
-                }
-                catch (Exception ex)
-                {
-                    // Captura error si el producto no puede ser eliminado (ej. tiene stock)
-                    CustomMessageBoxForm.Show($"Error: {ex.Message}", "Operación no permitida", MessageBoxIcon.Warning);
-                }
-            }
         }
     }
 }

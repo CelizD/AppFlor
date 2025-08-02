@@ -9,7 +9,19 @@ namespace FlorApp.DataAccess
 {
     public class VentaRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+        private readonly string _connectionString;
+
+        // Constructor que usa la cadena de conexión desde App.config
+        public VentaRepository()
+        {
+            _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+        }
+
+        // Constructor que permite inyectar manualmente la cadena de conexión
+        public VentaRepository(string connectionString)
+        {
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+        }
 
         public async Task<int> GuardarVentaAsync(Venta venta)
         {
@@ -292,7 +304,6 @@ namespace FlorApp.DataAccess
                     WHERE Fecha BETWEEN @FechaInicio AND @FechaFin
                     GROUP BY DATENAME(weekday, Fecha), DATEPART(weekday, Fecha)
                     ORDER BY DATEPART(weekday, Fecha)";
-
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@FechaInicio", fechaInicio);
@@ -327,7 +338,6 @@ namespace FlorApp.DataAccess
                     WHERE Fecha BETWEEN @FechaInicio AND @FechaFin
                     GROUP BY DATEPART(hour, Fecha)
                     ORDER BY Hora";
-
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@FechaInicio", fechaInicio);

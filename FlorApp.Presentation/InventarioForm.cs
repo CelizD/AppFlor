@@ -1,6 +1,7 @@
 ﻿using FlorApp.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,13 +18,15 @@ namespace FlorApp.Presentation
         public InventarioForm()
         {
             InitializeComponent();
-            _movimientoRepository = new MovimientoInventarioRepository();
-            _productoRepository = new ProductoRepository();
+
+            string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+            _movimientoRepository = new MovimientoInventarioRepository(connectionString);
+            _productoRepository = new ProductoRepository(connectionString);
+
             this.Load += new EventHandler(InventarioForm_Load);
             btnRegistrarEntrada.Click += new EventHandler(btnRegistrarEntrada_Click);
             btnRegistrarSalida.Click += new EventHandler(btnRegistrarSalida_Click);
             btnAplicarAjuste.Click += new EventHandler(btnAplicarAjuste_Click);
-            // Cargar datos en la pestaña de ajuste cuando se seleccione
             tabControlInventario.SelectedIndexChanged += new EventHandler(tabControlInventario_SelectedIndexChanged);
         }
 
@@ -73,14 +76,11 @@ namespace FlorApp.Presentation
 
         private async void tabControlInventario_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Si el usuario selecciona la pestaña de "Ajuste Físico", cargamos los datos
             if (tabControlInventario.SelectedTab == tabAjusteFisico)
             {
                 await CargarProductosParaAjusteAsync();
             }
         }
-
-        #region Lógica de Entradas y Salidas
 
         private async void btnRegistrarEntrada_Click(object sender, EventArgs e)
         {
@@ -106,7 +106,7 @@ namespace FlorApp.Presentation
             try
             {
                 await _movimientoRepository.GuardarAsync(movimiento);
-                await _productoRepository.ActualizarStockAsync(productoSeleccionado.Id, cantidad); // Sumar al stock
+                await _productoRepository.ActualizarStockAsync(productoSeleccionado.Id, cantidad);
 
                 CustomMessageBoxForm.Show("Entrada de inventario registrada exitosamente.", "Éxito", MessageBoxIcon.Information);
 
@@ -129,7 +129,6 @@ namespace FlorApp.Presentation
 
             var productoSeleccionado = (Producto)cmbProductoSalida.SelectedItem;
             int cantidad = (int)numCantidadSalida.Value;
-
             var productoActualizado = _listaProductos.FirstOrDefault(p => p.Id == productoSeleccionado.Id);
 
             if (productoActualizado != null && productoActualizado.Stock < cantidad)
@@ -143,7 +142,7 @@ namespace FlorApp.Presentation
                 ProductoId = productoSeleccionado.Id,
                 NombreProducto = productoSeleccionado.Nombre,
                 TipoMovimiento = "Ajuste por Merma",
-                Cantidad = -cantidad, // Las salidas se registran como negativas
+                Cantidad = -cantidad,
                 Fecha = DateTime.Now,
                 Motivo = txtMotivoSalida.Text
             };
@@ -151,7 +150,7 @@ namespace FlorApp.Presentation
             try
             {
                 await _movimientoRepository.GuardarAsync(movimiento);
-                await _productoRepository.ActualizarStockAsync(productoSeleccionado.Id, -cantidad); // Restar del stock
+                await _productoRepository.ActualizarStockAsync(productoSeleccionado.Id, -cantidad);
 
                 CustomMessageBoxForm.Show("Salida de inventario registrada exitosamente.", "Éxito", MessageBoxIcon.Information);
 
@@ -165,16 +164,11 @@ namespace FlorApp.Presentation
             }
         }
 
-        #endregion
-
-        #region Lógica de Ajuste por Conteo Físico
-
         private async Task CargarProductosParaAjusteAsync()
         {
             try
             {
                 var productos = await _productoRepository.ObtenerTodosAsync();
-                // Usamos un DataTable para poder tener una columna editable
                 var dt = new DataTable();
                 dt.Columns.Add("Id", typeof(int));
                 dt.Columns.Add("Nombre", typeof(string));
@@ -187,7 +181,6 @@ namespace FlorApp.Presentation
                 }
 
                 dgvAjusteStock.DataSource = dt;
-                // Hacer que solo la columna "StockReal" sea editable
                 dgvAjusteStock.Columns["Id"].ReadOnly = true;
                 dgvAjusteStock.Columns["Nombre"].ReadOnly = true;
                 dgvAjusteStock.Columns["StockSistema"].ReadOnly = true;
@@ -218,10 +211,8 @@ namespace FlorApp.Presentation
                     if (stockSistema != stockReal)
                     {
                         int diferencia = stockReal - stockSistema;
-                        // 1. Actualizar el stock del producto al valor real
                         await _productoRepository.EstablecerStockAsync(id, stockReal);
 
-                        // 2. Registrar el movimiento en el historial
                         var movimiento = new MovimientoInventario
                         {
                             ProductoId = id,
@@ -235,14 +226,12 @@ namespace FlorApp.Presentation
                     }
                 }
                 CustomMessageBoxForm.Show("Ajuste de inventario aplicado exitosamente.", "Éxito", MessageBoxIcon.Information);
-                await CargarDatosIniciales(); // Recargar todo para reflejar los cambios
+                await CargarDatosIniciales();
             }
             catch (Exception ex)
             {
                 CustomMessageBoxForm.Show($"Error al aplicar el ajuste: {ex.Message}", "Error", MessageBoxIcon.Error);
             }
         }
-
-        #endregion
     }
 }

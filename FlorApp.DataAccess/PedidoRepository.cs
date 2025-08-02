@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 
 namespace FlorApp.DataAccess
 {
-    /// <summary>
-    /// Gestiona todas las operaciones de acceso a datos para la entidad 'Pedido'.
-    /// </summary>
     public class PedidoRepository
     {
-        private readonly string _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
+        private readonly string _connectionString;
 
-        /// <summary>
-        /// Obtiene una lista con todos los pedidos registrados en la base de datos.
-        /// </summary>
-        /// <returns>Una lista de objetos de tipo Pedido.</returns>
+        // --- CORRECCIÓN APLICADA AQUÍ ---
+        public PedidoRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        public PedidoRepository()
+        {
+        }
+
         public async Task<List<Pedido>> ObtenerTodosAsync()
         {
             var pedidos = new List<Pedido>();
@@ -48,10 +51,6 @@ namespace FlorApp.DataAccess
             return pedidos;
         }
 
-        /// <summary>
-        /// Guarda un nuevo pedido en la base de datos.
-        /// </summary>
-        /// <param name="pedido">El objeto Pedido que contiene la información a registrar.</param>
         public async Task GuardarAsync(Pedido pedido)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -73,10 +72,6 @@ namespace FlorApp.DataAccess
             }
         }
 
-        /// <summary>
-        /// Actualiza la información de un pedido existente en la base de datos.
-        /// </summary>
-        /// <param name="pedido">El objeto Pedido con los datos actualizados.</param>
         public async Task ActualizarAsync(Pedido pedido)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -106,10 +101,6 @@ namespace FlorApp.DataAccess
             }
         }
 
-        /// <summary>
-        /// Elimina un pedido de la base de datos utilizando su ID.
-        /// </summary>
-        /// <param name="id">El ID del pedido que se desea eliminar.</param>
         public async Task EliminarAsync(int id)
         {
             using (var connection = new SqlConnection(_connectionString))

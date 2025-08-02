@@ -10,7 +10,7 @@ namespace FlorApp.Presentation
         static void Main()
         {
             // Habilitar estilos visuales modernos para la aplicación
-            Application.EnableVisualStyles();
+            Application.EnableVisualStyles(); 
 
             // Establecer compatibilidad en la forma en que se renderizan los controles
             Application.SetCompatibleTextRenderingDefault(false);
