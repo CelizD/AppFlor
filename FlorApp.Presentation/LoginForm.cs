@@ -9,24 +9,25 @@ namespace FlorApp.Presentation
 {
     public partial class LoginForm : Form
     {
-        // Propiedad para guardar el usuario autenticado tras login exitoso
-        public Usuario UsuarioAutenticado { get; private set; }
+        // --- PALETA DE COLORES DEL NUEVO DISEÑO ---
+        private readonly Color colorFondo = ColorTranslator.FromHtml("#ECF0F1");
+        private readonly Color colorPrincipal = ColorTranslator.FromHtml("#2C3E50");
+        private readonly Color colorTexto = ColorTranslator.FromHtml("#34495E");
+        private readonly Color colorPlaceholder = Color.Gray;
+        private readonly Color colorBordeActivo = ColorTranslator.FromHtml("#3498DB");
+        private readonly Color colorBordeInactivo = Color.LightGray;
 
-        // Lista simulada de usuarios registrados para validar el login
+        public Usuario UsuarioAutenticado { get; private set; }
         private List<Usuario> _usuariosRegistrados;
 
         public LoginForm()
         {
             InitializeComponent();
-
-            // Cargar usuarios de ejemplo (en un sistema real vendrían de BD)
             CargarUsuariosDeEjemplo();
-
-            // Configurar el comportamiento de los placeholders en los TextBox
-            SetupPlaceholderText();
+            AplicarEstilosModernos();
+            SetupPlaceholderBehavior();
         }
 
-        // Método que inicializa la lista de usuarios de ejemplo
         private void CargarUsuariosDeEjemplo()
         {
             _usuariosRegistrados = new List<Usuario>
@@ -36,93 +37,123 @@ namespace FlorApp.Presentation
             };
         }
 
-        #region Lógica de Placeholders para TextBoxes
-
-        // Configura eventos para mostrar/ocultar texto placeholder
-        private void SetupPlaceholderText()
+        // --- MÉTODO PARA APLICAR EL NUEVO DISEÑO ---
+        private void AplicarEstilosModernos()
         {
-            // Para el TextBox de usuario
-            txtUsuario.GotFocus += (s, e) => RemovePlaceholder(txtUsuario, "Usuario");
-            txtUsuario.LostFocus += (s, e) => AddPlaceholder(txtUsuario, "Usuario");
+            this.BackColor = colorFondo;
 
-            // Para el TextBox de contraseña (ocultando el texto al ingresar)
-            txtContrasena.GotFocus += (s, e) => RemovePlaceholder(txtContrasena, "Contraseña", true);
-            txtContrasena.LostFocus += (s, e) => AddPlaceholder(txtContrasena, "Contraseña", true);
+            // Título
+            lblTitulo.ForeColor = colorPrincipal;
+
+            // Botones y Labels
+            btnIngresar.BackColor = colorPrincipal;
+            btnIngresar.ForeColor = Color.White;
+            btnIngresar.FlatStyle = FlatStyle.Flat;
+            btnIngresar.FlatAppearance.BorderSize = 0;
+
+            lblSalir.ForeColor = colorTexto;
+            chkMostrarContrasena.ForeColor = colorTexto;
+
+            // Paneles que contienen los TextBoxes
+            pnlUsuario.BackColor = Color.White;
+            pnlContrasena.BackColor = Color.White;
+            pnlUsuario.Paint += (s, e) => e.Graphics.DrawLine(new Pen(colorBordeInactivo, 2), 0, pnlUsuario.Height - 1, pnlUsuario.Width, pnlUsuario.Height - 1);
+            pnlContrasena.Paint += (s, e) => e.Graphics.DrawLine(new Pen(colorBordeInactivo, 2), 0, pnlContrasena.Height - 1, pnlContrasena.Width, pnlContrasena.Height - 1);
         }
 
-        // Quita el texto placeholder si está activo, y cambia el color y máscara si es password
-        private void RemovePlaceholder(TextBox textBox, string placeholder, bool isPassword = false)
+        // --- LÓGICA PARA PLACEHOLDERS Y EFECTO DE FOCO ---
+        private void SetupPlaceholderBehavior()
         {
-            if (textBox.Text == placeholder)
+            txtUsuario.GotFocus += Txt_GotFocus;
+            txtUsuario.LostFocus += Txt_LostFocus;
+            txtContrasena.GotFocus += Txt_GotFocus;
+            txtContrasena.LostFocus += Txt_LostFocus;
+
+            // Establecer el estado inicial de los placeholders
+            Txt_LostFocus(txtUsuario, EventArgs.Empty);
+            Txt_LostFocus(txtContrasena, EventArgs.Empty);
+        }
+
+        private void Txt_GotFocus(object sender, EventArgs e)
+        {
+            var txt = sender as TextBox;
+            var pnl = txt.Parent as Panel;
+
+            // Asigna el evento para dibujar el borde activo
+            pnl.Paint += Panel_Paint_Active;
+            pnl.Invalidate(); // Vuelve a dibujar el panel
+
+            if (txt.ForeColor == colorPlaceholder)
             {
-                textBox.Text = "";
-                textBox.ForeColor = Color.Black;
-                if (isPassword)
+                txt.Text = "";
+                txt.ForeColor = colorTexto;
+                if (txt == txtContrasena)
                 {
-                    // Mostrar caracteres ocultos (●)
-                    textBox.PasswordChar = '●';
+                    txtContrasena.PasswordChar = '●';
                 }
             }
         }
 
-        // Añade el texto placeholder si el TextBox está vacío, y ajusta máscara si es password
-        private void AddPlaceholder(TextBox textBox, string placeholder, bool isPassword = false)
+        private void Txt_LostFocus(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBox.Text))
+            var txt = sender as TextBox;
+            var pnl = txt.Parent as Panel;
+
+            // Remueve el evento del borde activo para volver al inactivo
+            pnl.Paint -= Panel_Paint_Active;
+            pnl.Invalidate(); // Vuelve a dibujar el panel
+
+            if (string.IsNullOrWhiteSpace(txt.Text))
             {
-                textBox.Text = placeholder;
-                textBox.ForeColor = Color.Gray;
-                if (isPassword)
+                txt.ForeColor = colorPlaceholder;
+                if (txt == txtUsuario) txt.Text = "Usuario";
+                if (txt == txtContrasena)
                 {
-                    // Mostrar texto normal sin ocultar caracteres
-                    textBox.PasswordChar = '\0';
+                    txt.Text = "Contraseña";
+                    txtContrasena.PasswordChar = '\0';
                 }
             }
         }
 
-        #endregion
+        // Evento que dibuja la línea de borde activa
+        private void Panel_Paint_Active(object sender, PaintEventArgs e)
+        {
+            var pnl = sender as Panel;
+            e.Graphics.DrawLine(new Pen(colorBordeActivo, 2), 0, pnl.Height - 1, pnl.Width, pnl.Height - 1);
+        }
 
-        // Evento clic para intentar iniciar sesión
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            string nombreUsuario = txtUsuario.Text;
-            string contrasena = txtContrasena.Text;
+            string nombreUsuario = txtUsuario.ForeColor == colorPlaceholder ? "" : txtUsuario.Text;
+            string contrasena = txtContrasena.ForeColor == colorPlaceholder ? "" : txtContrasena.Text;
 
-            // Buscar usuario en la lista que coincida con usuario y contraseña (sin importar mayúsculas/minúsculas)
             var usuario = _usuariosRegistrados
                 .FirstOrDefault(u => u.NombreUsuario.Equals(nombreUsuario, StringComparison.OrdinalIgnoreCase)
                                   && u.Contrasena == contrasena);
 
             if (usuario != null)
             {
-                // Login exitoso: guardar usuario autenticado y cerrar formulario con OK
                 this.UsuarioAutenticado = usuario;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             else
             {
-                // Mostrar mensaje de error y limpiar la contraseña
                 lblError.Visible = true;
                 txtContrasena.Clear();
-
-                // Volver a poner placeholder en contraseña
-                AddPlaceholder(txtContrasena, "Contraseña", true);
+                Txt_LostFocus(txtContrasena, EventArgs.Empty);
             }
         }
 
-        // Evento para mostrar u ocultar caracteres de contraseña según checkbox
         private void chkMostrarContrasena_CheckedChanged(object sender, EventArgs e)
         {
-            // Cambiar solo si no está el texto placeholder en la caja de texto
-            if (txtContrasena.Text != "Contraseña")
+            if (txtContrasena.ForeColor != colorPlaceholder)
             {
                 txtContrasena.PasswordChar = chkMostrarContrasena.Checked ? '\0' : '●';
             }
         }
 
-        // Evento para cerrar la aplicación al dar clic en el label cerrar
-        private void lblCerrar_Click(object sender, EventArgs e)
+        private void lblSalir_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }

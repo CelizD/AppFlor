@@ -1,6 +1,6 @@
 ﻿using FlorApp.DataAccess;
 using System;
-using System.Configuration; // <-- Importante
+using System.Configuration;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,7 +21,8 @@ namespace FlorApp.Presentation
             _clienteRepository = new ClienteRepository(connectionString);
 
             this.Load += new EventHandler(PedidosForm_Load);
-            dgvPedidos.CellClick += new DataGridViewCellEventHandler(dgvPedidos_CellClick);
+            // --- CORRECCIÓN: Se cambió el tipo de evento a EventHandler ---
+            dgvPedidos.SelectionChanged += new EventHandler(dgvPedidos_SelectionChanged);
             btnNuevo.Click += new EventHandler(btnNuevo_Click);
             btnGuardar.Click += new EventHandler(btnGuardar_Click);
             btnEliminar.Click += new EventHandler(btnEliminar_Click);
@@ -76,11 +77,12 @@ namespace FlorApp.Presentation
             cmbRepartidor.Items.Add("N/A");
         }
 
-        private void dgvPedidos_CellClick(object sender, DataGridViewCellEventArgs e)
+        // --- CORRECCIÓN: La firma del método ahora es correcta para el evento SelectionChanged ---
+        private void dgvPedidos_SelectionChanged(object sender, EventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (dgvPedidos.SelectedRows.Count == 1)
             {
-                var pedido = (Pedido)dgvPedidos.Rows[e.RowIndex].DataBoundItem;
+                var pedido = (Pedido)dgvPedidos.SelectedRows[0].DataBoundItem;
                 if (pedido != null)
                 {
                     _idSeleccionado = pedido.Id;
@@ -91,7 +93,16 @@ namespace FlorApp.Presentation
                     dtpFechaEntrega.Value = pedido.FechaEntrega;
                     cmbEstado.SelectedItem = pedido.Estado;
                     cmbRepartidor.SelectedItem = pedido.RepartidorAsignado;
+
+                    // --- MOSTRAR NUEVOS DATOS ---
+                    txtTelefono.Text = pedido.Telefono;
+                    txtEmail.Text = pedido.Email;
+                    lblOrigenValor.Text = pedido.Origen;
                 }
+            }
+            else
+            {
+                LimpiarCampos();
             }
         }
 
@@ -105,6 +116,12 @@ namespace FlorApp.Presentation
             dtpFechaEntrega.Value = DateTime.Now.AddHours(1);
             cmbEstado.SelectedIndex = -1;
             cmbRepartidor.SelectedIndex = -1;
+
+            // --- LIMPIAR NUEVOS CAMPOS ---
+            txtTelefono.Clear();
+            txtEmail.Clear();
+            lblOrigenValor.Text = "Manual";
+
             dgvPedidos.ClearSelection();
             cmbCliente.Focus();
         }
@@ -132,7 +149,11 @@ namespace FlorApp.Presentation
                 DireccionEntrega = txtDireccion.Text,
                 FechaEntrega = dtpFechaEntrega.Value,
                 Estado = cmbEstado.Text,
-                RepartidorAsignado = cmbRepartidor.Text
+                RepartidorAsignado = cmbRepartidor.Text,
+                // --- GUARDAR NUEVOS DATOS ---
+                Telefono = txtTelefono.Text,
+                Email = txtEmail.Text,
+                Origen = lblOrigenValor.Text
             };
 
             try

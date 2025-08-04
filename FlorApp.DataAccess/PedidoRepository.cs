@@ -10,14 +10,9 @@ namespace FlorApp.DataAccess
     {
         private readonly string _connectionString;
 
-        // --- CORRECCIÓN APLICADA AQUÍ ---
         public PedidoRepository(string connectionString)
         {
             _connectionString = connectionString;
-        }
-
-        public PedidoRepository()
-        {
         }
 
         public async Task<List<Pedido>> ObtenerTodosAsync()
@@ -26,7 +21,8 @@ namespace FlorApp.DataAccess
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var query = "SELECT Id, NombreCliente, Productos, MensajeTarjeta, FechaEntrega, DireccionEntrega, Estado, RepartidorAsignado FROM Pedidos ORDER BY FechaEntrega DESC";
+                // --- QUERY ACTUALIZADA ---
+                var query = "SELECT Id, NombreCliente, Telefono, Email, Origen, Productos, MensajeTarjeta, FechaEntrega, DireccionEntrega, Estado, RepartidorAsignado FROM Pedidos ORDER BY FechaEntrega DESC";
                 using (var command = new SqlCommand(query, connection))
                 {
                     using (var reader = await command.ExecuteReaderAsync())
@@ -37,12 +33,15 @@ namespace FlorApp.DataAccess
                             {
                                 Id = reader.GetInt32(0),
                                 NombreCliente = reader.GetString(1),
-                                Productos = reader.GetString(2),
-                                MensajeTarjeta = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                                FechaEntrega = reader.GetDateTime(4),
-                                DireccionEntrega = reader.GetString(5),
-                                Estado = reader.GetString(6),
-                                RepartidorAsignado = reader.IsDBNull(7) ? "" : reader.GetString(7)
+                                Telefono = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                                Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                                Origen = reader.IsDBNull(4) ? "Manual" : reader.GetString(4),
+                                Productos = reader.GetString(5),
+                                MensajeTarjeta = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                                FechaEntrega = reader.GetDateTime(7),
+                                DireccionEntrega = reader.GetString(8),
+                                Estado = reader.GetString(9),
+                                RepartidorAsignado = reader.IsDBNull(10) ? "" : reader.GetString(10)
                             });
                         }
                     }
@@ -56,11 +55,15 @@ namespace FlorApp.DataAccess
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                var query = @"INSERT INTO Pedidos (NombreCliente, Productos, MensajeTarjeta, FechaEntrega, DireccionEntrega, Estado, RepartidorAsignado)
-                              VALUES (@NombreCliente, @Productos, @MensajeTarjeta, @FechaEntrega, @DireccionEntrega, @Estado, @RepartidorAsignado)";
+                // --- QUERY ACTUALIZADA ---
+                var query = @"INSERT INTO Pedidos (NombreCliente, Telefono, Email, Origen, Productos, MensajeTarjeta, FechaEntrega, DireccionEntrega, Estado, RepartidorAsignado)
+                              VALUES (@NombreCliente, @Telefono, @Email, @Origen, @Productos, @MensajeTarjeta, @FechaEntrega, @DireccionEntrega, @Estado, @RepartidorAsignado)";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@NombreCliente", pedido.NombreCliente);
+                    command.Parameters.AddWithValue("@Telefono", (object)pedido.Telefono ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Email", (object)pedido.Email ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Origen", (object)pedido.Origen ?? "Manual");
                     command.Parameters.AddWithValue("@Productos", pedido.Productos);
                     command.Parameters.AddWithValue("@MensajeTarjeta", (object)pedido.MensajeTarjeta ?? DBNull.Value);
                     command.Parameters.AddWithValue("@FechaEntrega", pedido.FechaEntrega);
@@ -77,8 +80,12 @@ namespace FlorApp.DataAccess
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
+                // --- QUERY ACTUALIZADA ---
                 var query = @"UPDATE Pedidos SET 
                                 NombreCliente = @NombreCliente, 
+                                Telefono = @Telefono,
+                                Email = @Email,
+                                Origen = @Origen,
                                 Productos = @Productos, 
                                 MensajeTarjeta = @MensajeTarjeta, 
                                 FechaEntrega = @FechaEntrega, 
@@ -90,6 +97,9 @@ namespace FlorApp.DataAccess
                 {
                     command.Parameters.AddWithValue("@Id", pedido.Id);
                     command.Parameters.AddWithValue("@NombreCliente", pedido.NombreCliente);
+                    command.Parameters.AddWithValue("@Telefono", (object)pedido.Telefono ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Email", (object)pedido.Email ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Origen", (object)pedido.Origen ?? "Manual");
                     command.Parameters.AddWithValue("@Productos", pedido.Productos);
                     command.Parameters.AddWithValue("@MensajeTarjeta", (object)pedido.MensajeTarjeta ?? DBNull.Value);
                     command.Parameters.AddWithValue("@FechaEntrega", pedido.FechaEntrega);

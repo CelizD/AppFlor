@@ -1,5 +1,4 @@
 ﻿using FlorApp.DataAccess;
-using FlorApp.Presentation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,62 +13,87 @@ namespace FlorApp.Presentation
 {
     public partial class KioscoForm : Form
     {
-        // --- Paleta de Colores ---
-        private readonly Color colorPrincipal = Color.FromArgb(46, 139, 87);
-        private readonly Color colorAcento = Color.FromArgb(255, 99, 132);
-        private readonly Color colorAcentoHover = Color.FromArgb(255, 70, 102);
-        private readonly Color colorFondo = Color.FromArgb(249, 249, 249);
-        private readonly Color colorTextoPrincipal = Color.FromArgb(64, 64, 64);
-        private readonly Color colorEliminar = Color.FromArgb(127, 140, 141);
-        private readonly Color colorEliminarHover = Color.FromArgb(108, 122, 137);
+        private readonly Color colorPrimario = ColorTranslator.FromHtml("#2E8B57");
+        private readonly Color colorAcento = ColorTranslator.FromHtml("#E74C3C");
+        private readonly Color colorFondo = ColorTranslator.FromHtml("#F8F9FA");
+        private readonly Color colorTexto = ColorTranslator.FromHtml("#344A40");
+        private readonly Color colorBorde = ColorTranslator.FromHtml("#DEE2E6");
+        private readonly Color colorBlanco = Color.White;
         private readonly Color colorSeparador = Color.FromArgb(230, 230, 230);
         private readonly Color colorHoverFila = Color.FromArgb(240, 240, 240);
 
         private readonly ProductoRepository _productoRepository;
-        private readonly VentaRepository _ventaRepository;
+        private readonly PedidoRepository _pedidoRepository;
         private BindingList<VentaDetalle> _carrito;
         private List<Producto> _productosCatalogo;
         private List<Producto> _floresIndividuales;
         private List<dynamic> _listaDeExtras;
+        private bool _datosYaCargados = false;
 
         public KioscoForm()
         {
             InitializeComponent();
-            AplicarEstilosBase();
             string connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
             _productoRepository = new ProductoRepository(connectionString);
-            _ventaRepository = new VentaRepository(connectionString);
-            this.Load += new EventHandler(KioscoForm_Load);
-        }
+            _pedidoRepository = new PedidoRepository(connectionString);
 
-        private void AplicarEstilosBase()
-        {
-            this.BackColor = colorFondo;
-            groupBox1.Text = "🌿 Catálogo de Arreglos";
-            groupBox2.Text = "🎁 Arma tu propio Arreglo";
-            groupBox3.Text = "✨ Añade un Extra";
-            btnAgregarArregloPersonalizado.BackColor = colorAcento;
-            btnFinalizarPedido.BackColor = colorAcento;
-            btnEliminarDelCarrito.BackColor = colorEliminar;
-
-            btnAgregarArregloPersonalizado.MouseEnter += (s, e) => ((Button)s).BackColor = colorAcentoHover;
-            btnAgregarArregloPersonalizado.MouseLeave += (s, e) => ((Button)s).BackColor = colorAcento;
-            btnFinalizarPedido.MouseEnter += (s, e) => ((Button)s).BackColor = colorAcentoHover;
-            btnFinalizarPedido.MouseLeave += (s, e) => ((Button)s).BackColor = colorAcento;
-            btnEliminarDelCarrito.MouseEnter += (s, e) => ((Button)s).BackColor = colorEliminarHover;
-            btnEliminarDelCarrito.MouseLeave += (s, e) => ((Button)s).BackColor = colorEliminar;
+            this.Load += KioscoForm_Load;
+            btnAgregarArregloPersonalizado.Click += btnAgregarArregloPersonalizado_Click;
+            btnFinalizarPedido.Click += btnFinalizarPedido_Click;
+            btnEliminarDelCarrito.Click += btnEliminarDelCarrito_Click;
+            dgvCarrito.CellDoubleClick += dgvCarrito_CellDoubleClick;
         }
 
         private async void KioscoForm_Load(object sender, EventArgs e)
         {
+            if (_datosYaCargados) return;
+
+            AplicarEstilosModernos();
             _carrito = new BindingList<VentaDetalle>();
             dgvCarrito.DataSource = _carrito;
             await CargarDatosIniciales();
 
-            btnAgregarArregloPersonalizado.Click += new EventHandler(btnAgregarArregloPersonalizado_Click);
-            btnFinalizarPedido.Click += new EventHandler(btnFinalizarPedido_Click);
-            btnEliminarDelCarrito.Click += new EventHandler(btnEliminarDelCarrito_Click);
-            dgvCarrito.CellDoubleClick += new DataGridViewCellEventHandler(dgvCarrito_CellDoubleClick);
+            _datosYaCargados = true;
+        }
+
+        private void AplicarEstilosModernos()
+        {
+            this.BackColor = colorFondo;
+            pnlHeader.BackColor = colorPrimario;
+            lblHeader.ForeColor = colorBlanco;
+            splitContainer1.Panel1.BackColor = colorFondo;
+            splitContainer1.Panel2.BackColor = colorBlanco;
+            pnlTotal.BackColor = colorFondo;
+
+            dgvCarrito.BackgroundColor = colorBlanco;
+            dgvCarrito.BorderStyle = BorderStyle.None;
+            dgvCarrito.GridColor = colorBorde;
+            dgvCarrito.ColumnHeadersDefaultCellStyle.BackColor = colorBlanco;
+            dgvCarrito.ColumnHeadersDefaultCellStyle.ForeColor = colorTexto;
+            dgvCarrito.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            dgvCarrito.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvCarrito.EnableHeadersVisualStyles = false;
+            dgvCarrito.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
+            dgvCarrito.DefaultCellStyle.ForeColor = colorTexto;
+            dgvCarrito.DefaultCellStyle.SelectionBackColor = colorFondo;
+            dgvCarrito.DefaultCellStyle.SelectionForeColor = colorTexto;
+            dgvCarrito.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+
+            // --- CORRECCIÓN DE COLOR Y ESTILO EN BOTONES ---
+            Button[] botonesPrincipales = { btnFinalizarPedido, btnAgregarArregloPersonalizado };
+            foreach (var btn in botonesPrincipales)
+            {
+                btn.BackColor = colorPrimario;
+                btn.ForeColor = colorBlanco; // Asegurar texto blanco
+                btn.MouseEnter += (s, e) => ((Button)s).BackColor = colorAcento;
+                btn.MouseLeave += (s, e) => ((Button)s).BackColor = colorPrimario;
+            }
+
+            btnEliminarDelCarrito.BackColor = ColorTranslator.FromHtml("#7F8C8D");
+            btnEliminarDelCarrito.ForeColor = colorBlanco; // Asegurar texto blanco
+
+            lblTotalTitulo.ForeColor = colorTexto;
+            lblTotalValor.ForeColor = colorPrimario;
         }
 
         private async Task CargarDatosIniciales()
@@ -77,9 +101,6 @@ namespace FlorApp.Presentation
             try
             {
                 var todosLosProductos = await _productoRepository.ObtenerTodosAsync();
-
-                // --- CORRECCIÓN IMPORTANTE APLICADA AQUÍ ---
-                // Volvemos a poner los filtros para separar los productos correctamente.
                 _productosCatalogo = todosLosProductos.Where(p => p.Categoria == "Arreglo Floral").ToList();
                 _floresIndividuales = todosLosProductos.Where(p => p.Categoria == "Flor").ToList();
 
@@ -93,37 +114,32 @@ namespace FlorApp.Presentation
             }
         }
 
-        #region Poblar Controles (Sin cambios en esta región)
+        #region Poblar Controles
         private void PoblarCatalogo()
         {
             flpCatalogo.Controls.Clear();
             foreach (var producto in _productosCatalogo)
             {
-                Panel cardShadow = new Panel { Width = 230, Height = 330, Margin = new Padding(10), BackColor = Color.FromArgb(220, 220, 220) };
-                Panel card = new Panel { Width = 226, Height = 326, Location = new Point(2, 2), BackColor = Color.White };
+                Panel card = new Panel { Width = 220, Height = 320, Margin = new Padding(10), BackColor = colorBlanco };
+                card.Paint += (s, e) => ControlPaint.DrawBorder(e.Graphics, card.ClientRectangle, colorBorde, ButtonBorderStyle.Solid);
 
-                PictureBox pic = new PictureBox { SizeMode = PictureBoxSizeMode.Zoom, Dock = DockStyle.Top, Height = 170, Padding = new Padding(5) };
-
+                PictureBox pic = new PictureBox { SizeMode = PictureBoxSizeMode.Zoom, Dock = DockStyle.Top, Height = 160, Padding = new Padding(5) };
                 if (producto.Foto != null && producto.Foto.Length > 0)
                 {
-                    using (var ms = new MemoryStream(producto.Foto))
-                    {
-                        pic.Image = Image.FromStream(ms);
-                    }
+                    using (var ms = new MemoryStream(producto.Foto)) { pic.Image = Image.FromStream(ms); }
                 }
 
-                Label name = new Label { Text = producto.Nombre, Font = new Font("Segoe UI", 11F, FontStyle.Bold), ForeColor = colorTextoPrincipal, Dock = DockStyle.Top, TextAlign = ContentAlignment.MiddleCenter, AutoSize = false, Height = 50, Padding = new Padding(5) };
-                Label price = new Label { Text = producto.PrecioVenta.ToString("C"), Font = new Font("Segoe UI", 12F, FontStyle.Regular), ForeColor = colorPrincipal, Dock = DockStyle.Top, TextAlign = ContentAlignment.MiddleCenter, Height = 30 };
+                Label name = new Label { Text = producto.Nombre, Font = new Font("Segoe UI", 11F, FontStyle.Bold), ForeColor = colorTexto, Dock = DockStyle.Top, TextAlign = ContentAlignment.MiddleCenter, AutoSize = false, Height = 50, Padding = new Padding(5) };
+                Label price = new Label { Text = producto.PrecioVenta.ToString("C"), Font = new Font("Segoe UI", 12F), ForeColor = colorPrimario, Dock = DockStyle.Top, TextAlign = ContentAlignment.MiddleCenter, Height = 30 };
 
-                Button btn = new Button { Text = "Agregar", Dock = DockStyle.Bottom, BackColor = colorPrincipal, ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Height = 40, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Tag = producto };
+                Button btn = new Button { Text = "Agregar", Dock = DockStyle.Bottom, BackColor = colorPrimario, ForeColor = colorBlanco, FlatStyle = FlatStyle.Flat, Height = 40, Font = new Font("Segoe UI", 10F, FontStyle.Bold), Tag = producto };
                 btn.FlatAppearance.BorderSize = 0;
                 btn.MouseEnter += (s, e) => ((Button)s).BackColor = colorAcento;
-                btn.MouseLeave += (s, e) => ((Button)s).BackColor = colorPrincipal;
+                btn.MouseLeave += (s, e) => ((Button)s).BackColor = colorPrimario;
                 btn.Click += (s, e) => AgregarAlCarrito((Producto)((Button)s).Tag, 1);
 
                 card.Controls.AddRange(new Control[] { name, pic, price, btn });
-                cardShadow.Controls.Add(card);
-                flpCatalogo.Controls.Add(cardShadow);
+                flpCatalogo.Controls.Add(card);
             }
         }
 
@@ -133,20 +149,15 @@ namespace FlorApp.Presentation
             foreach (var flor in _floresIndividuales)
             {
                 Panel itemPanel = new Panel { Width = flpFlores.Width - 30, Height = 70, Margin = new Padding(5), BackColor = Color.White };
-
-                Label lblNombre = new Label { Text = $"{flor.Nombre} ({flor.PrecioVenta:C})", Dock = DockStyle.Top, Font = new Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold), ForeColor = colorTextoPrincipal, Height = 30, TextAlign = ContentAlignment.MiddleLeft, Padding = new Padding(10, 5, 0, 0) };
-
+                Label lblNombre = new Label { Text = $"{flor.Nombre} ({flor.PrecioVenta:C})", Dock = DockStyle.Top, Font = new Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold), ForeColor = colorTexto, Height = 30, TextAlign = ContentAlignment.MiddleLeft, Padding = new Padding(10, 5, 0, 0) };
                 Panel pnlBottom = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10, 0, 10, 5) };
-
                 NumericUpDown numCantidad = new NumericUpDown { Minimum = 0, Maximum = 100, Width = 60, Dock = DockStyle.Right, Tag = flor, Font = new Font("Segoe UI", 11F) };
-
                 ComboBox cmbColor = new ComboBox { Dock = DockStyle.Fill, Font = new Font("Segoe UI", 10F), DropDownStyle = ComboBoxStyle.DropDownList };
-
                 if (!string.IsNullOrWhiteSpace(flor.ColoresDisponibles))
                 {
                     string[] colores = flor.ColoresDisponibles.Split(',').Select(c => c.Trim()).ToArray();
                     cmbColor.Items.AddRange(colores);
-                    cmbColor.SelectedIndex = 0;
+                    if (cmbColor.Items.Count > 0) cmbColor.SelectedIndex = 0;
                 }
                 else
                 {
@@ -154,16 +165,12 @@ namespace FlorApp.Presentation
                     cmbColor.SelectedIndex = 0;
                     cmbColor.Enabled = false;
                 }
-
                 Panel separator = new Panel { Dock = DockStyle.Bottom, Height = 1, BackColor = colorSeparador };
-
                 pnlBottom.Controls.Add(cmbColor);
                 pnlBottom.Controls.Add(numCantidad);
-
                 itemPanel.Controls.Add(pnlBottom);
                 itemPanel.Controls.Add(lblNombre);
                 itemPanel.Controls.Add(separator);
-
                 Action<Control> addHoverEffect = null;
                 addHoverEffect = (control) => {
                     control.MouseEnter += (s, e) => itemPanel.BackColor = colorHoverFila;
@@ -171,10 +178,8 @@ namespace FlorApp.Presentation
                     foreach (Control child in control.Controls) { addHoverEffect(child); }
                 };
                 addHoverEffect(itemPanel);
-
                 flpFlores.Controls.Add(itemPanel);
             }
-
             cmbEnvoltura.Items.Clear();
             cmbEnvoltura.DisplayMember = "Text";
             var envolturas = new List<dynamic>
@@ -184,22 +189,7 @@ namespace FlorApp.Presentation
                 new { Text = "Papel coreano (tela semi-transparente)", Price = 45m },
                 new { Text = "Papel celofán (transparente o con diseño)", Price = 15m },
                 new { Text = "Papel china", Price = 10m },
-                new { Text = "Papel cartucho", Price = 25m },
-                new { Text = "Papel metálico", Price = 35m },
-                new { Text = "Papel satinado", Price = 40m },
-                new { Text = "Tela tipo yute", Price = 50m },
-                new { Text = "Tela organza", Price = 55m },
-                new { Text = "Tela arpillera", Price = 50m },
-                new { Text = "Tela non-woven (tela floral sintética)", Price = 30m },
-                new { Text = "Malla decorativa", Price = 25m },
-                new { Text = "Fieltro delgado", Price = 20m },
-                new { Text = "Cartulina floral rígida", Price = 30m },
-                new { Text = "Conos de cartón decorativo", Price = 40m },
-                new { Text = "Cajas florales con tapa (box bouquet)", Price = 120m },
-                new { Text = "Envoltura tipo abanico", Price = 60m },
-                new { Text = "Bolsa plástica con asas decorativa", Price = 35m },
-                new { Text = "Papel perlado o brillante", Price = 40m },
-                new { Text = "Envoltura transparente con figuras", Price = 25m }
+                new { Text = "Papel cartucho", Price = 25m }
             };
             cmbEnvoltura.Items.AddRange(envolturas.ToArray());
             cmbEnvoltura.SelectedIndex = 0;
@@ -211,23 +201,8 @@ namespace FlorApp.Presentation
             {
                 new { Text = "Caja de chocolates Ferrero", Price = 180m },
                 new { Text = "Globo metálico con mensaje", Price = 120m },
-                new { Text = "Globo de helio (temático)", Price = 150m },
                 new { Text = "Peluche pequeño", Price = 150m },
-                new { Text = "Peluche mediano", Price = 250m },
-                new { Text = "Tarjeta personalizada", Price = 30m },
-                new { Text = "Moño decorativo grande", Price = 40m },
-                new { Text = "Listón personalizado", Price = 60m },
-                new { Text = "Luces LED (batería)", Price = 80m },
-                new { Text = "Bolsita de dulces o gomitas", Price = 50m },
-                new { Text = "Botella mini de vino", Price = 200m },
-                new { Text = "Perfume pequeño", Price = 300m },
-                new { Text = "Caja decorativa de madera", Price = 150m },
-                new { Text = "Vela aromática pequeña", Price = 90m },
-                new { Text = "Sobre con dinero o vale", Price = 20m },
-                new { Text = "Decoración temática", Price = 100m },
-                new { Text = "Flor preservada (rosa eterna)", Price = 350m },
-                new { Text = "Glitter o spray aromático", Price = 40m },
-                new { Text = "Collar o accesorio especial", Price = 250m }
+                new { Text = "Tarjeta personalizada", Price = 30m }
             };
 
             flpExtras.Controls.Clear();
@@ -239,7 +214,7 @@ namespace FlorApp.Presentation
                     Tag = extra,
                     AutoSize = true,
                     Font = new Font("Segoe UI", 10),
-                    ForeColor = colorTextoPrincipal,
+                    ForeColor = colorTexto,
                     Margin = new Padding(10, 5, 10, 5)
                 };
                 flpExtras.Controls.Add(chk);
@@ -247,30 +222,24 @@ namespace FlorApp.Presentation
         }
         #endregion
 
-        #region Lógica de Carrito y Venta (Sin cambios en esta región)
+        #region Lógica de Carrito y Pedido
+
         private void btnEliminarDelCarrito_Click(object sender, EventArgs e)
         {
-            EliminarProductoSeleccionado();
-        }
-
-        private void dgvCarrito_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            EliminarProductoSeleccionado();
-        }
-
-        private void EliminarProductoSeleccionado()
-        {
-            if (dgvCarrito.CurrentRow == null)
-            {
-                CustomMessageBoxForm.Show("Por favor, selecciona un producto del carrito para eliminar.", "Ningún producto seleccionado", MessageBoxIcon.Warning);
-                return;
-            }
-            var productoAEliminar = dgvCarrito.CurrentRow.DataBoundItem as VentaDetalle;
-            if (productoAEliminar != null)
+            if (dgvCarrito.CurrentRow?.DataBoundItem is VentaDetalle productoAEliminar)
             {
                 _carrito.Remove(productoAEliminar);
                 ActualizarCarrito();
             }
+            else
+            {
+                CustomMessageBoxForm.Show("Por favor, selecciona un producto del carrito para eliminar.", "Ningún producto seleccionado", MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dgvCarrito_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            btnEliminarDelCarrito_Click(sender, e);
         }
 
         private void btnAgregarArregloPersonalizado_Click(object sender, EventArgs e)
@@ -294,7 +263,6 @@ namespace FlorApp.Presentation
                     }
                 }
             }
-
 
             if (cmbEnvoltura.SelectedIndex > 0)
             {
@@ -389,19 +357,39 @@ namespace FlorApp.Presentation
                 return;
             }
 
-            decimal subtotal = _carrito.Sum(i => i.TotalLinea);
-            var nuevaVenta = new Venta { Fecha = DateTime.Now, Cliente = "Público General", Subtotal = subtotal, Impuestos = 0, Total = subtotal, MetodoPago = "Efectivo", Vendedor = "Kiosco", Detalles = _carrito.ToList() };
+            using (var formDatos = new DatosClienteKioscoForm())
+            {
+                if (formDatos.ShowDialog() == DialogResult.OK)
+                {
+                    string productosStr = string.Join(", ", _carrito.Select(d => $"{d.Cantidad}x {d.NombreProducto}"));
+                    decimal totalPedido = _carrito.Sum(i => i.TotalLinea);
 
-            try
-            {
-                await _ventaRepository.GuardarVentaAsync(nuevaVenta);
-                CustomMessageBoxForm.Show($"¡Pedido #{nuevaVenta.Id} creado con éxito!\nTotal: {nuevaVenta.Total:C}", "Pedido Finalizado", MessageBoxIcon.Information);
-                _carrito.Clear();
-                ActualizarCarrito();
-            }
-            catch (Exception ex)
-            {
-                CustomMessageBoxForm.Show($"No se pudo guardar el pedido: {ex.Message}", "Error al Guardar", MessageBoxIcon.Error);
+                    var nuevoPedido = new Pedido
+                    {
+                        NombreCliente = formDatos.NombreCliente,
+                        Productos = productosStr,
+                        MensajeTarjeta = formDatos.MensajeTarjeta,
+                        FechaEntrega = DateTime.Now,
+                        DireccionEntrega = formDatos.Direccion,
+                        Estado = "Recibido (Pendiente de Pago)",
+                        RepartidorAsignado = "N/A",
+                        Telefono = formDatos.Telefono,
+                        Email = formDatos.Email,
+                        Origen = "Kiosco"
+                    };
+
+                    try
+                    {
+                        await _pedidoRepository.GuardarAsync(nuevoPedido);
+                        CustomMessageBoxForm.Show($"¡Gracias, {formDatos.NombreCliente}!\nTu pedido ha sido registrado con éxito.\nTotal: {totalPedido:C}", "Pedido Finalizado", MessageBoxIcon.Information);
+                        _carrito.Clear();
+                        ActualizarCarrito();
+                    }
+                    catch (Exception ex)
+                    {
+                        CustomMessageBoxForm.Show($"No se pudo guardar el pedido: {ex.Message}", "Error al Guardar", MessageBoxIcon.Error);
+                    }
+                }
             }
         }
         #endregion

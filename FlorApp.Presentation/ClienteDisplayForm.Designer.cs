@@ -56,7 +56,7 @@
             this.pnlMain.Controls.Add(this.pnlLeft);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 0);
-            this.pnlMain.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlMain.Margin = new System.Windows.Forms.Padding(4);
             this.pnlMain.Name = "pnlMain";
             this.pnlMain.Padding = new System.Windows.Forms.Padding(27, 25, 27, 25);
             this.pnlMain.Size = new System.Drawing.Size(1067, 554);
@@ -68,7 +68,7 @@
             this.pnlRight.Controls.Add(this.picLogo);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRight.Location = new System.Drawing.Point(653, 25);
-            this.pnlRight.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlRight.Margin = new System.Windows.Forms.Padding(4);
             this.pnlRight.Name = "pnlRight";
             this.pnlRight.Size = new System.Drawing.Size(387, 504);
             this.pnlRight.TabIndex = 1;
@@ -79,7 +79,7 @@
             this.pnlTotalContainer.Controls.Add(this.lblTotalValor);
             this.pnlTotalContainer.Controls.Add(this.lblTotalTitulo);
             this.pnlTotalContainer.Location = new System.Drawing.Point(0, 357);
-            this.pnlTotalContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlTotalContainer.Margin = new System.Windows.Forms.Padding(4);
             this.pnlTotalContainer.Name = "pnlTotalContainer";
             this.pnlTotalContainer.Size = new System.Drawing.Size(387, 148);
             this.pnlTotalContainer.TabIndex = 0;
@@ -113,7 +113,7 @@
             // 
             this.picLogo.Image = global::FlorApp.Presentation.Properties.Resources.AppFlor;
             this.picLogo.Location = new System.Drawing.Point(96, 25);
-            this.picLogo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.picLogo.Margin = new System.Windows.Forms.Padding(4);
             this.picLogo.Name = "picLogo";
             this.picLogo.Size = new System.Drawing.Size(200, 185);
             this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -128,7 +128,7 @@
             this.pnlLeft.Controls.Add(this.lblBienvenida);
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlLeft.Location = new System.Drawing.Point(27, 25);
-            this.pnlLeft.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlLeft.Margin = new System.Windows.Forms.Padding(4);
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Padding = new System.Windows.Forms.Padding(27, 25, 27, 25);
             this.pnlLeft.Size = new System.Drawing.Size(626, 504);
@@ -164,7 +164,7 @@
             this.dgvCarritoCliente.EnableHeadersVisualStyles = false;
             this.dgvCarritoCliente.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
             this.dgvCarritoCliente.Location = new System.Drawing.Point(27, 75);
-            this.dgvCarritoCliente.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dgvCarritoCliente.Margin = new System.Windows.Forms.Padding(4);
             this.dgvCarritoCliente.Name = "dgvCarritoCliente";
             this.dgvCarritoCliente.ReadOnly = true;
             this.dgvCarritoCliente.RowHeadersVisible = false;
@@ -209,7 +209,7 @@
             this.ClientSize = new System.Drawing.Size(1067, 554);
             this.Controls.Add(this.pnlMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ClienteDisplayForm";
             this.Text = "ClienteDisplayForm";
             this.pnlMain.ResumeLayout(false);

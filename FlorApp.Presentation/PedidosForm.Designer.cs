@@ -2,15 +2,8 @@
 {
     partial class PedidosForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,18 +15,20 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblHeader = new System.Windows.Forms.Label();
             this.pnlGrid = new System.Windows.Forms.Panel();
             this.dgvPedidos = new System.Windows.Forms.DataGridView();
             this.pnlDetalles = new System.Windows.Forms.Panel();
+            this.lblOrigenValor = new System.Windows.Forms.Label();
+            this.lblOrigenTitulo = new System.Windows.Forms.Label();
+            this.txtEmail = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtTelefono = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.cmbRepartidor = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -65,8 +60,9 @@
             this.pnlHeader.Controls.Add(this.lblHeader);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(0, 0);
+            this.pnlHeader.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(1184, 60);
+            this.pnlHeader.Size = new System.Drawing.Size(1579, 74);
             this.pnlHeader.TabIndex = 3;
             // 
             // lblHeader
@@ -74,9 +70,10 @@
             this.lblHeader.AutoSize = true;
             this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold);
             this.lblHeader.ForeColor = System.Drawing.Color.White;
-            this.lblHeader.Location = new System.Drawing.Point(12, 15);
+            this.lblHeader.Location = new System.Drawing.Point(16, 18);
+            this.lblHeader.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblHeader.Name = "lblHeader";
-            this.lblHeader.Size = new System.Drawing.Size(216, 30);
+            this.lblHeader.Size = new System.Drawing.Size(263, 37);
             this.lblHeader.TabIndex = 0;
             this.lblHeader.Text = "Gestión de Pedidos";
             // 
@@ -84,10 +81,11 @@
             // 
             this.pnlGrid.Controls.Add(this.dgvPedidos);
             this.pnlGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlGrid.Location = new System.Drawing.Point(350, 60);
+            this.pnlGrid.Location = new System.Drawing.Point(467, 74);
+            this.pnlGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlGrid.Name = "pnlGrid";
-            this.pnlGrid.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlGrid.Size = new System.Drawing.Size(834, 501);
+            this.pnlGrid.Padding = new System.Windows.Forms.Padding(13, 12, 13, 12);
+            this.pnlGrid.Size = new System.Drawing.Size(1112, 616);
             this.pnlGrid.TabIndex = 8;
             // 
             // dgvPedidos
@@ -97,28 +95,37 @@
             this.dgvPedidos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPedidos.BackgroundColor = System.Drawing.Color.White;
             this.dgvPedidos.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvPedidos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvPedidos.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvPedidos.ColumnHeadersHeight = 30;
             this.dgvPedidos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPedidos.EnableHeadersVisualStyles = false;
-            this.dgvPedidos.Location = new System.Drawing.Point(10, 10);
+            this.dgvPedidos.Location = new System.Drawing.Point(13, 12);
+            this.dgvPedidos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dgvPedidos.Name = "dgvPedidos";
             this.dgvPedidos.ReadOnly = true;
+            this.dgvPedidos.RowHeadersWidth = 51;
             this.dgvPedidos.RowTemplate.Height = 28;
             this.dgvPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvPedidos.Size = new System.Drawing.Size(814, 481);
+            this.dgvPedidos.Size = new System.Drawing.Size(1086, 592);
             this.dgvPedidos.TabIndex = 1;
             // 
             // pnlDetalles
             // 
+            this.pnlDetalles.AutoScroll = true;
             this.pnlDetalles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
+            this.pnlDetalles.Controls.Add(this.lblOrigenValor);
+            this.pnlDetalles.Controls.Add(this.lblOrigenTitulo);
+            this.pnlDetalles.Controls.Add(this.txtEmail);
+            this.pnlDetalles.Controls.Add(this.label8);
+            this.pnlDetalles.Controls.Add(this.txtTelefono);
+            this.pnlDetalles.Controls.Add(this.label7);
             this.pnlDetalles.Controls.Add(this.label6);
             this.pnlDetalles.Controls.Add(this.cmbRepartidor);
             this.pnlDetalles.Controls.Add(this.label5);
@@ -135,19 +142,83 @@
             this.pnlDetalles.Controls.Add(this.lblNombre);
             this.pnlDetalles.Controls.Add(this.pnlBotones);
             this.pnlDetalles.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlDetalles.Location = new System.Drawing.Point(0, 60);
+            this.pnlDetalles.Location = new System.Drawing.Point(0, 74);
+            this.pnlDetalles.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlDetalles.Name = "pnlDetalles";
-            this.pnlDetalles.Size = new System.Drawing.Size(350, 501);
+            this.pnlDetalles.Size = new System.Drawing.Size(467, 616);
             this.pnlDetalles.TabIndex = 7;
+            // 
+            // lblOrigenValor
+            // 
+            this.lblOrigenValor.AutoSize = true;
+            this.lblOrigenValor.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.lblOrigenValor.Location = new System.Drawing.Point(93, 12);
+            this.lblOrigenValor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblOrigenValor.Name = "lblOrigenValor";
+            this.lblOrigenValor.Size = new System.Drawing.Size(67, 23);
+            this.lblOrigenValor.TabIndex = 0;
+            this.lblOrigenValor.Text = "Manual";
+            // 
+            // lblOrigenTitulo
+            // 
+            this.lblOrigenTitulo.AutoSize = true;
+            this.lblOrigenTitulo.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.lblOrigenTitulo.Location = new System.Drawing.Point(19, 12);
+            this.lblOrigenTitulo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblOrigenTitulo.Name = "lblOrigenTitulo";
+            this.lblOrigenTitulo.Size = new System.Drawing.Size(66, 23);
+            this.lblOrigenTitulo.TabIndex = 1;
+            this.lblOrigenTitulo.Text = "Origen:";
+            // 
+            // txtEmail
+            // 
+            this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.txtEmail.Location = new System.Drawing.Point(23, 294);
+            this.txtEmail.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(407, 29);
+            this.txtEmail.TabIndex = 18;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label8.Location = new System.Drawing.Point(19, 265);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 23);
+            this.label8.TabIndex = 19;
+            this.label8.Text = "Email:";
+            // 
+            // txtTelefono
+            // 
+            this.txtTelefono.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.txtTelefono.Location = new System.Drawing.Point(23, 226);
+            this.txtTelefono.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTelefono.Name = "txtTelefono";
+            this.txtTelefono.Size = new System.Drawing.Size(407, 29);
+            this.txtTelefono.TabIndex = 17;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label7.Location = new System.Drawing.Point(19, 198);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(79, 23);
+            this.label7.TabIndex = 20;
+            this.label7.Text = "Teléfono:";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(180, 420);
+            this.label6.Location = new System.Drawing.Point(240, 657);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(75, 17);
-            this.label6.TabIndex = 14;
+            this.label6.Size = new System.Drawing.Size(96, 23);
+            this.label6.TabIndex = 21;
             this.label6.Text = "Repartidor:";
             // 
             // cmbRepartidor
@@ -155,19 +226,21 @@
             this.cmbRepartidor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRepartidor.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.cmbRepartidor.FormattingEnabled = true;
-            this.cmbRepartidor.Location = new System.Drawing.Point(183, 440);
+            this.cmbRepartidor.Location = new System.Drawing.Point(244, 683);
+            this.cmbRepartidor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbRepartidor.Name = "cmbRepartidor";
-            this.cmbRepartidor.Size = new System.Drawing.Size(140, 25);
+            this.cmbRepartidor.Size = new System.Drawing.Size(185, 29);
             this.cmbRepartidor.TabIndex = 13;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label5.Location = new System.Drawing.Point(14, 420);
+            this.label5.Location = new System.Drawing.Point(19, 657);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(51, 17);
-            this.label5.TabIndex = 12;
+            this.label5.Size = new System.Drawing.Size(65, 23);
+            this.label5.TabIndex = 22;
             this.label5.Text = "Estado:";
             // 
             // cmbEstado
@@ -175,19 +248,21 @@
             this.cmbEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbEstado.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.cmbEstado.FormattingEnabled = true;
-            this.cmbEstado.Location = new System.Drawing.Point(17, 440);
+            this.cmbEstado.Location = new System.Drawing.Point(23, 682);
+            this.cmbEstado.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbEstado.Name = "cmbEstado";
-            this.cmbEstado.Size = new System.Drawing.Size(140, 25);
+            this.cmbEstado.Size = new System.Drawing.Size(185, 29);
             this.cmbEstado.TabIndex = 11;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label4.Location = new System.Drawing.Point(14, 350);
+            this.label4.Location = new System.Drawing.Point(19, 591);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(117, 17);
-            this.label4.TabIndex = 10;
+            this.label4.Size = new System.Drawing.Size(147, 23);
+            this.label4.TabIndex = 23;
             this.label4.Text = "Fecha de Entrega:";
             // 
             // dtpFechaEntrega
@@ -195,65 +270,72 @@
             this.dtpFechaEntrega.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpFechaEntrega.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.dtpFechaEntrega.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpFechaEntrega.Location = new System.Drawing.Point(17, 370);
+            this.dtpFechaEntrega.Location = new System.Drawing.Point(23, 615);
+            this.dtpFechaEntrega.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dtpFechaEntrega.Name = "dtpFechaEntrega";
-            this.dtpFechaEntrega.Size = new System.Drawing.Size(306, 25);
+            this.dtpFechaEntrega.Size = new System.Drawing.Size(407, 29);
             this.dtpFechaEntrega.TabIndex = 9;
             // 
             // txtDireccion
             // 
             this.txtDireccion.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.txtDireccion.Location = new System.Drawing.Point(17, 270);
+            this.txtDireccion.Location = new System.Drawing.Point(23, 492);
+            this.txtDireccion.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtDireccion.Multiline = true;
             this.txtDireccion.Name = "txtDireccion";
-            this.txtDireccion.Size = new System.Drawing.Size(306, 60);
+            this.txtDireccion.Size = new System.Drawing.Size(407, 73);
             this.txtDireccion.TabIndex = 8;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(14, 250);
+            this.label3.Location = new System.Drawing.Point(19, 466);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(139, 17);
-            this.label3.TabIndex = 7;
+            this.label3.Size = new System.Drawing.Size(173, 23);
+            this.label3.TabIndex = 24;
             this.label3.Text = "Dirección de Entrega:";
             // 
             // txtMensaje
             // 
             this.txtMensaje.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.txtMensaje.Location = new System.Drawing.Point(17, 170);
+            this.txtMensaje.Location = new System.Drawing.Point(23, 369);
+            this.txtMensaje.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtMensaje.Multiline = true;
             this.txtMensaje.Name = "txtMensaje";
-            this.txtMensaje.Size = new System.Drawing.Size(306, 60);
+            this.txtMensaje.Size = new System.Drawing.Size(407, 73);
             this.txtMensaje.TabIndex = 6;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(14, 150);
+            this.label2.Location = new System.Drawing.Point(19, 343);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(135, 17);
-            this.label2.TabIndex = 5;
+            this.label2.Size = new System.Drawing.Size(157, 23);
+            this.label2.TabIndex = 25;
             this.label2.Text = "Mensaje en Tarjeta:";
             // 
             // txtProductos
             // 
             this.txtProductos.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.txtProductos.Location = new System.Drawing.Point(17, 110);
+            this.txtProductos.Location = new System.Drawing.Point(23, 159);
+            this.txtProductos.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtProductos.Name = "txtProductos";
-            this.txtProductos.Size = new System.Drawing.Size(306, 25);
+            this.txtProductos.Size = new System.Drawing.Size(407, 29);
             this.txtProductos.TabIndex = 4;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(14, 90);
+            this.label1.Location = new System.Drawing.Point(19, 131);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 17);
-            this.label1.TabIndex = 3;
+            this.label1.Size = new System.Drawing.Size(91, 23);
+            this.label1.TabIndex = 26;
             this.label1.Text = "Productos:";
             // 
             // cmbCliente
@@ -262,19 +344,21 @@
             this.cmbCliente.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cmbCliente.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.cmbCliente.FormattingEnabled = true;
-            this.cmbCliente.Location = new System.Drawing.Point(17, 50);
+            this.cmbCliente.Location = new System.Drawing.Point(23, 93);
+            this.cmbCliente.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbCliente.Name = "cmbCliente";
-            this.cmbCliente.Size = new System.Drawing.Size(306, 25);
+            this.cmbCliente.Size = new System.Drawing.Size(407, 29);
             this.cmbCliente.TabIndex = 2;
             // 
             // lblNombre
             // 
             this.lblNombre.AutoSize = true;
             this.lblNombre.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.lblNombre.Location = new System.Drawing.Point(14, 30);
+            this.lblNombre.Location = new System.Drawing.Point(19, 65);
+            this.lblNombre.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblNombre.Name = "lblNombre";
-            this.lblNombre.Size = new System.Drawing.Size(52, 17);
-            this.lblNombre.TabIndex = 1;
+            this.lblNombre.Size = new System.Drawing.Size(67, 23);
+            this.lblNombre.TabIndex = 27;
             this.lblNombre.Text = "Cliente:";
             // 
             // pnlBotones
@@ -284,9 +368,10 @@
             this.pnlBotones.Controls.Add(this.btnGuardar);
             this.pnlBotones.Controls.Add(this.btnNuevo);
             this.pnlBotones.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBotones.Location = new System.Drawing.Point(0, 421);
+            this.pnlBotones.Location = new System.Drawing.Point(0, 712);
+            this.pnlBotones.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlBotones.Name = "pnlBotones";
-            this.pnlBotones.Size = new System.Drawing.Size(350, 80);
+            this.pnlBotones.Size = new System.Drawing.Size(446, 98);
             this.pnlBotones.TabIndex = 0;
             // 
             // btnEliminar
@@ -296,9 +381,10 @@
             this.btnEliminar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnEliminar.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnEliminar.ForeColor = System.Drawing.Color.White;
-            this.btnEliminar.Location = new System.Drawing.Point(233, 20);
+            this.btnEliminar.Location = new System.Drawing.Point(311, 25);
+            this.btnEliminar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnEliminar.Name = "btnEliminar";
-            this.btnEliminar.Size = new System.Drawing.Size(100, 40);
+            this.btnEliminar.Size = new System.Drawing.Size(133, 49);
             this.btnEliminar.TabIndex = 2;
             this.btnEliminar.Text = "Eliminar";
             this.btnEliminar.UseVisualStyleBackColor = false;
@@ -310,9 +396,10 @@
             this.btnGuardar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGuardar.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnGuardar.ForeColor = System.Drawing.Color.White;
-            this.btnGuardar.Location = new System.Drawing.Point(127, 20);
+            this.btnGuardar.Location = new System.Drawing.Point(169, 25);
+            this.btnGuardar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(100, 40);
+            this.btnGuardar.Size = new System.Drawing.Size(133, 49);
             this.btnGuardar.TabIndex = 1;
             this.btnGuardar.Text = "Guardar";
             this.btnGuardar.UseVisualStyleBackColor = false;
@@ -324,22 +411,24 @@
             this.btnNuevo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNuevo.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
             this.btnNuevo.ForeColor = System.Drawing.Color.White;
-            this.btnNuevo.Location = new System.Drawing.Point(21, 20);
+            this.btnNuevo.Location = new System.Drawing.Point(28, 25);
+            this.btnNuevo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnNuevo.Name = "btnNuevo";
-            this.btnNuevo.Size = new System.Drawing.Size(100, 40);
+            this.btnNuevo.Size = new System.Drawing.Size(133, 49);
             this.btnNuevo.TabIndex = 0;
             this.btnNuevo.Text = "Nuevo";
             this.btnNuevo.UseVisualStyleBackColor = false;
             // 
             // PedidosForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.ClientSize = new System.Drawing.Size(1579, 690);
             this.Controls.Add(this.pnlGrid);
             this.Controls.Add(this.pnlDetalles);
             this.Controls.Add(this.pnlHeader);
-            this.MinimumSize = new System.Drawing.Size(1200, 600);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(1594, 728);
             this.Name = "PedidosForm";
             this.Text = "Gestión de Pedidos";
             this.pnlHeader.ResumeLayout(false);
@@ -378,5 +467,11 @@
         private System.Windows.Forms.ComboBox cmbEstado;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox cmbRepartidor;
+        private System.Windows.Forms.TextBox txtEmail;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtTelefono;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblOrigenValor;
+        private System.Windows.Forms.Label lblOrigenTitulo;
     }
 }

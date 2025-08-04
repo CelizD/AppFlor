@@ -25,6 +25,7 @@ namespace FlorApp.Presentation
         private decimal _montoInicial = -1;
         private decimal _ventasTotalesDelTurno = 0;
         private ClienteDisplayForm _displayCliente;
+        private List<Producto> _listaCompletaProductos;
 
         public VentasForm(Usuario usuario)
         {
@@ -44,8 +45,27 @@ namespace FlorApp.Presentation
         {
             InicializarControles();
             await CargarClientesAsync();
+            await CargarProductosParaAutocompletar();
             ActualizarEstadoCaja();
             AbrirPantallaCliente();
+        }
+
+        private async Task CargarProductosParaAutocompletar()
+        {
+            try
+            {
+                _listaCompletaProductos = await _productoRepository.ObtenerTodosAsync();
+                var collection = new AutoCompleteStringCollection();
+                collection.AddRange(_listaCompletaProductos.Select(p => p.Nombre).ToArray());
+
+                cmbCodigoProducto.AutoCompleteCustomSource = collection;
+                cmbCodigoProducto.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+                cmbCodigoProducto.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBoxForm.Show($"Error al cargar la lista de productos para búsqueda: {ex.Message}", "Error", MessageBoxIcon.Error);
+            }
         }
 
         private void InicializarControles()
@@ -56,7 +76,7 @@ namespace FlorApp.Presentation
             btnAbrirCaja.Click += new EventHandler(btnAbrirCaja_Click);
             btnCerrarCaja.Click += new EventHandler(btnCerrarCaja_Click);
             btnAgregar.Click += (s, e) => AgregarProductoAlCarrito();
-            txtCodigoProducto.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { AgregarProductoAlCarrito(); e.SuppressKeyPress = true; } };
+            cmbCodigoProducto.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { AgregarProductoAlCarrito(); e.SuppressKeyPress = true; } };
             btnFinalizarVenta.Click += new EventHandler(btnFinalizarVenta_Click);
             cmbCliente.SelectedIndexChanged += new EventHandler(cmbCliente_SelectedIndexChanged);
             btnCanjearPuntos.Click += new EventHandler(btnCanjearPuntos_Click);
@@ -152,9 +172,14 @@ namespace FlorApp.Presentation
             if (Screen.AllScreens.Length > 1)
             {
                 Screen secondaryScreen = Screen.AllScreens.FirstOrDefault(s => !s.Primary) ?? Screen.AllScreens[0];
-                _displayCliente.Left = secondaryScreen.Bounds.Left;
-                _displayCliente.Top = secondaryScreen.Bounds.Top;
-                _displayCliente.WindowState = FormWindowState.Maximized;
+                _displayCliente.StartPosition = FormStartPosition.Manual;
+                _displayCliente.Left = secondaryScreen.Bounds.Left + 50;
+                _displayCliente.Top = secondaryScreen.Bounds.Top + 50;
+                // Se elimina la línea que maximiza la ventana para que sea móvil
+            }
+            else
+            {
+                _displayCliente.StartPosition = FormStartPosition.CenterScreen;
             }
 
             _displayCliente.Show();
@@ -179,10 +204,16 @@ namespace FlorApp.Presentation
         #region Lógica de Venta
         private async void AgregarProductoAlCarrito()
         {
-            string busqueda = txtCodigoProducto.Text;
+            string busqueda = cmbCodigoProducto.Text;
             if (string.IsNullOrWhiteSpace(busqueda)) return;
 
-            var productoEncontrado = await _productoRepository.BuscarPorCodigoONombreAsync(busqueda);
+            var productoEncontrado = _listaCompletaProductos
+                .FirstOrDefault(p => p.Nombre.Equals(busqueda, StringComparison.OrdinalIgnoreCase) || p.CodigoBarras == busqueda);
+
+            if (productoEncontrado == null)
+            {
+                productoEncontrado = await _productoRepository.BuscarPorCodigoONombreAsync(busqueda);
+            }
 
             if (productoEncontrado == null)
             {
@@ -210,9 +241,9 @@ namespace FlorApp.Presentation
                 });
             }
 
-            txtCodigoProducto.Clear();
+            cmbCodigoProducto.Text = "";
             numCantidad.Value = 1;
-            txtCodigoProducto.Focus();
+            cmbCodigoProducto.Focus();
             dgvCarrito.Refresh();
             CalcularTotales();
         }

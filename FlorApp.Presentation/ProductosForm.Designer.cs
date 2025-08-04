@@ -27,6 +27,9 @@
             this.btnBuscar = new System.Windows.Forms.Button();
             this.txtBuscar = new System.Windows.Forms.TextBox();
             this.pnlDetalles = new System.Windows.Forms.Panel();
+            this.pnlFields = new System.Windows.Forms.Panel(); // Panel para los campos
+            this.txtColores = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.numStockMaximo = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.numStockMinimo = new System.Windows.Forms.NumericUpDown();
@@ -55,6 +58,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).BeginInit();
             this.pnlBusqueda.SuspendLayout();
             this.pnlDetalles.SuspendLayout();
+            this.pnlFields.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numStockMaximo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStockMinimo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picFoto)).BeginInit();
@@ -122,6 +126,7 @@
             this.dgvProductos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvProductos.Size = new System.Drawing.Size(814, 531);
             this.dgvProductos.TabIndex = 1;
+            this.dgvProductos.MultiSelect = true;
             // 
             // pnlBusqueda
             // 
@@ -158,31 +163,61 @@
             // pnlDetalles
             // 
             this.pnlDetalles.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
-            this.pnlDetalles.Controls.Add(this.numStockMaximo);
-            this.pnlDetalles.Controls.Add(this.label8);
-            this.pnlDetalles.Controls.Add(this.numStockMinimo);
-            this.pnlDetalles.Controls.Add(this.label7);
-            this.pnlDetalles.Controls.Add(this.picFoto);
-            this.pnlDetalles.Controls.Add(this.btnCargarFoto);
-            this.pnlDetalles.Controls.Add(this.label6);
-            this.pnlDetalles.Controls.Add(this.numPrecioVenta);
-            this.pnlDetalles.Controls.Add(this.label5);
-            this.pnlDetalles.Controls.Add(this.numPrecioCosto);
-            this.pnlDetalles.Controls.Add(this.label4);
-            this.pnlDetalles.Controls.Add(this.cmbProveedor);
-            this.pnlDetalles.Controls.Add(this.label3);
-            this.pnlDetalles.Controls.Add(this.cmbCategoria);
-            this.pnlDetalles.Controls.Add(this.label2);
-            this.pnlDetalles.Controls.Add(this.txtDescripcion);
-            this.pnlDetalles.Controls.Add(this.label1);
-            this.pnlDetalles.Controls.Add(this.txtNombre);
-            this.pnlDetalles.Controls.Add(this.lblNombre);
+            this.pnlDetalles.Controls.Add(this.pnlFields);
             this.pnlDetalles.Controls.Add(this.pnlBotones);
             this.pnlDetalles.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlDetalles.Location = new System.Drawing.Point(0, 60);
             this.pnlDetalles.Name = "pnlDetalles";
             this.pnlDetalles.Size = new System.Drawing.Size(350, 601);
             this.pnlDetalles.TabIndex = 1;
+            //
+            // pnlFields
+            //
+            this.pnlFields.AutoScroll = true;
+            this.pnlFields.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlFields.Controls.Add(this.lblNombre);
+            this.pnlFields.Controls.Add(this.txtNombre);
+            this.pnlFields.Controls.Add(this.label1);
+            this.pnlFields.Controls.Add(this.txtDescripcion);
+            this.pnlFields.Controls.Add(this.label2);
+            this.pnlFields.Controls.Add(this.cmbCategoria);
+            this.pnlFields.Controls.Add(this.label3);
+            this.pnlFields.Controls.Add(this.cmbProveedor);
+            this.pnlFields.Controls.Add(this.label4);
+            this.pnlFields.Controls.Add(this.numPrecioCosto);
+            this.pnlFields.Controls.Add(this.label5);
+            this.pnlFields.Controls.Add(this.numPrecioVenta);
+            this.pnlFields.Controls.Add(this.label7);
+            this.pnlFields.Controls.Add(this.numStockMinimo);
+            this.pnlFields.Controls.Add(this.label8);
+            this.pnlFields.Controls.Add(this.numStockMaximo);
+            this.pnlFields.Controls.Add(this.label9);
+            this.pnlFields.Controls.Add(this.txtColores);
+            this.pnlFields.Controls.Add(this.label6);
+            this.pnlFields.Controls.Add(this.picFoto);
+            this.pnlFields.Controls.Add(this.btnCargarFoto);
+            this.pnlFields.Location = new System.Drawing.Point(0, 0);
+            this.pnlFields.Name = "pnlFields";
+            this.pnlFields.Size = new System.Drawing.Size(350, 521);
+            this.pnlFields.TabIndex = 1;
+            // 
+            // txtColores
+            // 
+            this.txtColores.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.txtColores.Location = new System.Drawing.Point(17, 485);
+            this.txtColores.Name = "txtColores";
+            this.txtColores.Size = new System.Drawing.Size(306, 25);
+            this.txtColores.TabIndex = 21;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.label9.Location = new System.Drawing.Point(14, 465);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(235, 17);
+            this.label9.TabIndex = 20;
+            this.label9.Text = "Colores Disponibles (separar por ,):";
             // 
             // numStockMaximo
             // 
@@ -226,7 +261,7 @@
             // 
             this.picFoto.BackColor = System.Drawing.Color.White;
             this.picFoto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picFoto.Location = new System.Drawing.Point(17, 490);
+            this.picFoto.Location = new System.Drawing.Point(17, 540);
             this.picFoto.Name = "picFoto";
             this.picFoto.Size = new System.Drawing.Size(100, 100);
             this.picFoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -235,7 +270,7 @@
             // 
             // btnCargarFoto
             // 
-            this.btnCargarFoto.Location = new System.Drawing.Point(123, 490);
+            this.btnCargarFoto.Location = new System.Drawing.Point(123, 540);
             this.btnCargarFoto.Name = "btnCargarFoto";
             this.btnCargarFoto.Size = new System.Drawing.Size(100, 23);
             this.btnCargarFoto.TabIndex = 14;
@@ -246,7 +281,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(14, 470);
+            this.label6.Location = new System.Drawing.Point(14, 520);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(123, 17);
             this.label6.TabIndex = 13;
@@ -440,7 +475,8 @@
             this.pnlBusqueda.ResumeLayout(false);
             this.pnlBusqueda.PerformLayout();
             this.pnlDetalles.ResumeLayout(false);
-            this.pnlDetalles.PerformLayout();
+            this.pnlFields.ResumeLayout(false);
+            this.pnlFields.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numStockMaximo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStockMinimo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picFoto)).EndInit();
@@ -483,5 +519,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown numStockMaximo;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtColores;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Panel pnlFields;
     }
 }

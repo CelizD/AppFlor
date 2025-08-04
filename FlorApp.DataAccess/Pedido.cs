@@ -11,8 +11,13 @@ namespace FlorApp.DataAccess
         // Nombre del cliente que realiza el pedido
         public string NombreCliente { get; set; }
 
+        // --- NUEVOS CAMPOS ---
+        public string Telefono { get; set; }
+        public string Email { get; set; }
+        public string Origen { get; set; } // Ej: "Manual", "Kiosco"
+        // --------------------
+
         // Lista de productos solicitados, almacenados como texto
-        // En una implementación más robusta, sería una lista de objetos Producto
         public string Productos { get; set; }
 
         // Mensaje personalizado que va en la tarjeta del arreglo floral
@@ -24,7 +29,7 @@ namespace FlorApp.DataAccess
         // Dirección exacta donde se entregará el pedido
         public string DireccionEntrega { get; set; }
 
-        // Estado actual del pedido (ej. "Recibido", "En preparación", "En ruta", "Entregado")
+        // Estado actual del pedido
         public string Estado { get; set; }
 
         // Nombre del repartidor asignado a la entrega del pedido

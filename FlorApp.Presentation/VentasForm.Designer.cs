@@ -34,7 +34,8 @@
             this.btnAgregar = new System.Windows.Forms.Button();
             this.numCantidad = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtCodigoProducto = new System.Windows.Forms.TextBox();
+            // --- CAMBIO: De TextBox a ComboBox ---
+            this.cmbCodigoProducto = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pnlCarrito = new System.Windows.Forms.Panel();
             this.dgvCarrito = new System.Windows.Forms.DataGridView();
@@ -92,7 +93,7 @@
             this.pnlProductos.Controls.Add(this.btnAgregar);
             this.pnlProductos.Controls.Add(this.numCantidad);
             this.pnlProductos.Controls.Add(this.label2);
-            this.pnlProductos.Controls.Add(this.txtCodigoProducto);
+            this.pnlProductos.Controls.Add(this.cmbCodigoProducto);
             this.pnlProductos.Controls.Add(this.label1);
             this.pnlProductos.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlProductos.Location = new System.Drawing.Point(0, 110);
@@ -134,13 +135,14 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Cantidad:";
             // 
-            // txtCodigoProducto
+            // cmbCodigoProducto
             // 
-            this.txtCodigoProducto.Font = new System.Drawing.Font("Segoe UI", 12F);
-            this.txtCodigoProducto.Location = new System.Drawing.Point(20, 30);
-            this.txtCodigoProducto.Name = "txtCodigoProducto";
-            this.txtCodigoProducto.Size = new System.Drawing.Size(400, 29);
-            this.txtCodigoProducto.TabIndex = 1;
+            this.cmbCodigoProducto.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.cmbCodigoProducto.FormattingEnabled = true;
+            this.cmbCodigoProducto.Location = new System.Drawing.Point(20, 30);
+            this.cmbCodigoProducto.Name = "cmbCodigoProducto";
+            this.cmbCodigoProducto.Size = new System.Drawing.Size(400, 29);
+            this.cmbCodigoProducto.TabIndex = 1;
             // 
             // label1
             // 
@@ -430,7 +432,7 @@
         private System.Windows.Forms.Button btnAgregar;
         private System.Windows.Forms.NumericUpDown numCantidad;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtCodigoProducto;
+        private System.Windows.Forms.ComboBox cmbCodigoProducto;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel pnlCarrito;
         private System.Windows.Forms.DataGridView dgvCarrito;
