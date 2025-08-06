@@ -48,143 +48,134 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbrirCajaForm.cs">
+    <Compile Include="Forms\Dialogs\AbrirCajaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbrirCajaForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\AbrirCajaForm.Designer.cs">
       <DependentUpon>AbrirCajaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClienteDisplayForm.cs">
+    <Compile Include="Forms\Dialogs\ClienteDisplayForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ClienteDisplayForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\ClienteDisplayForm.Designer.cs">
       <DependentUpon>ClienteDisplayForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClientesForm.cs">
+    <Compile Include="Forms\Main\ClientesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ClientesForm.Designer.cs">
+    <Compile Include="Forms\Main\ClientesForm.Designer.cs">
       <DependentUpon>ClientesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CobrarForm.cs">
+    <Compile Include="Forms\Dialogs\CobrarForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CobrarForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\CobrarForm.Designer.cs">
       <DependentUpon>CobrarForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ComprasForm.cs">
+    <Compile Include="Forms\Main\ComprasForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ComprasForm.Designer.cs">
+    <Compile Include="Forms\Main\ComprasForm.Designer.cs">
       <DependentUpon>ComprasForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConfiguracionForm.cs">
+    <Compile Include="Forms\Main\ConfiguracionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConfiguracionForm.Designer.cs">
+    <Compile Include="Forms\Main\ConfiguracionForm.Designer.cs">
       <DependentUpon>ConfiguracionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomConfirmBoxForm.cs">
+    <Compile Include="Forms\Dialogs\CustomConfirmBoxForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomConfirmBoxForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\CustomConfirmBoxForm.Designer.cs">
       <DependentUpon>CustomConfirmBoxForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomMessageBoxForm.cs">
+    <Compile Include="Forms\Dialogs\CustomMessageBoxForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CustomMessageBoxForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\CustomMessageBoxForm.Designer.cs">
       <DependentUpon>CustomMessageBoxForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DashboardForm.cs">
+    <Compile Include="Forms\Main\DashboardForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DashboardForm.Designer.cs">
+    <Compile Include="Forms\Main\DashboardForm.Designer.cs">
       <DependentUpon>DashboardForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DatosClienteKioscoForm.cs">
+    <Compile Include="Forms\Dialogs\DatosClienteKioscoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DatosClienteKioscoForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\DatosClienteKioscoForm.Designer.cs">
       <DependentUpon>DatosClienteKioscoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="Forms\Main\InventarioForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="InventarioForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="InventarioForm.Designer.cs">
+    <Compile Include="Forms\Main\InventarioForm.Designer.cs">
       <DependentUpon>InventarioForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="KioscoForm.cs">
+    <Compile Include="Forms\Main\KioscoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="KioscoForm.Designer.cs">
+    <Compile Include="Forms\Main\KioscoForm.Designer.cs">
       <DependentUpon>KioscoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LoginForm.cs">
+    <Compile Include="Forms\Main\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LoginForm.Designer.cs">
+    <Compile Include="Forms\Main\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PedidosForm.cs">
+    <Compile Include="Forms\Main\PedidosForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PedidosForm.Designer.cs">
+    <Compile Include="Forms\Main\PedidosForm.Designer.cs">
       <DependentUpon>PedidosForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductosForm.cs">
+    <Compile Include="Forms\Main\ProductosForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProductosForm.Designer.cs">
+    <Compile Include="Forms\Main\ProductosForm.Designer.cs">
       <DependentUpon>ProductosForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductoVenta.cs" />
+    <Compile Include="Helpers\ProductoVenta.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProveedoresForm.cs">
+    <Compile Include="Forms\Main\ProveedoresForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProveedoresForm.Designer.cs">
+    <Compile Include="Forms\Main\ProveedoresForm.Designer.cs">
       <DependentUpon>ProveedoresForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ReportesForm.cs">
+    <Compile Include="Forms\Main\ReportesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReportesForm.Designer.cs">
+    <Compile Include="Forms\Main\ReportesForm.Designer.cs">
       <DependentUpon>ReportesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="VentaEnEspera.cs" />
-    <Compile Include="VentasEsperaForm.cs">
+    <Compile Include="Helpers\VentaEnEspera.cs" />
+    <Compile Include="Forms\Dialogs\VentasEsperaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VentasEsperaForm.Designer.cs">
+    <Compile Include="Forms\Dialogs\VentasEsperaForm.Designer.cs">
       <DependentUpon>VentasEsperaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="VentasForm.cs">
+    <Compile Include="Forms\Main\VentasForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VentasForm.Designer.cs">
+    <Compile Include="Forms\Main\VentasForm.Designer.cs">
       <DependentUpon>VentasForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ClienteDisplayForm.resx">
+    <EmbeddedResource Include="Forms\Dialogs\ClienteDisplayForm.resx">
       <DependentUpon>ClienteDisplayForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DashboardForm.resx">
+    <EmbeddedResource Include="Forms\Main\DashboardForm.resx">
       <DependentUpon>DashboardForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoginForm.resx">
+    <EmbeddedResource Include="Forms\Main\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PedidosForm.resx">
+    <EmbeddedResource Include="Forms\Main\PedidosForm.resx">
       <DependentUpon>PedidosForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -226,5 +217,6 @@
   <ItemGroup>
     <None Include="Resources\icono_venta.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

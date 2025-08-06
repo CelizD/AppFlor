@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FlorApp.DataAccess.Models;
+using FlorApp.DataAccess.Repositories;
 
 namespace FlorApp.BusinessLogic
 {
