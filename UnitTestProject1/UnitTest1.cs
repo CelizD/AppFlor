@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
-using Microsoft.Data.SqlClient; // <-- CORRECCIÓN: Usando la nueva librería recomendada
+using System.Data.SqlClient;
 
 namespace FlorApp.Tests
 {

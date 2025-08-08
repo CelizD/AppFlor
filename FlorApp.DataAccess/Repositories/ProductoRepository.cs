@@ -145,7 +145,16 @@ namespace FlorApp.DataAccess.Repositories
                     command.Parameters.AddWithValue("@CodigoBarras", (object)producto.CodigoBarras ?? DBNull.Value);
                     command.Parameters.AddWithValue("@EsKit", producto.EsKit);
                     command.Parameters.AddWithValue("@ColoresDisponibles", (object)producto.ColoresDisponibles ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@Foto", (object)producto.Foto ?? DBNull.Value);
+                    SqlParameter fotoParam = new SqlParameter("@Foto", System.Data.SqlDbType.VarBinary, -1);
+                    if (producto.Foto != null)
+                    {
+                        fotoParam.Value = producto.Foto;
+                    }
+                    else
+                    {
+                        fotoParam.Value = DBNull.Value;
+                    }
+                    command.Parameters.Add(fotoParam);
                     command.Parameters.AddWithValue("@FechaRegistro", producto.FechaRegistro);
                     await command.ExecuteNonQueryAsync();
                 }
@@ -176,7 +185,17 @@ namespace FlorApp.DataAccess.Repositories
                     command.Parameters.AddWithValue("@CodigoBarras", (object)producto.CodigoBarras ?? DBNull.Value);
                     command.Parameters.AddWithValue("@EsKit", producto.EsKit);
                     command.Parameters.AddWithValue("@ColoresDisponibles", (object)producto.ColoresDisponibles ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@Foto", (object)producto.Foto ?? DBNull.Value);
+                    // Añadir el parámetro @Foto explícitamente para evitar errores de tipo
+                    SqlParameter fotoParam = new SqlParameter("@Foto", System.Data.SqlDbType.VarBinary, -1);
+                    if (producto.Foto != null)
+                    {
+                        fotoParam.Value = producto.Foto;
+                    }
+                    else
+                    {
+                        fotoParam.Value = DBNull.Value;
+                    }
+                    command.Parameters.Add(fotoParam);
                     await command.ExecuteNonQueryAsync();
                 }
             }
