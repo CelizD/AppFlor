@@ -88,7 +88,7 @@ namespace FlorApp.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(SqlException))] // <-- CORRECCIÓN: Apunta a la nueva SqlException
+        [ExpectedException(typeof(SqlException))]
         public async Task Insert_Fallido_NoDebePermitirNombreNulo()
         {
             // Arrange
@@ -134,5 +134,53 @@ namespace FlorApp.Tests
             var productoEliminado = await _repository.ObtenerPorIdAsync(productoGuardado.Id);
             Assert.IsNull(productoEliminado);
         }
+
+        
+        [TestMethod]
+        public async Task Update_Fallido_NoDebeActualizarProductoInexistente()
+        {
+            // Arrange: Crea un producto que no existe en la BD
+            var productoInexistente = new Producto
+            {
+                Id = -1, // Un ID que nunca existirá
+                Nombre = "Producto Fantasma",
+                Categoria = "Flor",
+                ProveedorId = 1,
+                PrecioVenta = 100,
+                PrecioCosto = 50,
+                Stock = 10,
+                StockMinimo = 1,
+                StockMaximo = 100,
+                FechaRegistro = DateTime.Now
+            };
+
+            // Act
+            await _repository.ActualizarAsync(productoInexistente);
+
+            // Assert: Verifica que el producto sigue sin existir
+            var resultado = await _repository.ObtenerPorIdAsync(-1);
+            Assert.IsNull(resultado, "El producto no debería existir después del intento de actualización.");
+        }
+
+        [TestMethod]
+        public async Task Delete_Fallido_NoDebeLanzarErrorAlEliminarIdInexistente()
+        {
+            // Arrange
+            int idInexistente = -99;
+
+            // Act y Assert: El método no debería lanzar una excepción
+            try
+            {
+                await _repository.EliminarAsync(idInexistente);
+                // Si llega aquí, la prueba es exitosa porque no hubo error.
+                Assert.IsTrue(true);
+            }
+            catch (Exception ex)
+            {
+                // Si lanza cualquier excepción, la prueba falla.
+                Assert.Fail("Se esperaba que no se lanzara ninguna excepción, pero se obtuvo: " + ex.Message);
+            }
+        }
+        
     }
 }
