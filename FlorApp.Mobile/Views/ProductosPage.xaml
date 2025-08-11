@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FlorApp.Mobile.Views.ProductosPage"
+             xmlns:viewModels="clr-namespace:FlorApp.Mobile.ViewModels"
+             Title="Catálogo de Productos">
+
+    <ContentPage.BindingContext>
+        <viewModels:ProductosViewModel />
+    </ContentPage.BindingContext>
+
+    <CollectionView ItemsSource="{Binding Productos}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Frame Margin="10" Padding="10" CornerRadius="8" BorderColor="LightGray">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Nombre}" FontSize="Large" FontAttributes="Bold" />
+                        <Label Text="{Binding Categoria}" FontSize="Small" />
+                        <Label Text="{Binding PrecioVenta, StringFormat='{0:C}'}" FontSize="Medium" TextColor="SeaGreen" HorizontalOptions="End" />
+                    </VerticalStackLayout>
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

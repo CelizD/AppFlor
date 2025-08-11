@@ -14,13 +14,11 @@ namespace FlorApp.DataAccess.Repositories
     {
         private readonly string _connectionString;
 
-        // Constructor que usa la cadena de conexión desde App.config
         public VentaRepository()
         {
             _connectionString = ConfigurationManager.ConnectionStrings["FlorAppDB"].ConnectionString;
         }
 
-        // Constructor que permite inyectar manualmente la cadena de conexión
         public VentaRepository(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
